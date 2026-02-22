@@ -77,7 +77,7 @@ export default async function handler(req, res) {
                 name: appName,
                 code: link,
                 desc: "Ultima versione ufficiale",
-                icon: "assets/stremio.png",
+                icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Stremio_Icon.svg/512px-Stremio_Icon.svg.png",
                 timestamp: Date.now(),
                 order: -1 // Mettilo all'inizio
             };

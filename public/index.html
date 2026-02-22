@@ -625,20 +625,51 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
     };
     
     window.updateAllIcons = async function() {
-        if(!confirm("Vuoi avviare la ricerca automatica delle icone mancanti per tutte le app? L'operazione potrebbe richiedere qualche secondo.")) return;
+        if(!confirm("Vuoi avviare la ricerca automatica delle icone mancanti per tutte le app? L'operazione potrebbe richiedere un po' di tempo.")) return;
         
+        let updatedCount = 0;
+        const updates = {};
+        
+        // Mostra un indicatore di caricamento
+        const btn = document.querySelector('button[onclick="updateAllIcons()"]');
+        const originalText = btn.innerText;
+        btn.innerText = "⏳ Aggiornamento in corso...";
+        btn.disabled = true;
+
         try {
-            const response = await fetch('/api/update-all-icons');
-            const data = await response.json();
-            
-            if (data.success) {
-                alert(data.message || `Operazione completata! Aggiornate ${data.updatedCount} icone.`);
+            for (const app of allAppsData) {
+                // Salta se ha già un'icona valida (link http e non un'icona di default locale)
+                if (app.icon && app.icon.startsWith('http') && !app.icon.includes('nello.png') && !app.icon.includes('downloads.png')) {
+                    continue;
+                }
+
+                try {
+                    const response = await fetch(`/api/search-icon?name=${encodeURIComponent(app.name)}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success && data.icon) {
+                            const dbPath = app.type === 'software' ? `software/${app.id}/icon` : `apps/${app.id}/icon`;
+                            updates[dbPath] = data.icon;
+                            updatedCount++;
+                        }
+                    }
+                } catch (e) {
+                    console.error("Errore per", app.name, e);
+                }
+            }
+
+            if (updatedCount > 0) {
+                await update(ref(db), updates);
+                alert(`Operazione completata! Aggiornate ${updatedCount} icone.`);
             } else {
-                alert("Errore: " + data.error);
+                alert("Nessuna icona da aggiornare. Tutte le app hanno già un'icona valida.");
             }
         } catch (error) {
             console.error("Errore durante l'aggiornamento massivo:", error);
-            alert("Errore di connessione al server.");
+            alert("Errore durante il salvataggio nel database.");
+        } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
         }
     };
 
@@ -696,8 +727,8 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
       const defaults = [
           {name: "Xrom", code: "4537574", desc: "Custom ROM / launcher", icon: "assets/android-os.png", category: "Launcher"},
           {name: "Vimu Craccato", code: "6768823", desc: "Vimu media player", icon: "assets/play-button-circled.png", category: "Streaming"},
-          {name: "Stremio Cell Mod VLC", code: "5578609", desc: "Stremio mobile mod", icon: "assets/stremio.png", category: "Mod"},
-          {name: "Stremio TV Mod VLC", code: "3988093", desc: "Stremio TV mod", icon: "assets/stremio.png", category: "Mod"},
+          {name: "Stremio Cell Mod VLC", code: "5578609", desc: "Stremio mobile mod", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Stremio_Icon.svg/512px-Stremio_Icon.svg.png", category: "Mod"},
+          {name: "Stremio TV Mod VLC", code: "3988093", desc: "Stremio TV mod", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Stremio_Icon.svg/512px-Stremio_Icon.svg.png", category: "Mod"},
           {name: "Stremio Proxy MPD", code: "4095972", desc: "Proxy MPD", icon: "assets/proxy.png", category: "Strumenti"},
           {name: "Smart Tube", code: "9587028", desc: "Player YouTube-like", icon: "assets/youtube-play.png", category: "Streaming"},
           {name: "Kodi", code: "2130077", desc: "Media center", icon: "assets/kodi.png", category: "Streaming"},
