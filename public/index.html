@@ -91,6 +91,16 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
 .modal-content .form-btn:hover { background: var(--primary-hover); }
 .close-modal { background: none; border: none; color: var(--text-muted); width: 100%; margin-top: 15px; cursor: pointer; font-family: inherit; transition: color 0.2s; }
 .close-modal:hover { color: white; }
+
+/* Guides Section */
+.guides-section { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.guide-card { background: var(--card-bg); border-radius: 20px; padding: 24px; border: 1px solid var(--card-border); backdrop-filter: blur(16px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+.guide-card h3 { margin-top: 0; color: var(--primary); font-size: 18px; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.guide-card ol { margin: 0; padding-left: 20px; color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+.guide-card li { margin-bottom: 8px; }
+.guide-card a { color: var(--secondary); text-decoration: none; font-weight: 600; }
+.guide-card a:hover { text-decoration: underline; }
+.guide-card code { background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #eab308; }
 </style>
 </head>
 <body>
@@ -103,6 +113,48 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
 <main id="main-content">
   <div id="loading-msg" style="width:100%;text-align:center;padding:40px;color:var(--text-muted);font-size:18px;">Caricamento App...</div>
 </main>
+
+<div class="guides-section">
+  <div class="guide-card">
+    <h3>🎬 Riproduzione 4K & live — Vimu / Stremio</h3>
+    <ol>
+      <li>Installa da qui: <a href="https://go.aftvnews.com/3188516">Vimu Installer</a> (usa il pulsante sopra).</li>
+      <li>Inserisci la chiave: <code>fea63c49-a7f2-441e-be4a-e75cc36b74d8</code></li>
+      <li>In <strong>Stremio</strong>: Impostazioni ➔ Riproduzione ➔ Player predefinito ➔ seleziona <em>player esterno</em>.</li>
+      <li>Se audio non automatico in italiano: apri Vimu ➔ Options ➔ Settings ➔ Content ➔ Preferred Audio Language ➔ Italiano.</li>
+    </ol>
+  </div>
+  <div class="guide-card">
+    <h3>🇮🇹 Impostare lingua Italiana su Kodi</h3>
+    <ol>
+      <li><a href="https://go.aftvnews.com/2130077">Installa Kodi</a> (pulsante sopra).</li>
+      <li>Kodi ➔ ⚙️ Impostazioni ➔ Interfaccia ➔ Regional / Regione ➔ Language ➔ Italiano.</li>
+    </ol>
+  </div>
+  <div class="guide-card">
+    <h3>📺 Configurazione Kodi + WLTV</h3>
+    <ol>
+      <li>Home Kodi ➔ ⚙️ ➔ File ➔ Aggiungi sorgente ➔ URL: <code>http://worldlivetv.github.io/repo/</code> (Nome: WLTV Repo).</li>
+      <li>Add-ons ➔ Installa da file zip ➔ repository.wltv-1.x.x.zip ➔ Installa da repository ➔ WLTV Helper.</li>
+      <li>Home ➔ Add-ons ➔ WLTV Helper ➔ Lista ➔ Sezione TV.</li>
+    </ol>
+  </div>
+  <div class="guide-card">
+    <h3>🧪 Scienziato Pazzo su Kodi</h3>
+    <ol>
+      <li>⚙️ Home Kodi ➔ Ingranaggio</li>
+      <li>📁 File > Aggiungi sorgente ➔ 🔗 <code>http://aandroide.github.io/installer/repo/</code></li>
+      <li>📦 Add-ons ➔ 📦 Scatola ➔ Installa da file zip </li>
+      <li>📥 Installa da repository</li>
+    </ol>
+  </div>
+  <div class="guide-card">
+    <h3>📺 Avvio automatico TV (Kodi)</h3>
+    <ol>
+      <li>Impostazioni ➔ Interfaccia ➔ Altro / Skin ➔ Startup window ➔ seleziona TV ➔ Riavvia Kodi.</li>
+    </ol>
+  </div>
+</div>
 
 <div class="add-app-section admin-only admin-only-block">
   <h3>➕ Gestione Applicazioni</h3>
@@ -119,7 +171,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
 </div>
 
 <footer>
-  Centro di Controllo di Nello — Codice: <strong>6097284</strong><br>
+  Centro di Controllo di Nello — Codice: <strong>9888634</strong><br>
   <button id="login-btn" class="login-trigger" onclick="document.getElementById('login-modal').classList.add('active')">Accesso Amministratore</button>
   <button id="logout-btn" class="login-trigger admin-only" onclick="logoutAdmin()">Esci dall'Amministrazione</button>
 </footer>
