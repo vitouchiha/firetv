@@ -78,15 +78,15 @@ export default async function handler(req, res) {
             
             const newApp = {
                 name: appName,
-                code: directDownloadPageUrl,
-                desc: "Ultima versione USA (APKMirror)",
-                icon: "assets/paramount.png", // Assicurati di avere questa icona o usa un URL
+                code: "", // Lasciato vuoto per l'inserimento manuale del link diretto
+                desc: "Ultima versione USA (Inserisci link diretto)",
+                icon: "https://play-lh.googleusercontent.com/rdzfnSN_CJ0930nHwaZbD8my6X_s8xAFORVg6gvdUTiNz5qgYqObKEVIT8mOzapaUB4T=w240-h480-rw",
                 category: "Streaming",
                 timestamp: Date.now(),
                 order: -1 // Mettilo all'inizio
             };
             
-            await push(dbRef, newApp);
+            const newAppRef = await push(dbRef, newApp);
             console.log("Scheda aggiunta con successo!");
             return res.status(200).json({ success: true, message: `Aggiunta nuova versione: ${version}` });
         } else {
