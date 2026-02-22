@@ -123,6 +123,16 @@ header h1 {
   50% { background-position: 100% 50%; filter: drop-shadow(0 0 20px rgba(34, 211, 238, 0.5)); }
 }
 
+.bookmark-hint {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: rgba(34, 211, 238, 0.1); border: 1px solid rgba(34, 211, 238, 0.3);
+  padding: 10px 20px; border-radius: 50px; margin-top: 20px;
+  font-size: 14px; color: var(--neon-cyan);
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.1);
+  backdrop-filter: blur(10px);
+}
+.bookmark-hint strong { color: #fff; }
+
 main { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; justify-content: center; max-width: 1200px; margin: 0 auto; }
 
 .card {
@@ -230,6 +240,9 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
 <header>
   <img src="assets/nello.png" alt="Nello">
   <h1>Centro di Controllo</h1>
+  <div class="bookmark-hint">
+    🦴 <span><strong>Aggiungi ai preferiti:</strong> se hai una Fire TV, tieni premuto il tasto <strong>☰</strong> (3 lineette) sul telecomando.</span>
+  </div>
 </header>
 
 <main id="main-content">
