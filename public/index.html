@@ -354,11 +354,17 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
   </div>
   <div class="form-group">
       <input type="text" id="appDesc" class="form-input" placeholder="Descrizione breve">
-      <input type="text" id="appIcon" class="form-input" placeholder="URL Icona (opzionale)">
+      <div style="display: flex; gap: 10px; width: 100%;">
+          <input type="text" id="appIcon" class="form-input" placeholder="URL Icona (opzionale)" style="flex: 1;">
+          <button onclick="searchIcon()" class="form-btn" style="width: auto; padding: 0 15px; font-size: 14px;" title="Cerca icona in base al nome">🔍 Cerca</button>
+      </div>
       <input type="text" id="appCategory" class="form-input" placeholder="Categoria (es. Streaming)" list="categoryList">
       <datalist id="categoryList"></datalist>
   </div>
-  <button onclick="addApp()" class="form-btn">Aggiungi Scheda</button>
+  <div style="display: flex; gap: 10px; margin-top: 15px;">
+      <button onclick="addApp()" class="form-btn" style="flex: 2;">Aggiungi Scheda</button>
+      <button onclick="updateAllIcons()" class="form-btn" style="flex: 1; background: rgba(34, 211, 238, 0.2); border-color: rgba(34, 211, 238, 0.5);" title="Cerca e aggiorna le icone mancanti per tutte le app">🔄 Aggiorna Tutte le Icone</button>
+  </div>
 </div>
 
 <div style="text-align: center; margin-top: 40px;">
@@ -559,6 +565,35 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
         renderApps();
     };
 
+    window.searchIcon = async function() {
+        const name = document.getElementById('appName').value;
+        if (!name) {
+            alert("Inserisci prima il nome dell'app per cercare l'icona!");
+            return;
+        }
+        
+        const iconInput = document.getElementById('appIcon');
+        const originalPlaceholder = iconInput.placeholder;
+        iconInput.placeholder = "Ricerca in corso...";
+        iconInput.value = "";
+        
+        try {
+            const response = await fetch(`/api/search-icon?name=${encodeURIComponent(name)}`);
+            const data = await response.json();
+            
+            if (data.success && data.icon) {
+                iconInput.value = data.icon;
+            } else {
+                alert("Nessuna icona trovata per questo nome.");
+            }
+        } catch (error) {
+            console.error("Errore durante la ricerca dell'icona:", error);
+            alert("Errore durante la ricerca dell'icona.");
+        } finally {
+            iconInput.placeholder = originalPlaceholder;
+        }
+    };
+
     window.addApp = function() {
       const name = document.getElementById('appName').value;
       const code = document.getElementById('appCode').value;
@@ -589,6 +624,24 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
       }
     };
     
+    window.updateAllIcons = async function() {
+        if(!confirm("Vuoi avviare la ricerca automatica delle icone mancanti per tutte le app? L'operazione potrebbe richiedere qualche secondo.")) return;
+        
+        try {
+            const response = await fetch('/api/update-all-icons');
+            const data = await response.json();
+            
+            if (data.success) {
+                alert(data.message || `Operazione completata! Aggiornate ${data.updatedCount} icone.`);
+            } else {
+                alert("Errore: " + data.error);
+            }
+        } catch (error) {
+            console.error("Errore durante l'aggiornamento massivo:", error);
+            alert("Errore di connessione al server.");
+        }
+    };
+
     window.saveOrder = function() {
         const cards = document.querySelectorAll('.card');
         const updates = {};

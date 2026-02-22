@@ -9,6 +9,7 @@
   "dependencies": {
     "adm-zip": "^0.5.16",
     "firebase": "^12.9.0",
+    "google-play-scraper": "^10.1.2",
     "nodemailer": "^8.0.1",
     "serve": "^14.0.0",
     "xml2js": "^0.6.2"
