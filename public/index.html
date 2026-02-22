@@ -213,19 +213,6 @@ body.is-admin .card:active { cursor: grabbing; }
   border-color: var(--neon-purple);
 }
 
-.actions { display: flex; gap: 8px; flex-direction: column; }
-.btn-send-tv {
-  background: rgba(34, 211, 238, 0.1); color: var(--neon-cyan); padding: 8px 12px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 12px; transition: all 0.3s ease; 
-  border: 1px solid rgba(34, 211, 238, 0.3); cursor: pointer; 
-  box-shadow: 0 0 10px rgba(34, 211, 238, 0.1);
-  display: flex; align-items: center; justify-content: center; gap: 5px;
-}
-.btn-send-tv:hover {
-  background: rgba(34, 211, 238, 0.3); transform: scale(1.05); 
-  box-shadow: 0 0 20px rgba(34, 211, 238, 0.3); 
-  border-color: var(--neon-cyan); color: #fff;
-}
-
 /* Admin controls */
 .admin-only { display: none !important; }
 body.is-admin .admin-only { display: flex !important; }
@@ -646,9 +633,12 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
         </div>
       `;
       
-      // Pulsante Invia alla TV (solo per codici numerici)
+      // Se è un codice numerico, mostriamo "Invia alla TV" (che copia il codice)
+      // Altrimenti mostriamo "Scarica" (che apre il link)
       const isNumericCode = code.match(/^\d+$/);
-      const sendToTvBtn = isNumericCode ? `<button class="btn-send-tv" onclick="sendToTv('${code}', event)" title="Copia codice per la TV">📺 Copia Codice</button>` : '';
+      const actionBtnHtml = isNumericCode 
+        ? `<button class="btn" onclick="copyToClipboard('${code}', event)" title="Copia il codice per Downloader">📺 Invia alla TV</button>`
+        : `<a class="btn" href="${link}" target="_blank">Scarica</a>`;
 
       newCard.innerHTML = `
         ${badgeHtml}
@@ -658,17 +648,14 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
           <h4>${name}</h4>
           <span>${displayDesc}</span>
         </div>
-        <div class="actions">
-            ${sendToTvBtn}
-            <a class="btn" href="${link}" target="_blank">Scarica</a>
-        </div>
+        <div class="actions">${actionBtnHtml}</div>
         ${clickHtml}
       `;
       
       main.appendChild(newCard);
       
       newCard.addEventListener('click', (e)=>{ 
-        if(e.target.closest('button')) return;
+        if(e.target.closest('button') || e.target.closest('a')) return;
         
         // Incrementa contatore click
         if(firebaseKey) {
@@ -680,7 +667,11 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
             });
         }
         
-        window.open(link, '_blank'); 
+        if(isNumericCode) {
+            copyToClipboard(code, e);
+        } else {
+            window.open(link, '_blank'); 
+        }
       });
 
       newCard.addEventListener('dragstart', (e) => {
@@ -738,43 +729,32 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
       document.getElementById('qr-modal').classList.add('active');
   };
 
-  // Invia alla TV (Copia Codice)
-  window.sendToTv = function(code, event) {
-      event.stopPropagation(); // Evita di aprire il link di download
+  // Copia Codice per Downloader
+  window.copyToClipboard = function(text, event) {
+      if(event) event.stopPropagation();
       
-      navigator.clipboard.writeText(code).then(() => {
-          const btn = event.target.closest('button');
-          const originalText = btn.innerHTML;
-          btn.innerHTML = '✅ Copiato!';
-          btn.style.background = 'rgba(16, 185, 129, 0.3)';
-          btn.style.borderColor = '#10b981';
-          btn.style.color = '#10b981';
-          
-          // Mostra un piccolo alert a schermo
-          const alertBox = document.createElement('div');
-          alertBox.innerText = `Codice ${code} copiato! Incollalo nell'app Fire TV sul telefono.`;
-          alertBox.style.cssText = `
-              position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-              background: rgba(16, 185, 129, 0.9); color: white; padding: 12px 24px;
-              border-radius: 50px; font-weight: 600; font-size: 14px; z-index: 1000;
-              box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4); backdrop-filter: blur(10px);
-              animation: slideUp 0.3s ease, fadeOut 0.5s ease 2.5s forwards;
-          `;
-          document.body.appendChild(alertBox);
-          
-          setTimeout(() => {
-              btn.innerHTML = originalText;
-              btn.style = '';
-              alertBox.remove();
-          }, 3000);
+      navigator.clipboard.writeText(text).then(() => {
+          // Mostra un piccolo feedback visivo sul bottone cliccato
+          if(event && event.target) {
+              const btn = event.target;
+              const originalText = btn.innerHTML;
+              btn.innerHTML = "✅ Copiato!";
+              btn.style.background = "var(--primary)";
+              btn.style.color = "#fff";
+              
+              setTimeout(() => {
+                  btn.innerHTML = originalText;
+                  btn.style.background = "";
+                  btn.style.color = "";
+              }, 2000);
+          } else {
+              alert("Codice " + text + " copiato negli appunti! Incollalo nell'app Downloader sulla tua TV.");
+          }
       }).catch(err => {
-          alert('Errore durante la copia del codice: ' + err);
+          console.error('Errore nella copia: ', err);
+          alert("Codice: " + text);
       });
   };
 </script>
-<style>
-@keyframes slideUp { from { bottom: -50px; opacity: 0; } to { bottom: 20px; opacity: 1; } }
-@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
-</style>
 </body>
 </html>
