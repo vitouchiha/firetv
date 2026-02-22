@@ -283,12 +283,11 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
   <div class="header-actions">
     <button class="icon-btn" onclick="toggleTheme()" title="Cambia Tema">🌓</button>
     <button class="icon-btn" onclick="showQR()" title="Mostra QR Code">📱</button>
+    <button id="login-btn" class="icon-btn" onclick="document.getElementById('login-modal').classList.add('active')" title="Accesso Amministratore">🔐</button>
+    <button id="logout-btn" class="icon-btn admin-only" onclick="logoutAdmin()" title="Esci dall'Amministrazione">🔓</button>
   </div>
   <img src="assets/nello.png" alt="Nello">
   <h1>Centro di Controllo</h1>
-  <div class="bookmark-hint">
-    🦴 <span><strong>Aggiungi ai preferiti:</strong> se hai una Fire TV, tieni premuto il tasto <strong>☰</strong> (3 lineette) sul telecomando.</span>
-  </div>
 </header>
 
 <div class="controls-bar">
@@ -297,10 +296,6 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
   </div>
   <div class="category-filters" id="categoryFilters">
     <button class="filter-btn active" onclick="setCategory('Tutte')">Tutte</button>
-    <button class="filter-btn" onclick="setCategory('Streaming')">Streaming</button>
-    <button class="filter-btn" onclick="setCategory('Strumenti')">Strumenti</button>
-    <button class="filter-btn" onclick="setCategory('Launcher')">Launcher</button>
-    <button class="filter-btn" onclick="setCategory('Mod')">Mod</button>
   </div>
 </div>
 
@@ -360,21 +355,20 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
   <div class="form-group">
       <input type="text" id="appDesc" class="form-input" placeholder="Descrizione breve">
       <input type="text" id="appIcon" class="form-input" placeholder="URL Icona (opzionale)">
-      <select id="appCategory" class="form-input" style="cursor:pointer;">
-          <option value="Altro">Categoria: Altro</option>
-          <option value="Streaming">Streaming</option>
-          <option value="Strumenti">Strumenti</option>
-          <option value="Launcher">Launcher</option>
-          <option value="Mod">Mod</option>
-      </select>
+      <input type="text" id="appCategory" class="form-input" placeholder="Categoria (es. Streaming)" list="categoryList">
+      <datalist id="categoryList"></datalist>
   </div>
   <button onclick="addApp()" class="form-btn">Aggiungi Scheda</button>
 </div>
 
+<div style="text-align: center; margin-top: 40px;">
+  <div class="bookmark-hint">
+    🦴 <span><strong>Aggiungi ai preferiti:</strong> se hai una Fire TV, tieni premuto il tasto <strong>☰</strong> (3 lineette) sul telecomando.</span>
+  </div>
+</div>
+
 <footer>
   Centro di Controllo di Nello — Codice: <strong>9888634</strong><br>
-  <button id="login-btn" class="login-trigger" onclick="document.getElementById('login-modal').classList.add('active')">Accesso Amministratore</button>
-  <button id="logout-btn" class="login-trigger admin-only" onclick="logoutAdmin()">Esci dall'Amministrazione</button>
 </footer>
 
 <!-- Login Modal -->
@@ -459,11 +453,41 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
             ...val
         })).sort((a,b) => (a.order || 0) - (b.order || 0));
         
+        updateCategoryFilters();
         renderApps();
       } else {
          initDefaultApps(dbRef);
       }
     });
+
+    function updateCategoryFilters() {
+        const categories = new Set();
+        allAppsData.forEach(app => {
+            if(app.category) categories.add(app.category);
+        });
+        
+        const filterContainer = document.getElementById('categoryFilters');
+        filterContainer.innerHTML = `<button class="filter-btn ${currentCategory === 'Tutte' ? 'active' : ''}" onclick="setCategory('Tutte')">Tutte</button>`;
+        
+        const datalist = document.getElementById('categoryList');
+        if(datalist) datalist.innerHTML = '';
+        
+        Array.from(categories).sort().forEach(cat => {
+            // Add to filters
+            const btn = document.createElement('button');
+            btn.className = `filter-btn ${currentCategory === cat ? 'active' : ''}`;
+            btn.onclick = () => setCategory(cat);
+            btn.innerText = cat;
+            filterContainer.appendChild(btn);
+            
+            // Add to datalist
+            if(datalist) {
+                const option = document.createElement('option');
+                option.value = cat;
+                datalist.appendChild(option);
+            }
+        });
+    }
 
     window.renderApps = function() {
         const main = document.getElementById('main-content');
@@ -504,7 +528,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
       const code = document.getElementById('appCode').value;
       const desc = document.getElementById('appDesc').value;
       const icon = document.getElementById('appIcon').value;
-      const category = document.getElementById('appCategory').value;
+      const category = document.getElementById('appCategory').value || 'Altro';
       const editingKey = document.getElementById('editingKey').value;
       
       if(!name || !code) return alert("Inserisci almeno Nome e Codice!");
@@ -550,7 +574,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
         document.getElementById('appCode').value = code;
         document.getElementById('appDesc').value = desc || '';
         document.getElementById('appIcon').value = icon || '';
-        document.getElementById('appCategory').value = category || 'Altro';
+        document.getElementById('appCategory').value = category || '';
         document.getElementById('editingKey').value = key;
         
         const btn = document.querySelector('.form-btn');
@@ -565,7 +589,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
         document.getElementById('appCode').value = '';
         document.getElementById('appDesc').value = '';
         document.getElementById('appIcon').value = '';
-        document.getElementById('appCategory').value = 'Altro';
+        document.getElementById('appCategory').value = '';
         document.getElementById('editingKey').value = '';
         
         const btn = document.querySelector('.form-btn');
@@ -626,7 +650,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
 
       const controlsHtml = `
         <div class="admin-controls admin-only">
-            <button onclick="editAppFromCloud('${firebaseKey}', '${name.replace(/'/g, "\\'")}', '${code}', '${desc ? desc.replace(/'/g, "\\'") : ''}', '${iconPath ? iconPath.replace(/'/g, "\\'") : ''}', '${category || 'Altro'}')" 
+            <button onclick="editAppFromCloud('${firebaseKey}', '${name.replace(/'/g, "\\'")}', '${code}', '${desc ? desc.replace(/'/g, "\\'") : ''}', '${iconPath ? iconPath.replace(/'/g, "\\'") : ''}', '${category || ''}')" 
                     class="admin-btn btn-edit" title="Modifica">✏️</button>
             <button onclick="removeAppFromCloud('${firebaseKey}')" 
                     class="admin-btn btn-delete" title="Elimina">🗑️</button>
