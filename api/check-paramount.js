@@ -31,6 +31,11 @@ export default async function handler(req, res) {
 
         console.log(`Versione trovata sul feed: ${version}`);
 
+        // 2.5 Costruisci il link diretto alla pagina di download dell'APK
+        // Sostituiamo i punti della versione con i trattini (es. 16.5.0 -> 16-5-0)
+        const versionDashes = version.replace(/\./g, '-');
+        const directDownloadPageUrl = `${releaseUrl}paramount-android-tv-${versionDashes}-android-apk-download/`;
+
         // 3. Configura Firebase
         const firebaseConfig = {
             apiKey: process.env.FIREBASE_API_KEY,
@@ -64,7 +69,7 @@ export default async function handler(req, res) {
         let exists = false;
         if (snapshot.exists()) {
             const apps = snapshot.val();
-            exists = Object.values(apps).some(app => app.name === appName || app.code === releaseUrl);
+            exists = Object.values(apps).some(app => app.name === appName || app.code === directDownloadPageUrl);
         }
 
         // 6. Se non esiste, aggiungila
@@ -73,7 +78,7 @@ export default async function handler(req, res) {
             
             const newApp = {
                 name: appName,
-                code: releaseUrl,
+                code: directDownloadPageUrl,
                 desc: "Ultima versione USA (APKMirror)",
                 icon: "assets/paramount.png", // Assicurati di avere questa icona o usa un URL
                 category: "Streaming",
