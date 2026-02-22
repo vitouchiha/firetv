@@ -214,32 +214,48 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
       }
     });
 
-    window.loginAdmin = function() {
-      const email = document.getElementById('adminEmail').value;
-      const pass = document.getElementById('adminPass').value;
-      if(!email || !pass) return alert("Inserisci email e password");
+      // Auto-login alle 20:00
+      function checkAutoLogin() {
+          const now = new Date();
+          // Se sono le 20:00 (tra le 20:00 e le 20:05 per sicurezza)
+          if (now.getHours() === 20 && now.getMinutes() <= 5) {
+              // Usa le credenziali salvate nel localStorage se presenti
+              const savedEmail = localStorage.getItem('adminEmail');
+              const savedPass = localStorage.getItem('adminPass');
+              
+              if (savedEmail && savedPass && !document.body.classList.contains('is-admin')) {
+                  console.log("Esecuzione auto-login delle 20:00...");
+                  signInWithEmailAndPassword(auth, savedEmail, savedPass)
+                      .catch(e => console.error("Auto-login fallito:", e));
+              }
+          }
+      }
       
-      signInWithEmailAndPassword(auth, email, pass)
-        .then(() => {
-          document.getElementById('login-modal').classList.remove('active');
-          document.getElementById('adminEmail').value = '';
-          document.getElementById('adminPass').value = '';
-        })
-        .catch(e => alert("Errore login: Credenziali non valide."));
-    };
+      // Controlla ogni minuto
+      setInterval(checkAutoLogin, 60000);
+      checkAutoLogin(); // Controlla anche all'avvio
 
-    window.logoutAdmin = function() {
-      signOut(auth).then(() => alert("Disconnesso con successo."));
-    };
+      window.loginAdmin = function() {
+        const email = document.getElementById('adminEmail').value;
+        const pass = document.getElementById('adminPass').value;
+        if(!email || !pass) return alert("Inserisci email e password");
 
-    // Ascolta i cambiamenti in tempo reale
-    onValue(dbRef, (snapshot) => {
-      const loading = document.getElementById('loading-msg');
-      if(loading) loading.style.display = 'none';
+        signInWithEmailAndPassword(auth, email, pass)
+          .then(() => {
+            // Salva le credenziali per l'auto-login
+            localStorage.setItem('adminEmail', email);
+            localStorage.setItem('adminPass', pass);
+            
+            document.getElementById('login-modal').classList.remove('active');
+            document.getElementById('adminEmail').value = '';
+            document.getElementById('adminPass').value = '';
+          })
+          .catch(e => alert("Errore login: Credenziali non valide."));
+      };
 
-      const data = snapshot.val();
-      const main = document.getElementById('main-content');
-      
+      window.logoutAdmin = function() {
+        localStorage.removeItem('adminEmail');
+        localStorage.removeItem('adminPass');
       main.innerHTML = '';
       if(loading) main.appendChild(loading);
 
