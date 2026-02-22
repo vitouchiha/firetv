@@ -692,9 +692,16 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
         cards.forEach((card, index) => {
             const key = card.getAttribute('data-key');
             const type = card.getAttribute('data-type') || 'apps';
+            const icon = card.getAttribute('data-icon');
             if(key) {
                 const dbPath = type === 'software' ? `software/${key}/order` : `apps/${key}/order`;
                 updates[dbPath] = index;
+                
+                // Assicuriamoci di non perdere l'icona durante il salvataggio dell'ordine
+                if (icon) {
+                    const iconPath = type === 'software' ? `software/${key}/icon` : `apps/${key}/icon`;
+                    updates[iconPath] = icon;
+                }
             }
         });
         update(ref(db), updates).catch(e => console.error(e));
@@ -777,6 +784,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
       newCard.draggable = true;
       newCard.setAttribute('data-key', firebaseKey);
       newCard.setAttribute('data-type', type);
+      newCard.setAttribute('data-icon', iconPath || '');
       
       const finalIcon = iconPath || 'assets/nello.png';
       
