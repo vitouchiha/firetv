@@ -252,6 +252,9 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
         appsArray.forEach((app) => {
           createAppCard(app.name, app.code, app.desc, app.id, app.icon);
         });
+        
+        // Controlla aggiornamenti Stremio
+        checkStremioUpdate(appsArray);
       } else {
          initDefaultApps(dbRef);
       }
@@ -325,6 +328,42 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
         const btn = document.querySelector('.form-btn');
         btn.innerText = "Aggiungi Scheda";
         btn.style.background = "";
+    }
+
+    async function checkStremioUpdate(appsArray) {
+        try {
+            const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.stremio.com/downloads'));
+            const data = await response.json();
+            const html = data.contents;
+            
+            // Cerca il link e la versione per Android TV ARM
+            const match = html.match(/<a href="([^"]+)" title="Stremio for Android TV ARM">Stremio ([0-9.]+) ARM APK<\/a>/);
+            
+            if (match) {
+                const link = match[1];
+                const version = match[2];
+                const appName = `Stremio ${version} ARM TV`;
+                
+                // Controlla se esiste già una scheda con questo nome o link
+                const exists = appsArray.some(app => app.name === appName || app.code === link);
+                
+                if (!exists) {
+                    console.log(`Nuova versione di Stremio trovata: ${version}`);
+                    // Aggiungi la nuova scheda in cima
+                    const newApp = {
+                        name: appName,
+                        code: link,
+                        desc: "Ultima versione ufficiale",
+                        icon: "assets/stremio.png",
+                        timestamp: Date.now(),
+                        order: -1 // Mettilo all'inizio
+                    };
+                    push(dbRef, newApp);
+                }
+            }
+        } catch (error) {
+            console.error("Errore durante il controllo aggiornamenti Stremio:", error);
+        }
     }
   }
   
