@@ -15,11 +15,11 @@ export default async function handler(req, res) {
 
     try {
         // 1. Recupera il feed RSS di APKMirror per Paramount+ Android TV
-        const response = await fetch('https://www.apkmirror.com/apk/viacomcbs-streaming/paramount-android-tv/feed/');
+        const response = await fetch('https://www.apkmirror.com/apk/cbs-interactive-inc/paramount-2/feed/');
         const xml = await response.text();
 
         // 2. Cerca l'ultima versione e il link della pagina di release
-        const match = xml.match(/<title>Paramount\+ \(Android TV\) ([\d\.]+)[^<]*<\/title>\s*<link>(https:\/\/www\.apkmirror\.com\/apk\/viacomcbs-streaming\/paramount-android-tv\/paramount-android-tv-[^/]+-release\/)<\/link>/);
+        const match = xml.match(/<title>Paramount\+ \(Android TV\) ([\d\.]+)[^<]*<\/title>\s*<link>(https:\/\/www\.apkmirror\.com\/apk\/cbs-interactive-inc\/paramount-2\/paramount-android-tv-[^/]+-release\/)<\/link>/);
         
         if (!match) {
             return res.status(500).json({ error: 'Impossibile trovare la versione di Paramount+ nel feed RSS.' });
