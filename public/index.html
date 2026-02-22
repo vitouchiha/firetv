@@ -690,7 +690,11 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
         const updates = {};
         cards.forEach((card, index) => {
             const key = card.getAttribute('data-key');
-            if(key) updates['apps/' + key + '/order'] = index;
+            const type = card.getAttribute('data-type') || 'apps';
+            if(key) {
+                const dbPath = type === 'software' ? `software/${key}/order` : `apps/${key}/order`;
+                updates[dbPath] = index;
+            }
         });
         update(ref(db), updates).catch(e => console.error(e));
     };
@@ -771,6 +775,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
       newCard.className = 'card';
       newCard.draggable = true;
       newCard.setAttribute('data-key', firebaseKey);
+      newCard.setAttribute('data-type', type);
       
       const finalIcon = iconPath || 'assets/nello.png';
       
