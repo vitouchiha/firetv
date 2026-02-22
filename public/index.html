@@ -210,9 +210,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
       if (user) {
         document.body.classList.add('is-admin');
         document.getElementById('login-btn').style.display = 'none';
-        if (currentAppsArray.length > 0) {
-            checkStremioUpdate(currentAppsArray);
-        }
+        
       } else {
         document.body.classList.remove('is-admin');
         document.getElementById('login-btn').style.display = 'inline-block';
@@ -510,10 +508,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
           createAppCard(app.name, app.code, app.desc, app.id, app.icon);
         });
         
-        // Controlla aggiornamenti Stremio
-        if (document.body.classList.contains('is-admin')) {
-            checkStremioUpdate(appsArray);
-        }
+        
       } else {
          initDefaultApps(dbRef);
       }
@@ -589,44 +584,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
         btn.style.background = "";
     }
 
-    async function checkStremioUpdate(appsArray) {
-        try {
-            const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.stremio.com/downloads'));
-            const data = await response.json();
-            const html = data.contents;
-            
-            // Cerca il link e la versione per Android TV ARM
-            const match = html.match(/<a href="([^"]+)" title="Stremio for Android TV ARM">Stremio ([0-9.]+) ARM APK<\/a>/);
-            
-            if (match) {
-                const link = match[1];
-                const version = match[2];
-                const appName = `Stremio ${version} ARM TV`;
-                
-                // Controlla se esiste già una scheda con questo nome o link
-                const exists = appsArray.some(app => app.name === appName || app.code === link);
-                
-                if (!exists) {
-                    console.log(`Nuova versione di Stremio trovata: ${version}`);
-                    if (document.body.classList.contains('is-admin')) {
-                        // Aggiungi la nuova scheda in cima
-                        const newApp = {
-                            name: appName,
-                            code: link,
-                            desc: "Ultima versione ufficiale",
-                            icon: "assets/stremio.png",
-                            timestamp: Date.now(),
-                            order: -1 // Mettilo all'inizio
-                        };
-                        push(dbRef, newApp).catch(e => console.error(e));
-                    }
-                }
-            }
-        } catch (error) {
-            console.error("Errore durante il controllo aggiornamenti Stremio:", error);
-        }
     }
-  }
   
   function initDefaultApps(dbRef) {
       const defaults = [

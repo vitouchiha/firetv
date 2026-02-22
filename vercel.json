@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/check-stremio",
+      "schedule": "0 12 * * *"
+    }
+  ]
+}
