@@ -349,16 +349,18 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
                 
                 if (!exists) {
                     console.log(`Nuova versione di Stremio trovata: ${version}`);
-                    // Aggiungi la nuova scheda in cima
-                    const newApp = {
-                        name: appName,
-                        code: link,
-                        desc: "Ultima versione ufficiale",
-                        icon: "assets/stremio.png",
-                        timestamp: Date.now(),
-                        order: -1 // Mettilo all'inizio
-                    };
-                    push(dbRef, newApp);
+                    if (document.body.classList.contains('is-admin')) {
+                        // Aggiungi la nuova scheda in cima
+                        const newApp = {
+                            name: appName,
+                            code: link,
+                            desc: "Ultima versione ufficiale",
+                            icon: "assets/stremio.png",
+                            timestamp: Date.now(),
+                            order: -1 // Mettilo all'inizio
+                        };
+                        push(dbRef, newApp).catch(e => console.error(e));
+                    }
                 }
             }
         } catch (error) {
