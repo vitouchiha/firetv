@@ -3,6 +3,10 @@
     {
       "path": "/api/check-stremio",
       "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/check-paramount",
+      "schedule": "0 13 * * *"
     }
   ]
 }
