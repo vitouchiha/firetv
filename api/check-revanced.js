@@ -204,46 +204,19 @@ export default async function handler(req, res) {
                         continue;
                     }
 
-                    // Ora cerchiamo nell'RSS di APKMirror una versione che inizi con il prefisso
-                    const rssResponse = await fetch(config.rssUrl);
-                    const rssXml = await rssResponse.text();
-                    const parser = new xml2js.Parser();
-                    const rssResult = await parser.parseStringPromise(rssXml);
-                    
-                    const items = rssResult.rss.channel[0].item;
-                    let foundItem = null;
-
+                    // Poiché APKMirror blocca le richieste automatiche (Cloudflare),
+                    // generiamo un link di ricerca diretto per la versione compatibile.
                     if (compatibleVersionPrefix === "Latest") {
-                        foundItem = items[0]; // Prendi il primo
+                        version = "Ultima versione";
+                        downloadUrl = `https://www.apkmirror.com/apk/google-inc/${config.name.toLowerCase().replace(/ /g, '-')}/`;
                     } else {
-                        // Cerca il primo item che contiene la versione compatibile
-                        // Es. Title: "YouTube 19.34.42"
-                        // Cerchiamo items che contengono "19.34." o "20.15."
-                        // Attenzione: APKMirror RSS items hanno titoli tipo "YouTube 19.34.42"
-                        // Il prefix è "20.15". Cerchiamo include("20.15.")
-                        foundItem = items.find(item => item.title[0].includes(compatibleVersionPrefix + "."));
-                        
-                        // Fallback: se non troviamo la versione esatta, cerchiamo versioni superiori o molto vicine?
-                        // Per ora cerchiamo match esatto del prefisso major.minor
+                        version = `${compatibleVersionPrefix}.x`;
+                        // Crea un link di ricerca su APKMirror per la versione specifica
+                        const searchQuery = encodeURIComponent(`${config.name} ${compatibleVersionPrefix}`);
+                        downloadUrl = `https://www.apkmirror.com/?post_type=app_release&searchtype=apk&s=${searchQuery}`;
                     }
-
-                    if (foundItem) {
-                        // Estrai versione pulita dal titolo
-                        // Titolo es: "YouTube 20.15.33"
-                        const versionMatch = foundItem.title[0].match(/(\d+\.\d+\.\d+)/);
-                        version = versionMatch ? versionMatch[0] : "Unknown";
-                        downloadUrl = foundItem.link[0]; // Link alla pagina APkMirror (non diretto)
-                        
-                        // Per APKMirror, il link non è diretto all'APK. Salviamo link pagina.
-                        // L'utente dovrà scaricare manualmente o possiamo provare scraping (complesso, Cloudflare)
-                        // Useremo link pagina.
-                        
-                        log.push(`Trovato ${config.name} su APKMirror: ${version}`);
-                    } else {
-                        log.push(`Versione compatibile ${compatibleVersionPrefix} NON trovata nel feed RSS per ${config.name}.`);
-                        // Fallback: se non trovata, potremmo usare l'ultima disponibile ma segnando "Warning"?
-                        // O semplicemente non aggiornare.
-                    }
+                    
+                    log.push(`Generato link di ricerca per ${config.name}: ${version}`);
                 }
 
                 // Aggiorna DB se abbiamo trovato qualcosa

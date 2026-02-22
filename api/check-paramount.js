@@ -80,8 +80,8 @@ export default async function handler(req, res) {
             
             const newApp = {
                 name: appName,
-                code: "", // Lasciato vuoto per l'inserimento manuale del link diretto
-                desc: "Ultima versione USA (Inserisci link diretto)",
+                code: directDownloadPageUrl, // Link alla pagina di download di APKMirror
+                desc: "Scarica da APKMirror",
                 icon: "https://play-lh.googleusercontent.com/rdzfnSN_CJ0930nHwaZbD8my6X_s8xAFORVg6gvdUTiNz5qgYqObKEVIT8mOzapaUB4T=w240-h480-rw",
                 category: "Streaming",
                 timestamp: Date.now(),
