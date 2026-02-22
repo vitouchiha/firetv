@@ -23,6 +23,25 @@
   --text-muted: rgba(255, 255, 255, 0.6);
 }
 
+body.light-theme {
+  --dark-bg: #f8fafc;
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --card-border: rgba(168, 85, 247, 0.2);
+  --text: #0f172a;
+  --text-muted: #64748b;
+}
+body.light-theme::before {
+  background: linear-gradient(135deg, #f8fafc 0%, rgba(168, 85, 247, 0.1) 25%, #f8fafc 50%, rgba(34, 211, 238, 0.1) 75%, #f8fafc 100%);
+}
+body.light-theme .card-text h4 { color: #0f172a; }
+body.light-theme .bookmark-hint strong { color: #0f172a; }
+body.light-theme .icon-container { background: rgba(255,255,255,0.8); box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); }
+body.light-theme .btn { color: var(--neon-purple); background: rgba(168, 85, 247, 0.1); }
+body.light-theme .btn:hover { color: #fff; background: var(--neon-purple); }
+body.light-theme .guide-card code { background: rgba(0,0,0,0.05); color: #0f172a; }
+body.light-theme .form-input { background: rgba(255,255,255,0.8); color: #0f172a; border-color: rgba(0,0,0,0.1); }
+body.light-theme .modal-content { background: #f8fafc; }
+
 body { 
   font-family: 'Inter', sans-serif; 
   background: var(--dark-bg); 
@@ -133,6 +152,29 @@ header h1 {
 }
 .bookmark-hint strong { color: #fff; }
 
+/* Search & Filters */
+.controls-bar { max-width: 1200px; margin: 0 auto 20px; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
+.search-box { flex: 1; min-width: 250px; position: relative; }
+.search-box input { width: 100%; padding: 14px 20px 14px 45px; border-radius: 50px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text); font-family: inherit; font-size: 15px; outline: none; backdrop-filter: blur(10px); box-shadow: 0 0 20px rgba(168, 85, 247, 0.1); transition: all 0.3s; box-sizing: border-box; }
+.search-box input:focus { border-color: var(--neon-cyan); box-shadow: 0 0 30px rgba(34, 211, 238, 0.2); }
+.search-box::before { content: '🔍'; position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-size: 16px; opacity: 0.7; }
+
+.category-filters { display: flex; gap: 10px; flex-wrap: wrap; }
+.filter-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); padding: 8px 16px; border-radius: 50px; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; transition: all 0.3s; backdrop-filter: blur(5px); }
+.filter-btn:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+.filter-btn.active { background: rgba(168, 85, 247, 0.2); color: #fff; border-color: var(--neon-purple); box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
+
+/* Badges & Counters */
+.badge-new { position: absolute; top: -10px; left: -10px; background: var(--neon-pink); color: #fff; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; box-shadow: 0 0 15px var(--neon-pink); animation: pulseGlow 2s infinite; z-index: 5; letter-spacing: 1px; }
+.click-counter { position: absolute; bottom: 10px; right: 16px; font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; opacity: 0.7; }
+
+/* Theme Toggle & QR */
+.header-actions { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; }
+.icon-btn { background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; backdrop-filter: blur(10px); transition: all 0.3s; box-shadow: 0 0 15px rgba(0,0,0,0.2); }
+.icon-btn:hover { transform: scale(1.1); border-color: var(--neon-cyan); box-shadow: 0 0 20px rgba(34, 211, 238, 0.3); }
+
+#qr-modal img { width: 200px; height: 200px; border-radius: 16px; margin: 0 auto 20px; display: block; border: 4px solid #fff; box-shadow: 0 0 30px rgba(168, 85, 247, 0.4); }
+
 main { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; justify-content: center; max-width: 1200px; margin: 0 auto; }
 
 .card {
@@ -238,12 +280,29 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
 </div>
 
 <header>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" title="Cambia Tema">🌓</button>
+    <button class="icon-btn" onclick="showQR()" title="Mostra QR Code">📱</button>
+  </div>
   <img src="assets/nello.png" alt="Nello">
   <h1>Centro di Controllo</h1>
   <div class="bookmark-hint">
     🦴 <span><strong>Aggiungi ai preferiti:</strong> se hai una Fire TV, tieni premuto il tasto <strong>☰</strong> (3 lineette) sul telecomando.</span>
   </div>
 </header>
+
+<div class="controls-bar">
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Cerca un'app..." oninput="filterApps()">
+  </div>
+  <div class="category-filters" id="categoryFilters">
+    <button class="filter-btn active" onclick="setCategory('Tutte')">Tutte</button>
+    <button class="filter-btn" onclick="setCategory('Streaming')">Streaming</button>
+    <button class="filter-btn" onclick="setCategory('Strumenti')">Strumenti</button>
+    <button class="filter-btn" onclick="setCategory('Launcher')">Launcher</button>
+    <button class="filter-btn" onclick="setCategory('Mod')">Mod</button>
+  </div>
+</div>
 
 <main id="main-content">
   <div id="loading-msg" style="width:100%;text-align:center;padding:40px;color:var(--text-muted);font-size:18px;">Caricamento App...</div>
@@ -301,6 +360,13 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
   <div class="form-group">
       <input type="text" id="appDesc" class="form-input" placeholder="Descrizione breve">
       <input type="text" id="appIcon" class="form-input" placeholder="URL Icona (opzionale)">
+      <select id="appCategory" class="form-input" style="cursor:pointer;">
+          <option value="Altro">Categoria: Altro</option>
+          <option value="Streaming">Streaming</option>
+          <option value="Strumenti">Strumenti</option>
+          <option value="Launcher">Launcher</option>
+          <option value="Mod">Mod</option>
+      </select>
   </div>
   <button onclick="addApp()" class="form-btn">Aggiungi Scheda</button>
 </div>
@@ -319,6 +385,16 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
     <input type="password" id="adminPass" class="form-input" placeholder="Password">
     <button onclick="loginAdmin()" class="form-btn">Accedi</button>
     <button onclick="document.getElementById('login-modal').classList.remove('active')" class="close-modal">Annulla</button>
+  </div>
+</div>
+
+<!-- QR Modal -->
+<div id="qr-modal" class="modal">
+  <div class="modal-content" style="text-align:center;">
+    <h3>Condividi Sito</h3>
+    <img id="qr-image" src="" alt="QR Code">
+    <p style="color:var(--text-muted);font-size:14px;margin-bottom:20px;">Inquadra con la fotocamera per aprire il Centro di Controllo sul telefono.</p>
+    <button onclick="document.getElementById('qr-modal').classList.remove('active')" class="form-btn">Chiudi</button>
   </div>
 </div>
 
@@ -368,35 +444,67 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
     };
 
     // Ascolta i cambiamenti in tempo reale
+    let allAppsData = [];
+    let currentCategory = 'Tutte';
+
     onValue(dbRef, (snapshot) => {
       const loading = document.getElementById('loading-msg');
       if(loading) loading.style.display = 'none';
 
       const data = snapshot.val();
-      const main = document.getElementById('main-content');
       
-      main.innerHTML = '';
-      if(loading) main.appendChild(loading);
-
       if (data) {
-        const appsArray = Object.entries(data).map(([key, val]) => ({
+        allAppsData = Object.entries(data).map(([key, val]) => ({
             id: key, 
             ...val
         })).sort((a,b) => (a.order || 0) - (b.order || 0));
-
-        appsArray.forEach((app) => {
-          createAppCard(app.name, app.code, app.desc, app.id, app.icon);
-        });
+        
+        renderApps();
       } else {
          initDefaultApps(dbRef);
       }
     });
+
+    window.renderApps = function() {
+        const main = document.getElementById('main-content');
+        main.innerHTML = '';
+        
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        
+        const filteredApps = allAppsData.filter(app => {
+            const matchesSearch = app.name.toLowerCase().includes(searchTerm) || (app.desc && app.desc.toLowerCase().includes(searchTerm));
+            const matchesCategory = currentCategory === 'Tutte' || app.category === currentCategory;
+            return matchesSearch && matchesCategory;
+        });
+
+        if(filteredApps.length === 0) {
+            main.innerHTML = '<div style="width:100%;text-align:center;padding:40px;color:var(--text-muted);">Nessuna app trovata.</div>';
+            return;
+        }
+
+        filteredApps.forEach((app) => {
+          createAppCard(app.name, app.code, app.desc, app.id, app.icon, app.timestamp, app.clicks, app.category);
+        });
+    };
+
+    window.filterApps = function() {
+        renderApps();
+    };
+
+    window.setCategory = function(cat) {
+        currentCategory = cat;
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.innerText === cat);
+        });
+        renderApps();
+    };
 
     window.addApp = function() {
       const name = document.getElementById('appName').value;
       const code = document.getElementById('appCode').value;
       const desc = document.getElementById('appDesc').value;
       const icon = document.getElementById('appIcon').value;
+      const category = document.getElementById('appCategory').value;
       const editingKey = document.getElementById('editingKey').value;
       
       if(!name || !code) return alert("Inserisci almeno Nome e Codice!");
@@ -406,6 +514,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
         code: code,
         desc: desc,
         icon: icon,
+        category: category,
         timestamp: Date.now(),
         order: editingKey ? undefined : Date.now() 
       };
@@ -436,11 +545,12 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
       }
     };
 
-    window.editAppFromCloud = function(key, name, code, desc, icon) {
+    window.editAppFromCloud = function(key, name, code, desc, icon, category) {
         document.getElementById('appName').value = name;
         document.getElementById('appCode').value = code;
         document.getElementById('appDesc').value = desc || '';
         document.getElementById('appIcon').value = icon || '';
+        document.getElementById('appCategory').value = category || 'Altro';
         document.getElementById('editingKey').value = key;
         
         const btn = document.querySelector('.form-btn');
@@ -455,6 +565,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
         document.getElementById('appCode').value = '';
         document.getElementById('appDesc').value = '';
         document.getElementById('appIcon').value = '';
+        document.getElementById('appCategory').value = 'Altro';
         document.getElementById('editingKey').value = '';
         
         const btn = document.querySelector('.form-btn');
@@ -465,30 +576,30 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
   
   function initDefaultApps(dbRef) {
       const defaults = [
-          {name: "Xrom", code: "4537574", desc: "Custom ROM / launcher", icon: "assets/android-os.png"},
-          {name: "Vimu Craccato", code: "6768823", desc: "Vimu media player", icon: "assets/play-button-circled.png"},
-          {name: "Stremio Cell Mod VLC", code: "5578609", desc: "Stremio mobile mod", icon: "assets/stremio.png"},
-          {name: "Stremio TV Mod VLC", code: "3988093", desc: "Stremio TV mod", icon: "assets/stremio.png"},
-          {name: "Stremio Proxy MPD", code: "4095972", desc: "Proxy MPD", icon: "assets/proxy.png"},
-          {name: "Smart Tube", code: "9587028", desc: "Player YouTube-like", icon: "assets/youtube-play.png"},
-          {name: "Kodi", code: "2130077", desc: "Media center", icon: "assets/kodi.png"},
-          {name: "Veezie", code: "2895641", desc: "Player / aggregator", icon: "assets/video.png"},
-          {name: "Launcher Manager 1.15", code: "7113338", desc: "Gestore launcher", icon: "assets/launcher.png"},
-          {name: "Launcher Manager 1.04 AndroidTV", code: "2096234", desc: "", icon: "assets/tv-settings.png"},
-          {name: "Launcher Fire TV", code: "5683409", desc: "Launcher ottimizzato", icon: "assets/tv.png"},
-          {name: "Vimu Installer", code: "3188516", desc: "Installa Vimu", icon: "assets/downloads.png"},
-          {name: "Xrom Lite", code: "3271802", desc: "Versione leggera", icon: "assets/android-file.png"},
-          {name: "Xrom Nuovo", code: "2306309", desc: "Nuova versione", icon: "assets/android-new.png"},
-          {name: "Tutti i File", code: "730116", desc: "Archivio completo", icon: "assets/folder-invoices.png"},
-          {name: "Archivio completo / Altri", code: "250931", desc: "Raccolta link e file", icon: "assets/star.png"}
+          {name: "Xrom", code: "4537574", desc: "Custom ROM / launcher", icon: "assets/android-os.png", category: "Launcher"},
+          {name: "Vimu Craccato", code: "6768823", desc: "Vimu media player", icon: "assets/play-button-circled.png", category: "Streaming"},
+          {name: "Stremio Cell Mod VLC", code: "5578609", desc: "Stremio mobile mod", icon: "assets/stremio.png", category: "Mod"},
+          {name: "Stremio TV Mod VLC", code: "3988093", desc: "Stremio TV mod", icon: "assets/stremio.png", category: "Mod"},
+          {name: "Stremio Proxy MPD", code: "4095972", desc: "Proxy MPD", icon: "assets/proxy.png", category: "Strumenti"},
+          {name: "Smart Tube", code: "9587028", desc: "Player YouTube-like", icon: "assets/youtube-play.png", category: "Streaming"},
+          {name: "Kodi", code: "2130077", desc: "Media center", icon: "assets/kodi.png", category: "Streaming"},
+          {name: "Veezie", code: "2895641", desc: "Player / aggregator", icon: "assets/video.png", category: "Streaming"},
+          {name: "Launcher Manager 1.15", code: "7113338", desc: "Gestore launcher", icon: "assets/launcher.png", category: "Strumenti"},
+          {name: "Launcher Manager 1.04 AndroidTV", code: "2096234", desc: "", icon: "assets/tv-settings.png", category: "Strumenti"},
+          {name: "Launcher Fire TV", code: "5683409", desc: "Launcher ottimizzato", icon: "assets/tv.png", category: "Launcher"},
+          {name: "Vimu Installer", code: "3188516", desc: "Installa Vimu", icon: "assets/downloads.png", category: "Strumenti"},
+          {name: "Xrom Lite", code: "3271802", desc: "Versione leggera", icon: "assets/android-file.png", category: "Launcher"},
+          {name: "Xrom Nuovo", code: "2306309", desc: "Nuova versione", icon: "assets/android-new.png", category: "Launcher"},
+          {name: "Tutti i File", code: "730116", desc: "Archivio completo", icon: "assets/folder-invoices.png", category: "Altro"},
+          {name: "Archivio completo / Altri", code: "250931", desc: "Raccolta link e file", icon: "assets/star.png", category: "Altro"}
       ];
       
       defaults.forEach((app, index) => {
-          push(dbRef, {...app, order: index});
+          push(dbRef, {...app, order: index, timestamp: Date.now()});
       });
   }
 
-  function createAppCard(name, code, desc, firebaseKey, iconPath) {
+  function createAppCard(name, code, desc, firebaseKey, iconPath, timestamp, clicks, category) {
       let link = code;
       if(code.match(/^\d+$/)) {
           link = 'https://go.aftvnews.com/' + code;
@@ -505,9 +616,17 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
       const displayCode = code.startsWith('http') ? '' : code;
       const displayDesc = [displayCode, desc].filter(Boolean).join(' — ');
 
+      // Badge Nuovo (ultimi 3 giorni)
+      const isNew = timestamp && (Date.now() - timestamp < 3 * 24 * 60 * 60 * 1000);
+      const badgeHtml = isNew ? '<div class="badge-new">NUOVO</div>' : '';
+      
+      // Contatore Click
+      const clickCount = clicks || 0;
+      const clickHtml = `<div class="click-counter">⬇️ ${clickCount}</div>`;
+
       const controlsHtml = `
         <div class="admin-controls admin-only">
-            <button onclick="editAppFromCloud('${firebaseKey}', '${name.replace(/'/g, "\\'")}', '${code}', '${desc ? desc.replace(/'/g, "\\'") : ''}', '${iconPath ? iconPath.replace(/'/g, "\\'") : ''}')" 
+            <button onclick="editAppFromCloud('${firebaseKey}', '${name.replace(/'/g, "\\'")}', '${code}', '${desc ? desc.replace(/'/g, "\\'") : ''}', '${iconPath ? iconPath.replace(/'/g, "\\'") : ''}', '${category || 'Altro'}')" 
                     class="admin-btn btn-edit" title="Modifica">✏️</button>
             <button onclick="removeAppFromCloud('${firebaseKey}')" 
                     class="admin-btn btn-delete" title="Elimina">🗑️</button>
@@ -515,20 +634,33 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
       `;
       
       newCard.innerHTML = `
+        ${badgeHtml}
         ${controlsHtml}
         <div class="icon-container"><img src="${finalIcon}" onerror="this.src='assets/nello.png'" alt="${name}"></div>
         <div class="card-text">
           <h4>${name}</h4>
           <span>${displayDesc}</span>
         </div>
-        <div class="actions"><a class="btn" href="${link}">Scarica</a></div>
+        <div class="actions"><a class="btn" href="${link}" target="_blank">Scarica</a></div>
+        ${clickHtml}
       `;
       
       main.appendChild(newCard);
       
       newCard.addEventListener('click', (e)=>{ 
         if(e.target.closest('button')) return;
-        window.location.href = link; 
+        
+        // Incrementa contatore click
+        if(firebaseKey) {
+            import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ getDatabase, ref, runTransaction }) => {
+                const db = getDatabase();
+                runTransaction(ref(db, 'apps/' + firebaseKey + '/clicks'), (currentClicks) => {
+                    return (currentClicks || 0) + 1;
+                });
+            });
+        }
+        
+        window.open(link, '_blank'); 
       });
 
       newCard.addEventListener('dragstart', (e) => {
@@ -570,6 +702,21 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
           }
       }, { offset: Number.POSITIVE_INFINITY }).element;
   }
+
+  // Theme Toggle
+  window.toggleTheme = function() {
+      document.body.classList.toggle('light-theme');
+      const isLight = document.body.classList.contains('light-theme');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  };
+  if(localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme');
+
+  // QR Code
+  window.showQR = function() {
+      const url = encodeURIComponent(window.location.href);
+      document.getElementById('qr-image').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${url}&bgcolor=0a0a0f&color=a855f7`;
+      document.getElementById('qr-modal').classList.add('active');
+  };
 </script>
 </body>
 </html>
