@@ -579,6 +579,18 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
         
         try {
             const response = await fetch(`/api/search-icon?name=${encodeURIComponent(name)}`);
+            
+            if (!response.ok) {
+                // Se il server restituisce un errore (es. 404 o 500)
+                try {
+                    const errorData = await response.json();
+                    alert(errorData.error || "Nessuna icona trovata per questo nome.");
+                } catch (e) {
+                    alert("Nessuna icona trovata o errore del server.");
+                }
+                return;
+            }
+
             const data = await response.json();
             
             if (data.success && data.icon) {
@@ -588,7 +600,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
             }
         } catch (error) {
             console.error("Errore durante la ricerca dell'icona:", error);
-            alert("Errore durante la ricerca dell'icona.");
+            alert("Errore di connessione durante la ricerca dell'icona.");
         } finally {
             iconInput.placeholder = originalPlaceholder;
         }
