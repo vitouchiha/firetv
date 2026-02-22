@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, get, update, child } from "firebase/database";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import admZip from 'adm-zip';
 import xml2js from 'xml2js';
 import https from 'https';
@@ -140,11 +141,23 @@ export default async function handler(req, res) {
     // Singleton app initialization
     const app = initializeApp(firebaseConfig); // Potrebbe dare errore se già inizializzata, gestire in prod reale
     const db = getDatabase(app);
+    const auth = getAuth(app);
 
     const updates = {};
     const log = [];
 
     try {
+        // Autenticazione come admin per poter scrivere nel database
+        const adminEmail = process.env.FIREBASE_ADMIN_EMAIL;
+        const adminPassword = process.env.FIREBASE_ADMIN_PASSWORD;
+
+        if (adminEmail && adminPassword) {
+            await signInWithEmailAndPassword(auth, adminEmail, adminPassword);
+            log.push("Autenticazione Firebase riuscita.");
+        } else {
+            log.push("ATTENZIONE: Credenziali admin mancanti. La scrittura potrebbe fallire se le regole di sicurezza lo richiedono.");
+        }
+
         // 1. Scarica patches.rvp una volta sola per analizzare le versioni compatibili
         log.push("Recupero ultima release di revanced-patches...");
         const patchesRelease = await getLatestGithubRelease("ReVanced/revanced-patches");
