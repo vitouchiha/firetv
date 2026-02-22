@@ -23,7 +23,12 @@ main{display:flex;flex-wrap:wrap;gap:14px;padding:14px;justify-content:center}
 .card{
   width:340px; background:var(--card-bg); border-radius:14px; padding:12px; display:flex; gap:12px; align-items:center;
   box-shadow:0 8px 26px rgba(0,0,0,0.45); transition:transform .14s,box-shadow .14s; min-height:108px;
+  position: relative; /* Necessario per i bottoni assoluti */
+  cursor: grab; /* Indica che si può trascinare */
 }
+.card:active { cursor: grabbing; }
+.card.dragging { opacity: 0.5; border: 2px dashed var(--btn-bg); }
+
 .card:focus{outline:none;transform:translateY(-6px);box-shadow:var(--focus-shadow); border:1px solid rgba(34,197,94,0.12);}
 .icon-container{width:64px;height:64px;flex:0 0 64px;border-radius:16px;overflow:hidden;background:#0b1622;display:flex;align-items:center;justify-content:center}
 .icon-container img{width:100%;height:100%;object-fit:contain;display:block}
@@ -133,168 +138,10 @@ main{display:flex;flex-wrap:wrap;gap:14px;padding:14px;justify-content:center}
 
 <!-- cards -->
 <main role="list" aria-label="Elenco programmi" id="main-content">
-
-  <!-- Xrom -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/4537574">
-    <div class="icon-container"><img data-src="assets/android-os.png" alt="Xrom"></div>
-    <div class="card-text">
-      <h4>Xrom</h4>
-      <span>4537574 — Custom ROM / launcher</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/4537574">Scarica</a></div>
-  </div>
-
-  <!-- Vimu Craccato -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/6768823">
-    <div class="icon-container"><img data-src="assets/play-button-circled.png" alt="Vimu"></div>
-    <div class="card-text">
-      <h4>Vimu Craccato</h4>
-      <span>6768823 — Vimu media player</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/6768823">Scarica</a></div>
-  </div>
-
-  <!-- Stremio Cell Mod VLC -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/5578609">
-    <div class="icon-container"><img data-src="assets/stremio.png" alt="Stremio"></div>
-    <div class="card-text">
-      <h4>Stremio Cell Mod VLC</h4>
-      <span>5578609 — Stremio mobile mod</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/5578609">Scarica</a></div>
-  </div>
-
-  <!-- Stremio TV Mod VLC -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/3988093">
-    <div class="icon-container"><img data-src="assets/stremio.png" alt="Stremio TV"></div>
-    <div class="card-text">
-      <h4>Stremio TV Mod VLC</h4>
-      <span>3988093 — Stremio TV mod</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/3988093">Scarica</a></div>
-  </div>
-
-  <!-- Stremio Proxy MPD -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/4095972">
-    <div class="icon-container"><img data-src="assets/proxy.png" alt="Proxy"></div>
-    <div class="card-text">
-      <h4>Stremio Proxy MPD</h4>
-      <span>4095972 — Proxy MPD</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/4095972">Scarica</a></div>
-  </div>
-
-  <!-- Smart Tube -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/9587028">
-    <div class="icon-container"><img data-src="assets/youtube-play.png" alt="SmartTube"></div>
-    <div class="card-text">
-      <h4>Smart Tube</h4>
-      <span>9587028 — Player YouTube-like</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/9587028">Scarica</a></div>
-  </div>
-
-  <!-- Kodi -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/2130077">
-    <div class="icon-container"><img data-src="assets/kodi.png" alt="Kodi"></div>
-    <div class="card-text">
-      <h4>Kodi</h4>
-      <span>2130077 — Media center</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/2130077">Scarica</a></div>
-  </div>
-
-  <!-- Veezie -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/2895641">
-    <div class="icon-container"><img data-src="assets/video.png" alt="Veezie"></div>
-    <div class="card-text">
-      <h4>Veezie</h4>
-      <span>2895641 — Player / aggregator</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/2895641">Scarica</a></div>
-  </div>
-
-  <!-- Launcher Manager 1.15 -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/7113338">
-    <div class="icon-container"><img data-src="assets/launcher.png" alt="Launcher"></div>
-    <div class="card-text">
-      <h4>Launcher Manager 1.15</h4>
-      <span>7113338 — Gestore launcher</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/7113338">Scarica</a></div>
-  </div>
-
-  <!-- Launcher Manager 1.04 AndroidTV -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/2096234">
-    <div class="icon-container"><img data-src="assets/tv-settings.png" alt="Launcher TV"></div>
-    <div class="card-text">
-      <h4>Launcher Manager 1.04 (AndroidTV)</h4>
-      <span>2096234</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/2096234">Scarica</a></div>
-  </div>
-
-  <!-- Launcher Fire TV -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/5683409">
-    <div class="icon-container"><img data-src="assets/tv.png" alt="Launcher Fire TV"></div>
-    <div class="card-text">
-      <h4>Launcher Fire TV</h4>
-      <span>5683409 — Launcher ottimizzato</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/5683409">Scarica</a></div>
-  </div>
-
-  <!-- Vimu Installer -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/3188516">
-    <div class="icon-container"><img data-src="assets/downloads.png" alt="Vimu Installer"></div>
-    <div class="card-text">
-      <h4>Vimu Installer</h4>
-      <span>3188516 — Installa Vimu</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/3188516">Scarica</a></div>
-  </div>
-
-  <!-- Xrom Lite -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/3271802">
-    <div class="icon-container"><img data-src="assets/android-file.png" alt="Xrom Lite"></div>
-    <div class="card-text">
-      <h4>Xrom Lite</h4>
-      <span>3271802 — Versione leggera</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/3271802">Scarica</a></div>
-  </div>
-
-  <!-- Xrom Nuovo -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/2306309">
-    <div class="icon-container"><img data-src="assets/android-new.png" alt="Xrom Nuovo"></div>
-    <div class="card-text">
-      <h4>Xrom Nuovo</h4>
-      <span>2306309 — Nuova versione</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/2306309">Scarica</a></div>
-  </div>
-
-  <!-- Tutti i File -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/730116">
-    <div class="icon-container"><img data-src="assets/folder-invoices.png" alt="Tutti i File"></div>
-    <div class="card-text">
-      <h4>Tutti i File</h4>
-      <span>730116 — Archivio completo</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/730116">Scarica</a></div>
-  </div>
-
-  <!-- 250931 (Altri link utili / archivio) -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/250931">
-    <div class="icon-container"><img data-src="assets/star.png" alt="Archivio"></div>
-    <div class="card-text">
-      <h4>Archivio completo / Altri link utili</h4>
-      <span>250931 — Raccolta link e file</span>
-    </div>
-    <div class="actions"><a class="btn secondary" href="https://go.aftvnews.com/250931">Apri 250931</a></div>
-  </div>
-
+  <!-- Le card verranno caricate dinamicamente da Firebase/JS -->
+  <div style="width:100%;text-align:center;padding:40px;opacity:0.7" id="loading-msg">Caricamento App...</div>
 </main>
+
 
 <!-- guides column -->
 <div style="padding:14px;max-width:980px;margin:0 auto">
