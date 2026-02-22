@@ -7,8 +7,10 @@
     "build": "node build-script.js"
   },
   "dependencies": {
+    "adm-zip": "^0.5.16",
     "firebase": "^12.9.0",
     "nodemailer": "^8.0.1",
-    "serve": "^14.0.0"
+    "serve": "^14.0.0",
+    "xml2js": "^0.6.2"
   }
 }
