@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 // File da modificare
-const configPath = path.join(__dirname, 'firebase-config.js');
+const configPath = path.join(__dirname, 'public', 'firebase-config.js');
 
 try {
   // Leggi il file corrente
