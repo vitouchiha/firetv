@@ -353,15 +353,20 @@ main{display:flex;flex-wrap:wrap;gap:14px;padding:14px;justify-content:center}
 <script>
 (function(){
   document.querySelectorAll('img[data-src]').forEach(img=>{
-    img.src = img.getAttribute('data-src');
+    const src = img.getAttribute('data-src');
+    // Aggiungi logging per debugging
+    console.log('Loading image:', src);
+    
     img.onerror = () => {
-      console.error('Failed to load image:', img.src);
+      console.error('FAILED to load image:', img.src);
       const fallback = document.createElement('div');
       fallback.className = 'icon-fallback';
       fallback.innerHTML = '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">'
         + '<rect width="24" height="24" rx="4" fill="#0b1622"/><path d="M7 12h10" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round"/><path d="M7 8h10" stroke="#06b6d4" stroke-width="1.8" stroke-linecap="round"/></svg>';
       img.parentNode.replaceChild(fallback, img);
     };
+    // Imposta src DOPO aver definito l'handler di errore
+    img.src = src;
   });
 
   const cards = Array.from(document.querySelectorAll('.card'));
