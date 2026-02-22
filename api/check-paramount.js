@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, get, push } from "firebase/database";
+import { getDatabase, ref, get, push, update } from "firebase/database";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 export default async function handler(req, res) {
@@ -68,32 +68,47 @@ export default async function handler(req, res) {
         const dbRef = ref(db, 'apps');
         const snapshot = await get(dbRef);
         
-        let exists = false;
+        let existingKey = null;
+        let existingApp = null;
+
         if (snapshot.exists()) {
             const apps = snapshot.val();
-            exists = Object.values(apps).some(app => app.name === appName || app.code === directDownloadPageUrl);
+            // Cerchiamo se esiste già una scheda per Paramount+
+            for (const [key, app] of Object.entries(apps)) {
+                if (app.name && app.name.startsWith("Paramount+")) {
+                    existingKey = key;
+                    existingApp = app;
+                    break;
+                }
+            }
         }
 
-        // 6. Se non esiste, aggiungila
-        if (!exists) {
-            console.log(`Nuova versione confermata! Aggiungo ${appName} al database...`);
-            
-            const newApp = {
-                name: appName,
-                code: directDownloadPageUrl, // Link alla pagina di download di APKMirror
-                desc: "Scarica da APKMirror",
-                icon: "https://play-lh.googleusercontent.com/rdzfnSN_CJ0930nHwaZbD8my6X_s8xAFORVg6gvdUTiNz5qgYqObKEVIT8mOzapaUB4T=w240-h480-rw",
-                category: "Streaming",
-                timestamp: Date.now(),
-                order: -1 // Mettilo all'inizio
-            };
-            
-            const newAppRef = await push(dbRef, newApp);
+        const newAppData = {
+            name: appName,
+            code: directDownloadPageUrl, // Link alla pagina di download di APKMirror
+            desc: "Scarica da APKMirror",
+            icon: "https://play-lh.googleusercontent.com/rdzfnSN_CJ0930nHwaZbD8my6X_s8xAFORVg6gvdUTiNz5qgYqObKEVIT8mOzapaUB4T=w240-h480-rw",
+            category: "Streaming",
+            timestamp: Date.now()
+        };
+
+        // 6. Se non esiste, aggiungila. Se esiste, aggiornala.
+        if (!existingKey) {
+            console.log(`Nuova app! Aggiungo ${appName} al database...`);
+            newAppData.order = -1; // Mettilo all'inizio solo se è nuovo
+            await push(dbRef, newAppData);
             console.log("Scheda aggiunta con successo!");
             return res.status(200).json({ success: true, message: `Aggiunta nuova versione: ${version}` });
         } else {
-            console.log("La versione è già presente nel database.");
-            return res.status(200).json({ success: true, message: `Nessun aggiornamento. Versione attuale: ${version}` });
+            // Se esiste già, controlliamo se dobbiamo aggiornarla (es. link vuoto o versione vecchia)
+            if (existingApp.name !== appName || !existingApp.code || existingApp.code === "") {
+                console.log(`Aggiorno la scheda esistente a ${appName}...`);
+                await update(ref(db, `apps/${existingKey}`), newAppData);
+                return res.status(200).json({ success: true, message: `Aggiornata versione esistente a: ${version}` });
+            } else {
+                console.log("La versione è già presente e aggiornata nel database.");
+                return res.status(200).json({ success: true, message: `Nessun aggiornamento. Versione attuale: ${version}` });
+            }
         }
 
     } catch (error) {
