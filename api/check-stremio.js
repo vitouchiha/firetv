@@ -4,12 +4,14 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 export default async function handler(req, res) {
     // Verifica che la richiesta provenga da Vercel Cron (sicurezza)
+    /*
     if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
         // In locale o per test manuali, permettiamo l'esecuzione se non c'è CRON_SECRET
         if (process.env.VERCEL_ENV === 'production') {
             return res.status(401).json({ error: 'Non autorizzato' });
         }
     }
+    */
 
     console.log("Avvio controllo aggiornamenti Stremio...");
 
