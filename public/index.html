@@ -203,6 +203,245 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
     const auth = getAuth(app);
     const dbRef = ref(db, 'apps');
 
+    let currentAppsArray = [];
+
+    // Gestione Autenticazione
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.body.classList.add('is-admin');
+        document.getElementById('login-btn').style.display = 'none';
+        if (currentAppsArray.length > 0) {
+            checkStremioUpdate(currentAppsArray);
+        }
+      } else {
+        document.body.classList.remove('is-admin');
+        document.getElementById('login-btn').style.display = 'inline-block';
+      }
+    });
+
+    window.loginAdmin = function() {
+      const email = document.getElementById('adminEmail').value;
+      const pass = document.getElementById('adminPass').value;
+      if(!email || !pass) return alert("Inserisci email e password");
+
+      signInWithEmailAndPassword(auth, email, pass)
+        .then(() => {
+          document.getElementById('login-modal').classList.remove('active');
+          document.getElementById('adminEmail').value = '';
+          document.getElementById('adminPass').value = '';
+        })
+        .catch(e => alert("Errore login: Credenziali non valide."));
+    };
+
+    window.logoutAdmin = function() {
+      signOut(auth).then(() => alert("Disconnesso con successo."));
+    };
+
+    <!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Centro di Controllo di Nello</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg1: #0f172a; --bg2: #020617;
+  --card-bg: rgba(30, 41, 59, 0.6);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --primary: #10b981; --primary-hover: #059669;
+  --secondary: #3b82f6; --secondary-hover: #2563eb;
+  --danger: #ef4444;
+  --text: #f8fafc; --text-muted: #94a3b8;
+}
+
+body { 
+  font-family: 'Inter', sans-serif; 
+  background: linear-gradient(135deg, var(--bg1), var(--bg2)); 
+  color: var(--text); 
+  min-height: 100vh; 
+  margin: 0; 
+  padding-bottom: 50px; 
+}
+
+header { padding: 40px 20px 20px; text-align: center; }
+header img { width: 70px; height: 70px; border-radius: 50%; box-shadow: 0 0 25px rgba(16,185,129,0.4); margin-bottom: 15px; transition: transform 0.3s; }
+header img:hover { transform: scale(1.1) rotate(5deg); }
+header h1 { margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+main { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; justify-content: center; max-width: 1200px; margin: 0 auto; }
+
+.card {
+  width: 320px; background: var(--card-bg); border-radius: 20px; padding: 16px; display: flex; gap: 16px; align-items: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid var(--card-border);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative;
+}
+.card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 20px 40px rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.2); }
+
+/* Drag & Drop styles only for admin */
+body.is-admin .card { cursor: grab; }
+body.is-admin .card:active { cursor: grabbing; }
+.card.dragging { opacity: 0.4; transform: scale(0.95); border: 2px dashed var(--primary); }
+
+.icon-container { width: 64px; height: 64px; flex-shrink: 0; border-radius: 16px; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px; box-sizing: border-box; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); }
+.icon-container img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4)); }
+
+.card-text { flex: 1; min-width: 0; }
+.card-text h4 { margin: 0 0 6px 0; font-size: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-text span { font-size: 13px; color: var(--text-muted); display: block; line-height: 1.4; }
+
+.btn { background: var(--primary); color: #fff; padding: 10px 18px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.2s; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
+.btn:hover { background: var(--primary-hover); transform: scale(1.05); box-shadow: 0 6px 20px rgba(16,185,129,0.5); }
+
+/* Admin controls */
+.admin-only { display: none !important; }
+body.is-admin .admin-only { display: flex !important; }
+body.is-admin .admin-only-block { display: block !important; }
+
+.admin-controls { position: absolute; top: -12px; right: -12px; gap: 8px; z-index: 10; }
+.admin-btn { width: 34px; height: 34px; border-radius: 50%; border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); transition: transform 0.2s; }
+.admin-btn:hover { transform: scale(1.15); }
+.btn-edit { background: var(--secondary); }
+.btn-delete { background: var(--danger); }
+
+/* Add App Section */
+.add-app-section { max-width: 600px; margin: 40px auto; padding: 30px; background: var(--card-bg); border-radius: 24px; border: 1px solid var(--card-border); backdrop-filter: blur(16px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+.add-app-section h3 { margin-top: 0; color: var(--primary); text-align: center; font-size: 22px; margin-bottom: 20px; }
+.form-group { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.form-input { flex: 1; min-width: 140px; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white; font-family: inherit; outline: none; transition: all 0.2s; font-size: 14px; }
+.form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(16,185,129,0.2); }
+.form-btn { width: 100%; padding: 16px; background: var(--secondary); color: white; border: none; border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(59,130,246,0.3); }
+.form-btn:hover { background: var(--secondary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59,130,246,0.5); }
+
+/* Footer & Login */
+footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-size: 14px; }
+.login-trigger { background: none; border: none; color: var(--text-muted); cursor: pointer; text-decoration: underline; margin-top: 15px; font-family: inherit; font-size: 13px; transition: color 0.2s; }
+.login-trigger:hover { color: white; }
+
+/* Modal */
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 100; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+.modal.active { display: flex; opacity: 1; }
+.modal-content { background: var(--bg1); padding: 35px; border-radius: 24px; width: 90%; max-width: 380px; border: 1px solid var(--card-border); box-shadow: 0 25px 50px rgba(0,0,0,0.5); transform: translateY(20px); transition: transform 0.3s; }
+.modal.active .modal-content { transform: translateY(0); }
+.modal-content h3 { margin-top: 0; text-align: center; font-size: 24px; margin-bottom: 25px; }
+.modal-content .form-input { width: 100%; box-sizing: border-box; margin-bottom: 15px; }
+.modal-content .form-btn { background: var(--primary); box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
+.modal-content .form-btn:hover { background: var(--primary-hover); }
+.close-modal { background: none; border: none; color: var(--text-muted); width: 100%; margin-top: 15px; cursor: pointer; font-family: inherit; transition: color 0.2s; }
+.close-modal:hover { color: white; }
+
+/* Guides Section */
+.guides-section { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.guide-card { background: var(--card-bg); border-radius: 20px; padding: 24px; border: 1px solid var(--card-border); backdrop-filter: blur(16px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+.guide-card h3 { margin-top: 0; color: var(--primary); font-size: 18px; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.guide-card ol { margin: 0; padding-left: 20px; color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+.guide-card li { margin-bottom: 8px; }
+.guide-card a { color: var(--secondary); text-decoration: none; font-weight: 600; }
+.guide-card a:hover { text-decoration: underline; }
+.guide-card code { background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #eab308; }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="assets/nello.png" alt="Nello">
+  <h1>Centro di Controllo</h1>
+</header>
+
+<main id="main-content">
+  <div id="loading-msg" style="width:100%;text-align:center;padding:40px;color:var(--text-muted);font-size:18px;">Caricamento App...</div>
+</main>
+
+<div class="guides-section">
+  <div class="guide-card">
+    <h3>🎬 Riproduzione 4K & live — Vimu / Stremio</h3>
+    <ol>
+      <li>Installa da qui: <a href="https://go.aftvnews.com/3188516">Vimu Installer</a> (usa il pulsante sopra).</li>
+      <li>Inserisci la chiave: <code>fea63c49-a7f2-441e-be4a-e75cc36b74d8</code></li>
+      <li>In <strong>Stremio</strong>: Impostazioni ➔ Riproduzione ➔ Player predefinito ➔ seleziona <em>player esterno</em>.</li>
+      <li>Se audio non automatico in italiano: apri Vimu ➔ Options ➔ Settings ➔ Content ➔ Preferred Audio Language ➔ Italiano.</li>
+    </ol>
+  </div>
+  <div class="guide-card">
+    <h3>🇮🇹 Impostare lingua Italiana su Kodi</h3>
+    <ol>
+      <li><a href="https://go.aftvnews.com/2130077">Installa Kodi</a> (pulsante sopra).</li>
+      <li>Kodi ➔ ⚙️ Impostazioni ➔ Interfaccia ➔ Regional / Regione ➔ Language ➔ Italiano.</li>
+    </ol>
+  </div>
+  <div class="guide-card">
+    <h3>📺 Configurazione Kodi + WLTV</h3>
+    <ol>
+      <li>Home Kodi ➔ ⚙️ ➔ File ➔ Aggiungi sorgente ➔ URL: <code>http://worldlivetv.github.io/repo/</code> (Nome: WLTV Repo).</li>
+      <li>Add-ons ➔ Installa da file zip ➔ repository.wltv-1.x.x.zip ➔ Installa da repository ➔ WLTV Helper.</li>
+      <li>Home ➔ Add-ons ➔ WLTV Helper ➔ Lista ➔ Sezione TV.</li>
+    </ol>
+  </div>
+  <div class="guide-card">
+    <h3>🧪 Scienziato Pazzo su Kodi</h3>
+    <ol>
+      <li>⚙️ Home Kodi ➔ Ingranaggio</li>
+      <li>📁 File > Aggiungi sorgente ➔ 🔗 <code>http://aandroide.github.io/installer/repo/</code></li>
+      <li>📦 Add-ons ➔ 📦 Scatola ➔ Installa da file zip </li>
+      <li>📥 Installa da repository</li>
+    </ol>
+  </div>
+  <div class="guide-card">
+    <h3>📺 Avvio automatico TV (Kodi)</h3>
+    <ol>
+      <li>Impostazioni ➔ Interfaccia ➔ Altro / Skin ➔ Startup window ➔ seleziona TV ➔ Riavvia Kodi.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="add-app-section admin-only admin-only-block">
+  <h3>➕ Gestione Applicazioni</h3>
+  <div class="form-group">
+      <input type="hidden" id="editingKey">
+      <input type="text" id="appName" class="form-input" placeholder="Nome App (es. MyApp)">
+      <input type="text" id="appCode" class="form-input" placeholder="Codice / URL (es. 123456)">
+  </div>
+  <div class="form-group">
+      <input type="text" id="appDesc" class="form-input" placeholder="Descrizione breve">
+      <input type="text" id="appIcon" class="form-input" placeholder="URL Icona (opzionale)">
+  </div>
+  <button onclick="addApp()" class="form-btn">Aggiungi Scheda</button>
+</div>
+
+<footer>
+  Centro di Controllo di Nello — Codice: <strong>9888634</strong><br>
+  <button id="login-btn" class="login-trigger" onclick="document.getElementById('login-modal').classList.add('active')">Accesso Amministratore</button>
+  <button id="logout-btn" class="login-trigger admin-only" onclick="logoutAdmin()">Esci dall'Amministrazione</button>
+</footer>
+
+<!-- Login Modal -->
+<div id="login-modal" class="modal">
+  <div class="modal-content">
+    <h3>Accesso Admin</h3>
+    <input type="email" id="adminEmail" class="form-input" placeholder="Email">
+    <input type="password" id="adminPass" class="form-input" placeholder="Password">
+    <button onclick="loginAdmin()" class="form-btn">Accedi</button>
+    <button onclick="document.getElementById('login-modal').classList.remove('active')" class="close-modal">Annulla</button>
+  </div>
+</div>
+
+<!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  
+  import { firebaseConfig } from "./firebase-config.js";
+
+  if (!firebaseConfig.databaseURL || firebaseConfig.databaseURL.includes("PLACEHOLDER")) {
+    console.warn("Firebase non configurato.");
+  } else {
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+    const dbRef = ref(db, 'apps');
+
     // Gestione Autenticazione
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -264,13 +503,17 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
             id: key, 
             ...val
         })).sort((a,b) => (a.order || 0) - (b.order || 0));
+        
+        currentAppsArray = appsArray;
 
         appsArray.forEach((app) => {
           createAppCard(app.name, app.code, app.desc, app.id, app.icon);
         });
         
         // Controlla aggiornamenti Stremio
-        checkStremioUpdate(appsArray);
+        if (document.body.classList.contains('is-admin')) {
+            checkStremioUpdate(appsArray);
+        }
       } else {
          initDefaultApps(dbRef);
       }
