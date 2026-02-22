@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, update } from "firebase/database";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import https from 'https';
 
 // --- CONFIGURAZIONE APP WINDOWS ---
@@ -88,11 +89,24 @@ export default async function handler(req, res) {
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const auth = getAuth(app);
+
     // Inizializza updates con i codici statici per assicurarci che siano sempre presenti/aggiornati
     const updates = { ...staticCodes };
     const log = ["Codici statici accodati per l'aggiornamento."];
 
     try {
+        // Autenticazione come admin per poter scrivere nel database
+        const adminEmail = process.env.FIREBASE_ADMIN_EMAIL;
+        const adminPassword = process.env.FIREBASE_ADMIN_PASSWORD;
+
+        if (adminEmail && adminPassword) {
+            await signInWithEmailAndPassword(auth, adminEmail, adminPassword);
+            log.push("Autenticazione Firebase riuscita.");
+        } else {
+            log.push("ATTENZIONE: Credenziali admin mancanti. La scrittura potrebbe fallire se le regole di sicurezza lo richiedono.");
+        }
+
         for (const [key, config] of Object.entries(APPS)) {
             try {
                 log.push(`Controllo ${config.name}...`);
