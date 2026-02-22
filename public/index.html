@@ -308,7 +308,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
     <h3>🎬 Riproduzione 4K & live — Vimu / Stremio</h3>
     <ol>
       <li>Installa da qui: <a href="https://go.aftvnews.com/3188516">Vimu Installer</a> (usa il pulsante sopra).</li>
-      <li>Inserisci la chiave: <code>fea63c49-a7f2-441e-be4a-e75cc36b74d8</code></li>
+      <li>Inserisci la chiave: <code style="cursor:pointer;" onclick="copyToClipboard('fea63c49-a7f2-441e-be4a-e75cc36b74d8', event)" title="Clicca per copiare">fea63c49-a7f2-441e-be4a-e75cc36b74d8</code></li>
       <li>In <strong>Stremio</strong>: Impostazioni ➔ Riproduzione ➔ Player predefinito ➔ seleziona <em>player esterno</em>.</li>
       <li>Se audio non automatico in italiano: apri Vimu ➔ Options ➔ Settings ➔ Content ➔ Preferred Audio Language ➔ Italiano.</li>
     </ol>
@@ -323,7 +323,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
   <div class="guide-card">
     <h3>📺 Configurazione Kodi + WLTV</h3>
     <ol>
-      <li>Home Kodi ➔ ⚙️ ➔ File ➔ Aggiungi sorgente ➔ URL: <code>http://worldlivetv.github.io/repo/</code> (Nome: WLTV Repo).</li>
+      <li>Home Kodi ➔ ⚙️ ➔ File ➔ Aggiungi sorgente ➔ URL: <code style="cursor:pointer;" onclick="copyToClipboard('http://worldlivetv.github.io/repo/', event)" title="Clicca per copiare">http://worldlivetv.github.io/repo/</code> (Nome: WLTV Repo).</li>
       <li>Add-ons ➔ Installa da file zip ➔ repository.wltv-1.x.x.zip ➔ Installa da repository ➔ WLTV Helper.</li>
       <li>Home ➔ Add-ons ➔ WLTV Helper ➔ Lista ➔ Sezione TV.</li>
     </ol>
@@ -332,7 +332,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
     <h3>🧪 Scienziato Pazzo su Kodi</h3>
     <ol>
       <li>⚙️ Home Kodi ➔ Ingranaggio</li>
-      <li>📁 File > Aggiungi sorgente ➔ 🔗 <code>http://aandroide.github.io/installer/repo/</code></li>
+      <li>📁 File > Aggiungi sorgente ➔ 🔗 <code style="cursor:pointer;" onclick="copyToClipboard('http://aandroide.github.io/installer/repo/', event)" title="Clicca per copiare">http://aandroide.github.io/installer/repo/</code></li>
       <li>📦 Add-ons ➔ 📦 Scatola ➔ Installa da file zip </li>
       <li>📥 Installa da repository</li>
     </ol>
@@ -657,12 +657,8 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
         </div>
       `;
       
-      // Se è un codice numerico, mostriamo "Invia alla TV" (che copia il codice)
-      // Altrimenti mostriamo "Scarica" (che apre il link)
-      const isNumericCode = code.match(/^\d+$/);
-      const actionBtnHtml = isNumericCode 
-        ? `<button class="btn" onclick="copyToClipboard('${code}', event)" title="Copia il codice per Downloader">📺 Invia alla TV</button>`
-        : `<a class="btn" href="${link}" target="_blank">Scarica</a>`;
+      // Se è un codice numerico, mostriamo "Scarica" (che apre il link)
+      const actionBtnHtml = `<a class="btn" href="${link}" target="_blank">Scarica</a>`;
 
       newCard.innerHTML = `
         ${badgeHtml}
@@ -691,11 +687,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
             });
         }
         
-        if(isNumericCode) {
-            copyToClipboard(code, e);
-        } else {
-            window.open(link, '_blank'); 
-        }
+        window.open(link, '_blank'); 
       });
 
       newCard.addEventListener('dragstart', (e) => {
