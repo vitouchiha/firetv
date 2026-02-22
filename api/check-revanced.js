@@ -48,7 +48,8 @@ const APPS = {
         // Non abbiamo trovato un check specifico per Photos, assumiamo "Latest" o cerchiamo in GmsCoreSupportPatchKt se presente
         patchClassPath: null, 
         firebaseKey: "google_photos_revanced",
-        icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Google_Photos_icon_%282020%29.svg/240px-Google_Photos_icon_%282020%29.svg.png"
+        icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Google_Photos_icon_%282020%29.svg/240px-Google_Photos_icon_%282020%29.svg.png",
+        apkmirrorPath: "photos" // Percorso specifico su APKMirror
     }
 };
 
@@ -213,7 +214,8 @@ export default async function handler(req, res) {
                     // generiamo un link di ricerca diretto per la versione compatibile.
                     if (compatibleVersionPrefix === "Latest") {
                         version = "Ultima versione";
-                        downloadUrl = `https://www.apkmirror.com/apk/google-inc/${config.name.toLowerCase().replace(/ /g, '-')}/`;
+                        const pathName = config.apkmirrorPath || config.name.toLowerCase().replace(/ /g, '-');
+                        downloadUrl = `https://www.apkmirror.com/apk/google-inc/${pathName}/`;
                     } else {
                         version = `${compatibleVersionPrefix}.x`;
                         // Crea un link di ricerca su APKMirror per la versione specifica
