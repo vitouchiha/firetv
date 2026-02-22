@@ -439,25 +439,61 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
 
     // Ascolta i cambiamenti in tempo reale
     let allAppsData = [];
+    let appsData = {};
+    let softwareData = {};
     let currentCategory = 'Tutte';
 
-    onValue(dbRef, (snapshot) => {
+    function mergeAndRender() {
       const loading = document.getElementById('loading-msg');
       if(loading) loading.style.display = 'none';
 
-      const data = snapshot.val();
+      const appsArray = Object.entries(appsData).map(([key, val]) => ({
+          id: key, 
+          type: 'apps',
+          ...val
+      }));
+
+      const softwareArray = Object.entries(softwareData).map(([key, val]) => {
+          let description = val.version ? `v${val.version}` : '';
+          if (val.lastUpdated) {
+             const date = new Date(val.lastUpdated).toLocaleDateString();
+             description += ` (${date})`;
+          }
+          return {
+              id: key,
+              type: 'software',
+              name: val.name,
+              code: val.code,
+              desc: description,
+              category: 'Strumenti',
+              icon: 'assets/downloads.png',
+              timestamp: new Date(val.lastUpdated || Date.now()).getTime(),
+              order: Date.now() // Mettiamo in fondo o ordiniamo per data
+          };
+      });
+
+      allAppsData = [...appsArray, ...softwareArray].sort((a,b) => (a.order || 0) - (b.order || 0));
       
+      updateCategoryFilters();
+      renderApps();
+    }
+
+    onValue(dbRef, (snapshot) => {
+      const data = snapshot.val();
       if (data) {
-        allAppsData = Object.entries(data).map(([key, val]) => ({
-            id: key, 
-            ...val
-        })).sort((a,b) => (a.order || 0) - (b.order || 0));
-        
-        updateCategoryFilters();
-        renderApps();
+        appsData = data;
       } else {
          initDefaultApps(dbRef);
       }
+      mergeAndRender();
+    });
+
+    onValue(ref(db, 'software'), (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        softwareData = data;
+      }
+      mergeAndRender();
     });
 
     function updateCategoryFilters() {
@@ -507,7 +543,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
         }
 
         filteredApps.forEach((app) => {
-          createAppCard(app.name, app.code, app.desc, app.id, app.icon, app.timestamp, app.clicks, app.category);
+          createAppCard(app.name, app.code, app.desc, app.id, app.icon, app.timestamp, app.clicks, app.category, app.type);
         });
     };
 
@@ -563,13 +599,18 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
         update(ref(db), updates).catch(e => console.error(e));
     };
 
-    window.removeAppFromCloud = function(key) {
+    window.removeAppFromCloud = function(key, type) {
       if(confirm('Sei sicuro di voler eliminare definitivamente questa app?')) {
-        remove(ref(db, 'apps/' + key)).catch(e => alert("Errore eliminazione: " + e.message));
+        const dbPath = (type === 'software') ? 'software/' : 'apps/';
+        remove(ref(db, dbPath + key)).catch(e => alert("Errore eliminazione: " + e.message));
       }
     };
 
-    window.editAppFromCloud = function(key, name, code, desc, icon, category) {
+    window.editAppFromCloud = function(key, name, code, desc, icon, category, type) {
+        if (type === 'software') {
+            alert("Questa app è gestita automaticamente dagli script. Modificala tramite backend o script.");
+            return;
+        }
         document.getElementById('appName').value = name;
         document.getElementById('appCode').value = code;
         document.getElementById('appDesc').value = desc || '';
@@ -623,7 +664,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
       });
   }
 
-  function createAppCard(name, code, desc, firebaseKey, iconPath, timestamp, clicks, category) {
+  function createAppCard(name, code, desc, firebaseKey, iconPath, timestamp, clicks, category, type = 'apps') {
       let link = code;
       if(code.match(/^\d+$/)) {
           link = 'https://go.aftvnews.com/' + code;
@@ -650,9 +691,9 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
 
       const controlsHtml = `
         <div class="admin-controls admin-only">
-            <button onclick="editAppFromCloud('${firebaseKey}', '${name.replace(/'/g, "\\'")}', '${code}', '${desc ? desc.replace(/'/g, "\\'") : ''}', '${iconPath ? iconPath.replace(/'/g, "\\'") : ''}', '${category || ''}')" 
+            <button onclick="editAppFromCloud('${firebaseKey}', '${name.replace(/'/g, "\\'")}', '${code}', '${desc ? desc.replace(/'/g, "\\'") : ''}', '${iconPath ? iconPath.replace(/'/g, "\\'") : ''}', '${category || ''}', '${type}')" 
                     class="admin-btn btn-edit" title="Modifica">✏️</button>
-            <button onclick="removeAppFromCloud('${firebaseKey}')" 
+            <button onclick="removeAppFromCloud('${firebaseKey}', '${type}')" 
                     class="admin-btn btn-delete" title="Elimina">🗑️</button>
         </div>
       `;
