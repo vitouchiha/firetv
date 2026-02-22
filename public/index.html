@@ -256,14 +256,28 @@ main{display:flex;flex-wrap:wrap;gap:14px;padding:14px;justify-content:center}
     // Ascolta i cambiamenti in tempo reale (Lettura)
     onValue(dbRef, (snapshot) => {
       const data = snapshot.val();
-      // Pulisci le card dinamiche esistenti (ma mantieni quelle statiche nell'HTML se vuoi, oppure gestisci tutto da DB)
-      // Qui rimuoviamo solo quelle marcate come dynamic-card per evitare duplicati
-      document.querySelectorAll('.dynamic-card').forEach(e => e.remove());
+      const main = document.getElementById('main-content');
+      
+      // Rimuovi messaggio di caricamento
+      const loading = document.getElementById('loading-msg');
+      if(loading) loading.remove();
+
+      // Pulisci il contenuto attuale per evitare duplicati
+      main.innerHTML = ''; 
 
       if (data) {
-        Object.entries(data).forEach(([key, app]) => {
-          createAppCard(app.name, app.code, app.desc, key);
+        // Converti oggetto in array e ordina per posizione (se esiste, altirmenti usa timestamp o default)
+        const appsArray = Object.entries(data).map(([key, val]) => ({
+            id: key, 
+            ...val
+        })).sort((a,b) => (a.order || 0) - (b.order || 0));
+
+        appsArray.forEach((app) => {
+          createAppCard(app.name, app.code, app.desc, app.id, app.icon);
         });
+      } else {
+         // Se il DB è vuoto, inizializza con i dati di default (una tantum)
+         initDefaultApps(dbRef);
       }
     });
 
@@ -280,8 +294,13 @@ main{display:flex;flex-wrap:wrap;gap:14px;padding:14px;justify-content:center}
         name: name,
         code: code,
         desc: desc,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        // Se è nuova, mettila alla fine
+        order: editingKey ? undefined : Date.now() 
       };
+
+      // Rimuovi undefined
+      Object.keys(appData).forEach(key => appData[key] === undefined && delete appData[key]);
 
       if (editingKey) {
         // MODIFICA ESISTENTE
@@ -301,6 +320,19 @@ main{display:flex;flex-wrap:wrap;gap:14px;padding:14px;justify-content:center}
           alert("Errore aggiunta: " + error.message);
         });
       }
+    };
+    
+    // Funzione per salvare il nuovo ordine dopo il Drag & Drop
+    window.saveOrder = function() {
+        const cards = document.querySelectorAll('.card');
+        const updates = {};
+        cards.forEach((card, index) => {
+            const key = card.getAttribute('data-key');
+            if(key) {
+                updates['apps/' + key + '/order'] = index;
+            }
+        });
+        update(ref(db), updates).then(() => console.log('Ordine salvato'));
     };
 
     // Funzione globale per rimuovere
@@ -338,9 +370,35 @@ main{display:flex;flex-wrap:wrap;gap:14px;padding:14px;justify-content:center}
         btn.style.background = ""; // Ripristina colore
     }
   }
+  
+  // Dati iniziali per popolare il DB la prima volta
+  function initDefaultApps(dbRef) {
+      const defaults = [
+          {name: "Xrom", code: "4537574", desc: "Custom ROM / launcher", icon: "assets/android-os.png"},
+          {name: "Vimu Craccato", code: "6768823", desc: "Vimu media player", icon: "assets/play-button-circled.png"},
+          {name: "Stremio Cell Mod VLC", code: "5578609", desc: "Stremio mobile mod", icon: "assets/stremio.png"},
+          {name: "Stremio TV Mod VLC", code: "3988093", desc: "Stremio TV mod", icon: "assets/stremio.png"},
+          {name: "Stremio Proxy MPD", code: "4095972", desc: "Proxy MPD", icon: "assets/proxy.png"},
+          {name: "Smart Tube", code: "9587028", desc: "Player YouTube-like", icon: "assets/youtube-play.png"},
+          {name: "Kodi", code: "2130077", desc: "Media center", icon: "assets/kodi.png"},
+          {name: "Veezie", code: "2895641", desc: "Player / aggregator", icon: "assets/video.png"},
+          {name: "Launcher Manager 1.15", code: "7113338", desc: "Gestore launcher", icon: "assets/launcher.png"},
+          {name: "Launcher Manager 1.04 AndroidTV", code: "2096234", desc: "", icon: "assets/tv-settings.png"},
+          {name: "Launcher Fire TV", code: "5683409", desc: "Launcher ottimizzato", icon: "assets/tv.png"},
+          {name: "Vimu Installer", code: "3188516", desc: "Installa Vimu", icon: "assets/downloads.png"},
+          {name: "Xrom Lite", code: "3271802", desc: "Versione leggera", icon: "assets/android-file.png"},
+          {name: "Xrom Nuovo", code: "2306309", desc: "Nuova versione", icon: "assets/android-new.png"},
+          {name: "Tutti i File", code: "730116", desc: "Archivio completo", icon: "assets/folder-invoices.png"},
+          {name: "Archivio completo / Altri", code: "250931", desc: "Raccolta link e file", icon: "assets/star.png"}
+      ];
+      
+      defaults.forEach((app, index) => {
+          push(dbRef, {...app, order: index});
+      });
+  }
 
   // Funzione di utility per creare la card
-  function createAppCard(name, code, desc, firebaseKey) {
+  function createAppCard(name, code, desc, firebaseKey, iconPath) {
       let link = code;
       if(code.match(/^\d+$/)) {
           link = 'https://go.aftvnews.com/' + code;
@@ -348,11 +406,17 @@ main{display:flex;flex-wrap:wrap;gap:14px;padding:14px;justify-content:center}
       
       const main = document.getElementById('main-content');
       const newCard = document.createElement('div');
-      newCard.className = 'card dynamic-card'; // Classe speciale per identificarle
+      newCard.className = 'card';
+      newCard.draggable = true; // Abilita trascinamento
+      newCard.setAttribute('data-key', firebaseKey); // Chiave per salvare ordine
       newCard.tabIndex = 0;
       newCard.setAttribute('role', 'listitem');
       newCard.setAttribute('data-link', link);
       
+      // Icona: usa quella salvata o un default
+      // Se è un percorso relativo assets/, assicuriamoci che funzioni
+      const finalIcon = iconPath || 'assets/nello.png';
+
       // Stili bottoni gestione
       const btnStyle = "width:28px;height:28px;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;transition:transform 0.2s;";
       const controlsHtml = `
@@ -366,7 +430,7 @@ main{display:flex;flex-wrap:wrap;gap:14px;padding:14px;justify-content:center}
       
       newCard.innerHTML = `
         ${controlsHtml}
-        <div class="icon-container"><div class="icon-fallback" style="width:100%;height:100%;font-size:30px;color:white;display:flex;align-items:center;justify-content:center;">☁️</div></div>
+        <div class="icon-container"><img src="${finalIcon}" onerror="this.src='assets/nello.png'" alt="${name}"></div>
         <div class="card-text">
           <h4>${name}</h4>
           <span>${code} ${desc ? '— ' + desc : ''}</span>
@@ -382,6 +446,48 @@ main{display:flex;flex-wrap:wrap;gap:14px;padding:14px;justify-content:center}
         if(e.target.closest('button')) return;
         window.location.href = link; 
       });
+
+      // Eventi Drag & Drop
+      newCard.addEventListener('dragstart', () => {
+          newCard.classList.add('dragging');
+      });
+      newCard.addEventListener('dragend', () => {
+          newCard.classList.remove('dragging');
+          window.saveOrder(); // Salva ordine quando rilascio
+      });
+  }
+  
+  // Gestione Drag Over sul contenitore
+  const mainContainer = document.getElementById('main-content');
+  mainContainer.addEventListener('dragover', e => {
+      e.preventDefault();
+      const afterElement = getDragAfterElement(mainContainer, e.clientY, e.clientX);
+      const draggable = document.querySelector('.dragging');
+      if (afterElement == null) {
+          mainContainer.appendChild(draggable);
+      } else {
+          mainContainer.insertBefore(draggable, afterElement);
+      }
+  });
+
+  function getDragAfterElement(container, y, x) {
+      const draggableElements = [...container.querySelectorAll('.card:not(.dragging)')];
+
+      return draggableElements.reduce((closest, child) => {
+          const box = child.getBoundingClientRect();
+          // Calcola distanza, considerando layout a griglia (approssimato)
+          const offsetX = x - box.left - box.width / 2;
+          const offsetY = y - box.top - box.height / 2;
+          
+          // Semplificazione: distanza euclidea
+          const dist = Math.hypot(offsetX, offsetY);
+          
+          if (dist < closest.offset) {
+              return { offset: dist, element: child };
+          } else {
+              return closest;
+          }
+      }, { offset: Number.POSITIVE_INFINITY }).element;
   }
 </script>
 
