@@ -1,0 +1,12 @@
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Node modules (se usassi npm in futuro)
+node_modules/
+package-lock.json
+yarn.lock

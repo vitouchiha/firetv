@@ -1,0 +1,12 @@
+{
+  "name": "codici-firetv",
+  "version": "1.0.0",
+  "description": "Static site for FireTV codes",
+  "scripts": {
+    "start": "serve .",
+    "build": "node build-script.js"
+  },
+  "dependencies": {
+    "serve": "^14.0.0"
+  }
+}
