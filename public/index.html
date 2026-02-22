@@ -488,6 +488,9 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
       newCard.setAttribute('data-key', firebaseKey);
       
       const finalIcon = iconPath || 'assets/nello.png';
+      
+      const displayCode = code.startsWith('http') ? '' : code;
+      const displayDesc = [displayCode, desc].filter(Boolean).join(' — ');
 
       const controlsHtml = `
         <div class="admin-controls admin-only">
@@ -503,7 +506,7 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
         <div class="icon-container"><img src="${finalIcon}" onerror="this.src='assets/nello.png'" alt="${name}"></div>
         <div class="card-text">
           <h4>${name}</h4>
-          <span>${code} ${desc ? '— ' + desc : ''}</span>
+          <span>${displayDesc}</span>
         </div>
         <div class="actions"><a class="btn" href="${link}">Scarica</a></div>
       `;
