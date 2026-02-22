@@ -9,7 +9,8 @@ const APPS = {
         name: "scrcpy (Android Screen Mirroring)",
         repo: "Genymobile/scrcpy",
         assetFilter: (name) => name.includes("win64") && name.endsWith(".zip"),
-        firebaseKey: "scrcpy_win64"
+        firebaseKey: "scrcpy_win64",
+        icon: "https://raw.githubusercontent.com/Genymobile/scrcpy/master/app/data/icon.png"
     },
     wsa_builds: {
         name: "WSA Builds (Windows Subsystem for Android)",
@@ -28,7 +29,8 @@ const APPS = {
                    !lowerName.includes("magisk") && 
                    !lowerName.includes("kernelsu");
         },
-        firebaseKey: "wsa_gapps_noamazon"
+        firebaseKey: "wsa_gapps_noamazon",
+        icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Windows_Subsystem_for_Android_icon.png/240px-Windows_Subsystem_for_Android_icon.png"
     }
 };
 
@@ -38,24 +40,28 @@ const staticCodes = {
         name: "WinHubX",
         version: "Static Code",
         code: "1303984",
+        icon: "https://cdn-icons-png.flaticon.com/512/732/732221.png",
         lastUpdated: new Date().toISOString()
     },
     "software/aimods_store": {
         name: "AIMODS-Store",
         version: "Static Code",
         code: "3386029",
+        icon: "https://cdn-icons-png.flaticon.com/512/888/888856.png",
         lastUpdated: new Date().toISOString()
     },
     "software/adobe_acrobat_pro_2025": {
         name: "Adobe_Acrobat_Pro_2025",
         version: "Static Code",
         code: "7855030",
+        icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/240px-PDF_file_icon.svg.png",
         lastUpdated: new Date().toISOString()
     },
     "software/office_2016": {
         name: "Microsoft Office Professional Plus 2016",
         version: "Static Code",
         code: "2086958",
+        icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Microsoft_Office_logo_%282013%E2%80%932019%29.svg/240px-Microsoft_Office_logo_%282013%E2%80%932019%29.svg.png",
         lastUpdated: new Date().toISOString()
     }
 };
@@ -120,6 +126,7 @@ export default async function handler(req, res) {
                         name: config.name,
                         version: version,
                         code: asset.browser_download_url, // Link diretto al download
+                        icon: config.icon,
                         lastUpdated: new Date().toISOString(),
                         releaseNote: `Release: ${release.name}`
                     };

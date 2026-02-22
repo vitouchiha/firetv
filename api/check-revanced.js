@@ -12,13 +12,15 @@ const APPS = {
         name: "ReVanced Manager",
         source: "github_release",
         repo: "ReVanced/revanced-manager",
-        firebaseKey: "revanced_manager" // Chiave nel DB Firebase
+        firebaseKey: "revanced_manager", // Chiave nel DB Firebase
+        icon: "https://raw.githubusercontent.com/ReVanced/revanced-manager/main/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
     },
     gmscore: {
         name: "microG Services (GmsCore)",
         source: "github_release",
         repo: "ReVanced/GmsCore", 
-        firebaseKey: "gmscore"
+        firebaseKey: "gmscore",
+        icon: "https://raw.githubusercontent.com/ReVanced/GmsCore/main/play-services-core/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
     },
     youtube: {
         name: "YouTube",
@@ -26,7 +28,8 @@ const APPS = {
         rssUrl: "https://www.apkmirror.com/apk/google-inc/youtube/feed/",
         patchSource: "revanced_patches", // Determina la versione compatibile analizzando le patch
         patchClassPath: "app/revanced/patches/youtube/misc/playservice/VersionCheckPatchKt.class", // Classe nel .rvp per controllare la versione
-        firebaseKey: "youtube_revanced"
+        firebaseKey: "youtube_revanced",
+        icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/240px-YouTube_full-color_icon_%282017%29.svg.png"
     },
     youtube_music: {
         name: "YouTube Music",
@@ -34,7 +37,8 @@ const APPS = {
         rssUrl: "https://www.apkmirror.com/apk/google-inc/youtube-music/feed/",
         patchSource: "revanced_patches",
         patchClassPath: "app/revanced/patches/music/playservice/VersionCheckPatchKt.class",
-        firebaseKey: "youtube_music_revanced"
+        firebaseKey: "youtube_music_revanced",
+        icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Youtube_Music_icon.svg/240px-Youtube_Music_icon.svg.png"
     },
     google_photos: {
         name: "Google Photos",
@@ -43,7 +47,8 @@ const APPS = {
         patchSource: "revanced_patches", 
         // Non abbiamo trovato un check specifico per Photos, assumiamo "Latest" o cerchiamo in GmsCoreSupportPatchKt se presente
         patchClassPath: null, 
-        firebaseKey: "google_photos_revanced"
+        firebaseKey: "google_photos_revanced",
+        icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Google_Photos_icon_%282020%29.svg/240px-Google_Photos_icon_%282020%29.svg.png"
     }
 };
 
@@ -226,7 +231,8 @@ export default async function handler(req, res) {
                         version: version,
                         code: downloadUrl, // URL download o pagina
                         lastUpdated: new Date().toISOString(),
-                        compatibleWithPatches: patchesRelease.tag_name
+                        compatibleWithPatches: patchesRelease.tag_name,
+                        icon: config.icon || ""
                     };
                 }
 

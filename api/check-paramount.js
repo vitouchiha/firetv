@@ -87,7 +87,7 @@ export default async function handler(req, res) {
             name: appName,
             code: directDownloadPageUrl, // Link alla pagina di download di APKMirror
             desc: "Scarica da APKMirror",
-            icon: "https://play-lh.googleusercontent.com/rdzfnSN_CJ0930nHwaZbD8my6X_s8xAFORVg6gvdUTiNz5qgYqObKEVIT8mOzapaUB4T=w240-h480-rw",
+            icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Paramount_Plus.svg/512px-Paramount_Plus.svg.png",
             category: "Streaming",
             timestamp: Date.now()
         };
@@ -100,8 +100,8 @@ export default async function handler(req, res) {
             console.log("Scheda aggiunta con successo!");
             return res.status(200).json({ success: true, message: `Aggiunta nuova versione: ${version}` });
         } else {
-            // Se esiste già, controlliamo se dobbiamo aggiornarla (es. link vuoto o versione vecchia)
-            if (existingApp.name !== appName || !existingApp.code || existingApp.code === "") {
+            // Se esiste già, controlliamo se dobbiamo aggiornarla (es. link vuoto o versione vecchia o icona diversa)
+            if (existingApp.name !== appName || !existingApp.code || existingApp.code === "" || existingApp.icon !== newAppData.icon) {
                 console.log(`Aggiorno la scheda esistente a ${appName}...`);
                 await update(ref(db, `apps/${existingKey}`), newAppData);
                 return res.status(200).json({ success: true, message: `Aggiornata versione esistente a: ${version}` });
