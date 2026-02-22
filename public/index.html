@@ -584,10 +584,12 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
                 // Se il server restituisce un errore (es. 404 o 500)
                 try {
                     const errorData = await response.json();
-                    alert(errorData.error || "Nessuna icona trovata per questo nome.");
+                    console.warn("Ricerca icona fallita:", errorData.error);
                 } catch (e) {
-                    alert("Nessuna icona trovata o errore del server.");
+                    console.warn("Nessuna icona trovata o errore del server.");
                 }
+                // Ripristiniamo il placeholder ma NON blocchiamo l'utente
+                iconInput.placeholder = "URL Icona (opzionale)";
                 return;
             }
 
@@ -596,13 +598,12 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
             if (data.success && data.icon) {
                 iconInput.value = data.icon;
             } else {
-                alert("Nessuna icona trovata per questo nome.");
+                console.warn("Nessuna icona trovata per questo nome.");
             }
         } catch (error) {
             console.error("Errore durante la ricerca dell'icona:", error);
-            alert("Errore di connessione durante la ricerca dell'icona.");
         } finally {
-            iconInput.placeholder = originalPlaceholder;
+            iconInput.placeholder = "URL Icona (opzionale)";
         }
     };
 
