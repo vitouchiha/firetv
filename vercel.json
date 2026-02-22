@@ -11,6 +11,10 @@
     {
       "path": "/api/check-revanced",
       "schedule": "0 14 * * *"
+    },
+    {
+      "path": "/api/check-windows-tools",
+      "schedule": "0 15 * * *"
     }
   ]
 }
