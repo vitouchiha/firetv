@@ -850,7 +850,7 @@ body.lite-mode .active {
         document.getElementById('appCategory').value = category || '';
         document.getElementById('editingKey').value = key;
         
-        const btn = document.querySelector('.form-btn');
+        const btn = document.getElementById('submitAppBtn');
         btn.innerText = "💾 Salva Modifiche";
         btn.style.background = "#eab308";
         
@@ -865,7 +865,7 @@ body.lite-mode .active {
         document.getElementById('appCategory').value = '';
         document.getElementById('editingKey').value = '';
         
-        const btn = document.querySelector('.form-btn');
+        const btn = document.getElementById('submitAppBtn');
         btn.innerText = "Aggiungi Scheda";
         btn.style.background = "";
     }
