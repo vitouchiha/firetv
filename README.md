@@ -1,6 +1,6 @@
 # 🏴‍☠️ Il Covo di Nello
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Fire%20TV%20%7C%20Android%20TV%20%7C%20Web-orange.svg)
 ![Tech Stack](https://img.shields.io/badge/tech-HTML%20%7C%20CSS%20%7C%20JS%20%7C%20Firebase%20%7C%20Vercel-purple.svg)
@@ -21,6 +21,8 @@ Il progetto include un'interfaccia utente accattivante, un pannello di amministr
 - 🌓 **Tema Dinamico**: Supporto per Tema Chiaro e Tema Scuro con salvataggio delle preferenze.
 - 📱 **Condivisione Rapida**: Generatore di QR Code integrato per passare rapidamente dalla TV allo smartphone.
 - 📖 **Guide Integrate**: Sezione dedicata a tutorial passo-passo per la configurazione di app come Kodi, Stremio e Vimu.
+- 🔔 **Sistema di Notifiche**: Modal con pulsante campana nell'header. Gli utenti possono iscriversi via email e **scegliere esattamente quali app** monitorare. Le notifiche vengono inviate tramite [Resend](https://resend.com) solo per le app selezionate.
+- 📣 **Canale Telegram**: Pulsante rapido di accesso al canale Telegram per aggiornamenti in tempo reale.
 
 ---
 
@@ -40,8 +42,13 @@ Il progetto include un'interfaccia utente accattivante, un pannello di amministr
 📦 Codici Firetv
  ┣ 📂 api/                  # Vercel Serverless Functions & Cron Jobs
  ┃ ┣ 📜 check-paramount.js  # Scraper automatico per Paramount+
+ ┃ ┣ 📜 check-revanced.js   # Scraper per ReVanced
+ ┃ ┣ 📜 check-stremio.js    # Scraper per Stremio
+ ┃ ┣ 📜 check-windows-tools.js # Scraper strumenti Windows
  ┃ ┣ 📜 cron-troypoint.js   # Scraper per app da Troypoint
- ┃ ┗ 📜 ...
+ ┃ ┣ 📜 subscribe.js        # API iscrizione notifiche email (per singola app)
+ ┃ ┗ 📂 utils/
+ ┃   ┗ 📜 notify.js         # Invio notifiche Telegram + Email filtrate per app
  ┣ 📂 public/               # File statici (se configurato)
  ┣ 📂 assets/               # Immagini, icone e loghi
  ┣ 📜 index.html            # Entry point principale dell'applicazione
@@ -84,6 +91,14 @@ FIREBASE_APP_ID=tuo_app_id
 FIREBASE_ADMIN_EMAIL=tua_email_admin
 FIREBASE_ADMIN_PASSWORD=tua_password_admin
 CRON_SECRET=tuo_segreto_per_vercel_cron
+
+# Notifiche Email (Resend)
+RESEND_API_KEY=tua_api_key_resend
+RESEND_SENDER_EMAIL=noreply@tuodominio.com
+
+# Notifiche Telegram (opzionale)
+TELEGRAM_BOT_TOKEN=token_bot_telegram
+TELEGRAM_CHAT_ID=id_canale_o_chat
 ```
 
 ### 4. Avvia il server di sviluppo (Vercel CLI)
@@ -99,11 +114,39 @@ Il progetto sarà disponibile all'indirizzo `http://localhost:3000`.
 
 Il progetto sfrutta **Vercel Cron Jobs** per mantenere il catalogo aggiornato senza intervento manuale. Le configurazioni si trovano nel file `vercel.json`.
 
-Esempio di automazione (`api/check-paramount.js`):
-1. Effettua lo scraping della pagina di download (es. Uptodown).
-2. Estrae l'ultima versione disponibile.
-3. Effettua il login su Firebase come Admin.
-4. Aggiorna il Realtime Database con il nuovo link APK diretto e la nuova versione.
+| Cron Job | Orario (UTC) | Funzione |
+|---|---|---|
+| `check-paramount` | 13:00 | Scraping Uptodown per Paramount+ |
+| `check-revanced` | 14:00 | Nuove release ReVanced da GitHub |
+| `check-stremio` | 12:00 | Ultima versione Stremio |
+| `check-windows-tools` | 15:00 | Strumenti Windows |
+| `cron-troypoint` | 08:00 | App selezionate da Troypoint |
+
+Quando viene rilevato un aggiornamento, il sistema:
+1. Aggiorna il Realtime Database Firebase con la nuova versione.
+2. Invia una **notifica Telegram** al canale configurato.
+3. Invia una **notifica email** (via Resend) esclusivamente agli iscritti che hanno selezionato quell'app specifica.
+
+---
+
+## 🔔 Sistema di Notifiche
+
+Gli utenti possono iscriversi alle notifiche direttamente dal sito cliccando il pulsante 🔔 nell'header.
+
+**Flusso utente:**
+1. Inserisce la propria email.
+2. Seleziona le app che vuole monitorare (o tutte con un click).
+3. Riceve aggiornamenti via email solo per le app scelte.
+
+I dati vengono salvati su Firebase nel nodo `subscribers` con la struttura:
+```json
+{
+  "email": "utente@esempio.com",
+  "apps": ["Paramount+ 16.5.0 US TV", "Stremio"],
+  "timestamp": 1234567890
+}
+```
+Se `apps` contiene `"all"`, l'utente riceve notifiche per ogni app aggiornata.
 
 ---
 
