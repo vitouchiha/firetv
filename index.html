@@ -921,7 +921,7 @@ body.lite-mode .active {
       
       const finalIcon = iconPath || 'assets/nello.png';
       
-      const displayCode = code.startsWith('http') ? '' : code;
+      const displayCode = (code.startsWith('http') || code.startsWith('/')) ? '' : code;
       const displayDesc = [displayCode, desc].filter(Boolean).join(' — ');
 
       // Badge Nuovo (ultimi 3 giorni)
