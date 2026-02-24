@@ -285,52 +285,134 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
 .guide-card a:hover { text-decoration: underline; text-shadow: 0 0 10px rgba(236, 72, 153, 0.5); }
 /* --- LITE MODE (Fire TV / Low End) --- */
 body.lite-mode {
-    background: #111 !important;
+    background: var(--dark-bg) !important;
 }
-body.lite-mode::before, 
-body.lite-mode::after, 
+body.lite-mode::before,
+body.lite-mode::after,
 body.lite-mode .particles {
     display: none !important;
 }
-body.lite-mode * {
-    backdrop-filter: none !important;
-    box-shadow: none !important;
-    text-shadow: none !important;
-    animation: none !important;
-    transition: none !important;
-}
-body.lite-mode .card, 
-body.lite-mode .guide-card, 
+/* Disabilita animazioni e trasparenze pesanti su elementi specifici */
+body.lite-mode .card,
+body.lite-mode .guide-card,
 body.lite-mode .add-app-section,
 body.lite-mode .modal-content,
 body.lite-mode .search-box input,
 body.lite-mode .filter-btn,
-body.lite-mode .icon-btn {
-    background: #1a1a1a !important;
-    border: 1px solid #333 !important;
-}
-body.lite-mode .card:hover {
-    transform: none !important;
-    border-color: var(--neon-cyan) !important;
-}
+body.lite-mode .icon-btn,
+body.lite-mode .bookmark-hint,
 body.lite-mode .btn,
 body.lite-mode .form-btn,
-body.lite-mode .admin-btn {
-    background: #333 !important;
-    border: 1px solid #555 !important;
-}
-body.lite-mode header img {
+body.lite-mode .form-input,
+body.lite-mode .admin-btn,
+body.lite-mode .app-chip {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    animation: none !important;
+    transition: none !important;
     box-shadow: none !important;
-    border: 3px solid var(--neon-purple) !important;
 }
-body.lite-mode h1 {
+body.lite-mode .particle { display: none !important; }
+body.lite-mode header h1 {
+    animation: none !important;
+}
+/* Sfondi solidi per le card */
+body.lite-mode .card,
+body.lite-mode .guide-card,
+body.lite-mode .add-app-section,
+body.lite-mode .bookmark-hint {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+}
+body.lite-mode .modal-content {
+    background: var(--dark-bg) !important;
+    border: 1px solid var(--card-border) !important;
+}
+body.lite-mode .search-box input {
+    background: var(--card-bg) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--card-border) !important;
+}
+body.lite-mode .filter-btn {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    color: var(--text-muted) !important;
+}
+body.lite-mode .filter-btn.active {
+    background: rgba(168, 85, 247, 0.25) !important;
+    border-color: var(--neon-purple) !important;
+    color: #fff !important;
+}
+body.lite-mode .icon-btn {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+    color: var(--text) !important;
+}
+body.lite-mode .btn {
+    background: rgba(168, 85, 247, 0.2) !important;
+    border: 1px solid rgba(168, 85, 247, 0.5) !important;
+    color: #fff !important;
+}
+body.lite-mode .form-btn {
+    background: rgba(34, 211, 238, 0.15) !important;
+    border: 1px solid rgba(34, 211, 238, 0.4) !important;
+    color: #fff !important;
+}
+body.lite-mode .form-input {
+    background: rgba(0,0,0,0.3) !important;
+    color: var(--text) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+}
+body.lite-mode .card-text h4 { color: var(--text) !important; }
+body.lite-mode .card-text span { color: var(--text-muted) !important; }
+body.lite-mode .card:hover { transform: none !important; border-color: var(--neon-purple) !important; }
+body.lite-mode header img {
+    border: 3px solid var(--neon-purple) !important;
+    background: none !important;
+}
+body.lite-mode header h1 {
     background: none !important;
     -webkit-text-fill-color: var(--neon-purple) !important;
     color: var(--neon-purple) !important;
+    filter: none !important;
 }
-body.lite-mode .active {
-    background: var(--neon-purple) !important;
-    color: white !important;
+body.lite-mode .app-chip {
+    background: rgba(255,255,255,0.04) !important;
+    border: 1px solid var(--card-border) !important;
+}
+body.lite-mode .app-chip.selected {
+    background: rgba(168,85,247,0.2) !important;
+    border-color: var(--neon-purple) !important;
+}
+/* Lite + Tema Chiaro */
+body.lite-mode.light-theme .card,
+body.lite-mode.light-theme .guide-card,
+body.lite-mode.light-theme .add-app-section,
+body.lite-mode.light-theme .bookmark-hint {
+    background: rgba(255,255,255,0.95) !important;
+    border: 1px solid rgba(168,85,247,0.2) !important;
+}
+body.lite-mode.light-theme .filter-btn {
+    background: rgba(0,0,0,0.04) !important;
+    border: 1px solid rgba(0,0,0,0.12) !important;
+    color: #64748b !important;
+}
+body.lite-mode.light-theme .filter-btn.active {
+    background: rgba(168, 85, 247, 0.15) !important;
+    color: var(--neon-purple) !important;
+}
+body.lite-mode.light-theme .form-input {
+    background: rgba(255,255,255,0.9) !important;
+    color: #0f172a !important;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+}
+body.lite-mode.light-theme .icon-btn {
+    background: rgba(255,255,255,0.9) !important;
+    color: #0f172a !important;
+}
+body.lite-mode.light-theme .search-box input {
+    background: rgba(255,255,255,0.9) !important;
+    color: #0f172a !important;
 }
 </style>
 </head>
