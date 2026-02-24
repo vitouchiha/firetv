@@ -16,27 +16,25 @@ export default async function handler(req, res) {
     console.log("Avvio controllo aggiornamenti Paramount+...");
 
     try {
-        // 1. Recupera il feed RSS di APKMirror per Paramount+ Android TV
-        const response = await fetch('https://www.apkmirror.com/apk/cbs-interactive-inc/paramount-2/feed/');
-        const xml = await response.text();
+        // 1. Recupera la pagina di Uptodown per Paramount+
+        const response = await fetch('https://com-cbs-ott.en.uptodown.com/android');
+        const html = await response.text();
 
-        // 2. Cerca l'ultima versione e il link della pagina di release
-        const match = xml.match(/<title>Paramount\+ \(Android TV\) ([\d\.]+)[^<]*<\/title>\s*<link>(https:\/\/www\.apkmirror\.com\/apk\/cbs-interactive-inc\/paramount-2\/paramount-android-tv-[^/]+-release\/)<\/link>/);
+        // 2. Cerca l'ultima versione
+        const versionMatch = html.match(/<span class="version">([^<]+)<\/span>/) || html.match(/"softwareVersion":"([^"]+)"/);
         
-        if (!match) {
-            return res.status(500).json({ error: 'Impossibile trovare la versione di Paramount+ nel feed RSS.' });
+        if (!versionMatch) {
+            return res.status(500).json({ error: 'Impossibile trovare la versione di Paramount+ su Uptodown.' });
         }
 
-        const version = match[1];
-        const releaseUrl = match[2];
+        const version = versionMatch[1];
         const appName = `Paramount+ ${version} US TV`;
 
-        console.log(`Versione trovata sul feed: ${version}`);
+        console.log(`Versione trovata su Uptodown: ${version}`);
 
         // 2.5 Costruisci il link diretto alla pagina di download dell'APK
-        // Sostituiamo i punti della versione con i trattini (es. 16.5.0 -> 16-5-0)
-        const versionDashes = version.replace(/\./g, '-');
-        const directDownloadPageUrl = `${releaseUrl}paramount-android-tv-${versionDashes}-android-apk-download/`;
+        // L'utente vuole scaricare da Uptodown perché fornisce APK diretti senza App Bundle
+        const directDownloadPageUrl = `https://com-cbs-ott.en.uptodown.com/android/download`;
 
         // 3. Configura Firebase
         const firebaseConfig = {
@@ -85,8 +83,8 @@ export default async function handler(req, res) {
 
         const newAppData = {
             name: appName,
-            code: directDownloadPageUrl, // Link alla pagina di download di APKMirror
-            desc: "Scarica da APKMirror",
+            code: directDownloadPageUrl, // Link alla pagina di download di Uptodown
+            desc: "Scarica da Uptodown (APK diretto)",
             icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Paramount_Plus.svg/512px-Paramount_Plus.svg.png",
             category: "Streaming",
             timestamp: Date.now()
