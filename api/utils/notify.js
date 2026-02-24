@@ -73,7 +73,15 @@ export async function sendEmailNotification(appName, version, downloadUrl, iconU
         }
 
         const subscribers = snapshot.val();
-        const emails = Object.values(subscribers).map(sub => sub.email);
+        
+        // Filtra chi è iscritto a 'all' o specificamente a questa app
+        const appNameLower = appName.toLowerCase();
+        const emails = Object.values(subscribers)
+            .filter(sub => {
+                if (!sub.apps || sub.apps.includes('all')) return true; // vecchi iscritti + "tutte"
+                return sub.apps.some(a => a.toLowerCase() === appNameLower);
+            })
+            .map(sub => sub.email);
 
         if (emails.length === 0) return;
 

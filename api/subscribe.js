@@ -7,11 +7,14 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Metodo non consentito' });
     }
 
-    const { email } = req.body;
+    const { email, apps } = req.body;
 
     if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
         return res.status(400).json({ error: 'Email non valida' });
     }
+
+    // apps deve essere un array non vuoto oppure omesso (default: 'all')
+    const appsToSave = Array.isArray(apps) && apps.length > 0 ? apps : ['all'];
 
     try {
         const firebaseConfig = {
@@ -46,6 +49,7 @@ export default async function handler(req, res) {
         // Aggiungi nuovo iscritto
         await push(subscribersRef, {
             email: email,
+            apps: appsToSave,
             timestamp: Date.now()
         });
 

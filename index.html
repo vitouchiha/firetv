@@ -252,6 +252,28 @@ footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-si
 .close-modal { background: none; border: none; color: var(--text-muted); width: 100%; margin-top: 15px; cursor: pointer; font-family: inherit; transition: color 0.2s; }
 .close-modal:hover { color: white; }
 
+/* Notify Modal */
+.notify-step { display: none; }
+.notify-step.active { display: block; }
+.notify-step > h3 { margin-top: 0; text-align: center; font-family: 'Orbitron', sans-serif; color: var(--neon-purple); font-size: 20px; margin-bottom: 8px; }
+.notify-step > p { color: var(--text-muted); font-size: 13px; text-align: center; margin-bottom: 16px; }
+#notify-modal .modal-content { max-width: 480px; }
+.app-chips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; max-height: 280px; overflow-y: auto; margin-bottom: 14px; padding: 2px 2px 6px; scrollbar-width: thin; scrollbar-color: var(--neon-purple) transparent; }
+.app-chips-grid::-webkit-scrollbar { width: 4px; }
+.app-chips-grid::-webkit-scrollbar-thumb { background: var(--neon-purple); border-radius: 2px; }
+.app-chip { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 10px 6px 8px; border-radius: 12px; border: 1px solid var(--card-border); background: rgba(255,255,255,0.03); cursor: pointer; transition: all 0.2s; text-align: center; position: relative; user-select: none; }
+.app-chip:hover { border-color: rgba(168,85,247,0.5); background: rgba(168,85,247,0.08); }
+.app-chip.selected { border-color: var(--neon-purple); background: rgba(168,85,247,0.18); box-shadow: 0 0 10px rgba(168,85,247,0.25); }
+.app-chip img { width: 34px; height: 34px; border-radius: 8px; object-fit: contain; }
+.app-chip .chip-name { font-size: 10px; color: var(--text-muted); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.app-chip.selected .chip-name { color: #ddd; }
+.app-chip .chip-check { position: absolute; top: 5px; right: 5px; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.2); background: transparent; font-size: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.app-chip.selected .chip-check { background: var(--neon-purple); border-color: var(--neon-purple); color: white; }
+.notify-select-all { width: 100%; padding: 8px 12px; background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.25); color: var(--neon-cyan); border-radius: 8px; cursor: pointer; font-size: 12px; margin-bottom: 10px; transition: all 0.2s; font-family: inherit; }
+.notify-select-all:hover { background: rgba(34,211,238,0.15); }
+#notify-bell-btn { position: relative; }
+#notify-bell-btn.has-subs::after { content: ''; position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--neon-pink); border-radius: 50%; box-shadow: 0 0 6px var(--neon-pink); }
+
 /* Guides Section */
 .guides-section { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
 .guide-card { background: var(--card-bg); border-radius: 24px; padding: 24px; border: 1px solid var(--card-border); backdrop-filter: blur(20px); box-shadow: 0 0 30px rgba(168, 85, 247, 0.1); transition: all 0.4s ease; }
@@ -339,6 +361,7 @@ body.lite-mode .active {
     <button class="icon-btn" onclick="toggleLiteMode()" title="Modalità Grafica Veloce">⚡</button>
     <button class="icon-btn" onclick="toggleTheme()" title="Cambia Tema">🌓</button>
     <button class="icon-btn" onclick="showQR()" title="Mostra QR Code">📱</button>
+    <button id="notify-bell-btn" class="icon-btn" onclick="openNotifyModal()" title="Notifiche Aggiornamenti App">🔔</button>
     <button id="login-btn" class="icon-btn" onclick="document.getElementById('login-modal').classList.add('active')" title="Accesso Amministratore">🔐</button>
     <button id="logout-btn" class="icon-btn admin-only" onclick="logoutAdmin()" title="Esci dall'Amministrazione">🔓</button>
   </div>
@@ -359,32 +382,7 @@ body.lite-mode .active {
   <div id="loading-msg" style="width:100%;text-align:center;padding:40px;color:var(--text-muted);font-size:18px;">Caricamento App...</div>
 </main>
 
-<div class="notification-section" style="max-width: 800px; margin: 40px auto; padding: 30px; background: var(--card-bg); border-radius: 24px; border: 1px solid var(--card-border); backdrop-filter: blur(20px); box-shadow: 0 0 40px rgba(168, 85, 247, 0.2); text-align: center;">
-  <h3 style="margin-top: 0; color: var(--neon-purple); font-size: 24px; margin-bottom: 15px; font-family: 'Orbitron', sans-serif;">🔔 Rimani Aggiornato</h3>
-  <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 15px;">Ricevi una notifica quando le app vengono aggiornate a una nuova versione!</p>
-  
-  <div style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
-    <!-- Telegram Button -->
-    <a href="https://t.me/ilcovodinello" target="_blank" class="btn" style="display: inline-flex; align-items: center; gap: 10px; background: rgba(0, 136, 204, 0.2); border-color: rgba(0, 136, 204, 0.5); box-shadow: 0 0 15px rgba(0, 136, 204, 0.2); font-size: 16px; padding: 12px 24px;">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M21.1406 2.85938C21.1406 2.85938 22.6406 2.25 22.5 3.75C22.4531 4.35938 21.9375 7.64062 21.4219 11.25L19.6406 20.25C19.6406 20.25 19.5 21.375 18.6562 21.5625C17.8125 21.75 16.4531 20.8125 16.1719 20.625C15.9375 20.4375 11.8594 17.8125 10.4062 16.5C10.0312 16.1719 9.5625 15.5156 10.4531 14.7188C12.4688 12.8438 14.8125 10.6406 15.8906 9.5625C16.3594 9.09375 16.8281 7.875 14.6719 9.32812C11.625 11.3906 7.5 14.1562 7.5 14.1562C7.5 14.1562 6.5625 14.7188 4.82812 14.1562C2.67188 13.5 1.5 13.125 1.5 13.125C1.5 13.125 0.5625 12.5625 1.96875 12C5.34375 10.5 11.3438 8 15.1875 6.42188C16.9688 5.67188 21.1406 3.9375 21.1406 2.85938Z" fill="#0088CC"/>
-      </svg>
-      Unisciti al Canale Telegram
-    </a>
 
-    <div style="width: 100%; max-width: 400px; position: relative; margin: 10px 0;">
-      <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: rgba(255,255,255,0.1); z-index: 1;"></div>
-      <span style="position: relative; z-index: 2; background: var(--card-bg); padding: 0 15px; color: var(--text-muted); font-size: 14px;">OPPURE</span>
-    </div>
-
-    <!-- Email Form -->
-    <form id="subscribe-form" style="width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 12px;">
-      <input type="email" id="subscribe-email" class="form-input" placeholder="La tua email..." required style="text-align: center;">
-      <button type="submit" class="form-btn" id="subscribe-btn">Iscriviti via Email</button>
-      <div id="subscribe-msg" style="font-size: 14px; margin-top: 5px; display: none;"></div>
-    </form>
-  </div>
-</div>
 
 <div class="guides-section">
   <div class="guide-card">
@@ -459,6 +457,49 @@ body.lite-mode .active {
 <footer>
   Il Covo di Nello — Codice: <strong>9888634</strong><br>
 </footer>
+
+<!-- Notify Modal -->
+<div id="notify-modal" class="modal">
+  <div class="modal-content">
+    <!-- Step 1: Email -->
+    <div id="notify-step-1" class="notify-step active">
+      <h3>🔔 Notifiche App</h3>
+      <p>Inserisci la tua email e scegli per quali app ricevere gli aggiornamenti.</p>
+      <input type="email" id="notify-email" class="form-input" placeholder="La tua email..." autocomplete="email" style="width:100%;box-sizing:border-box;margin-bottom:10px;">
+      <button onclick="goToNotifyStep2()" class="form-btn">Scegli le App →</button>
+      <div style="margin:14px 0;position:relative;text-align:center;">
+        <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(255,255,255,0.08);"></div>
+        <span style="position:relative;background:var(--dark-bg);padding:0 12px;color:var(--text-muted);font-size:12px;">OPPURE</span>
+      </div>
+      <a href="https://t.me/ilcovodinello" target="_blank" class="form-btn" style="display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;background:rgba(0,136,204,0.12);border-color:rgba(0,136,204,0.35);color:#fff;box-shadow:none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#0088CC"><path d="M21.1406 2.85938C21.1406 2.85938 22.6406 2.25 22.5 3.75C22.4531 4.35938 21.9375 7.64062 21.4219 11.25L19.6406 20.25C19.6406 20.25 19.5 21.375 18.6562 21.5625C17.8125 21.75 16.4531 20.8125 16.1719 20.625C15.9375 20.4375 11.8594 17.8125 10.4062 16.5C10.0312 16.1719 9.5625 15.5156 10.4531 14.7188C12.4688 12.8438 14.8125 10.6406 15.8906 9.5625C16.3594 9.09375 16.8281 7.875 14.6719 9.32812C11.625 11.3906 7.5 14.1562 7.5 14.1562C7.5 14.1562 6.5625 14.7188 4.82812 14.1562C2.67188 13.5 1.5 13.125 1.5 13.125C1.5 13.125 0.5625 12.5625 1.96875 12C5.34375 10.5 11.3438 8 15.1875 6.42188C16.9688 5.67188 21.1406 3.9375 21.1406 2.85938Z"/></svg>
+        Canale Telegram
+      </a>
+      <button onclick="document.getElementById('notify-modal').classList.remove('active')" class="close-modal">Chiudi</button>
+    </div>
+    <!-- Step 2: App selection -->
+    <div id="notify-step-2" class="notify-step">
+      <h3>📱 Scegli le App</h3>
+      <p>Seleziona le app per cui vuoi ricevere notifiche di aggiornamento.</p>
+      <button class="notify-select-all" onclick="toggleSelectAllApps()">☑️ Seleziona / Deseleziona Tutte</button>
+      <div id="app-chips-container" class="app-chips-grid">
+        <div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:20px;">Caricamento…</div>
+      </div>
+      <button onclick="submitNotifySubscription()" class="form-btn" id="notify-submit-btn">✅ Iscriviti</button>
+      <div id="notify-step2-msg" style="font-size:13px;margin-top:8px;display:none;text-align:center;"></div>
+      <button onclick="goToNotifyStep1()" class="close-modal" style="margin-top:8px;">← Indietro</button>
+    </div>
+    <!-- Step 3: Success -->
+    <div id="notify-step-3" class="notify-step">
+      <div style="text-align:center;padding:20px 0;">
+        <div style="font-size:56px;margin-bottom:16px;">✅</div>
+        <h3 style="color:var(--neon-cyan);font-family:'Orbitron',sans-serif;font-size:18px;margin-bottom:10px;">Iscritto!</h3>
+        <p id="notify-success-msg" style="color:var(--text-muted);font-size:13px;"></p>
+        <button onclick="document.getElementById('notify-modal').classList.remove('active')" class="form-btn" style="margin-top:16px;">Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Login Modal -->
 <div id="login-modal" class="modal">
@@ -562,6 +603,7 @@ body.lite-mode .active {
       });
 
       allAppsData = [...appsArray, ...softwareArray].sort((a,b) => (a.order || 0) - (b.order || 0));
+      window._notifyAppsData = allAppsData; // Expose for notify modal
       
       updateCategoryFilters();
       renderApps();
@@ -1068,47 +1110,109 @@ body.lite-mode .active {
       });
   };
 
-  // Gestione Iscrizione Email
-  document.getElementById('subscribe-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const emailInput = document.getElementById('subscribe-email');
-      const btn = document.getElementById('subscribe-btn');
-      const msg = document.getElementById('subscribe-msg');
-      const email = emailInput.value.trim();
+  // ---- Notify Modal ----
+  window.openNotifyModal = function() {
+    goToNotifyStep1();
+    document.getElementById('notify-modal').classList.add('active');
+  };
 
-      if (!email) return;
+  window.goToNotifyStep1 = function() {
+    document.querySelectorAll('.notify-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('notify-step-1').classList.add('active');
+  };
 
-      btn.disabled = true;
-      btn.innerHTML = 'Iscrizione in corso...';
-      msg.style.display = 'none';
+  window.goToNotifyStep2 = function() {
+    const emailEl = document.getElementById('notify-email');
+    const email = emailEl.value.trim();
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      emailEl.focus();
+      emailEl.style.borderColor = '#ef4444';
+      setTimeout(() => emailEl.style.borderColor = '', 2000);
+      return;
+    }
+    document.querySelectorAll('.notify-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('notify-step-2').classList.add('active');
+    renderAppChips();
+  };
 
-      try {
-          const response = await fetch('/api/subscribe', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email })
-          });
+  function renderAppChips() {
+    const container = document.getElementById('app-chips-container');
+    const apps = window._notifyAppsData || [];
+    if (apps.length === 0) {
+      container.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:20px;">Caricamento app…</div>';
+      setTimeout(renderAppChips, 800);
+      return;
+    }
+    container.innerHTML = '';
+    apps.forEach(app => {
+      const chip = document.createElement('div');
+      chip.className = 'app-chip';
+      chip.dataset.name = app.name;
+      const icon = app.icon || 'assets/nello.png';
+      chip.innerHTML = `
+        <div class="chip-check">✓</div>
+        <img src="${icon}" onerror="this.src='assets/nello.png'" alt="${app.name}">
+        <span class="chip-name">${app.name}</span>
+      `;
+      chip.addEventListener('click', () => chip.classList.toggle('selected'));
+      container.appendChild(chip);
+    });
+  }
 
-          const data = await response.json();
+  window.toggleSelectAllApps = function() {
+    const chips = document.querySelectorAll('#app-chips-container .app-chip');
+    const allSelected = [...chips].every(c => c.classList.contains('selected'));
+    chips.forEach(c => allSelected ? c.classList.remove('selected') : c.classList.add('selected'));
+  };
 
-          if (response.ok) {
-              msg.style.color = '#10b981'; // Green
-              msg.innerText = '✅ Iscrizione completata con successo!';
-              emailInput.value = '';
-          } else {
-              msg.style.color = '#ef4444'; // Red
-              msg.innerText = '❌ ' + (data.error || 'Errore durante l\'iscrizione.');
-          }
-      } catch (error) {
-          console.error('Errore iscrizione:', error);
-          msg.style.color = '#ef4444';
-          msg.innerText = '❌ Errore di connessione. Riprova più tardi.';
-      } finally {
-          msg.style.display = 'block';
-          btn.disabled = false;
-          btn.innerHTML = 'Iscriviti via Email';
+  window.submitNotifySubscription = async function() {
+    const email = document.getElementById('notify-email').value.trim();
+    const selectedChips = document.querySelectorAll('#app-chips-container .app-chip.selected');
+    const btn = document.getElementById('notify-submit-btn');
+    const msg = document.getElementById('notify-step2-msg');
+
+    if (selectedChips.length === 0) {
+      msg.style.color = '#ef4444';
+      msg.innerText = '⚠️ Seleziona almeno un\'app.';
+      msg.style.display = 'block';
+      return;
+    }
+
+    const allApps = window._notifyAppsData || [];
+    const selectedApps = selectedChips.length === allApps.length
+      ? ['all']
+      : [...selectedChips].map(c => c.dataset.name);
+
+    btn.disabled = true;
+    btn.innerHTML = 'Iscrizione in corso…';
+    msg.style.display = 'none';
+
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, apps: selectedApps })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        const label = selectedApps[0] === 'all' ? 'tutte le app' : `${selectedApps.length} app`;
+        document.getElementById('notify-success-msg').innerText = `Riceverai notifiche per ${label}.`;
+        document.querySelectorAll('.notify-step').forEach(s => s.classList.remove('active'));
+        document.getElementById('notify-step-3').classList.add('active');
+      } else {
+        msg.style.color = '#ef4444';
+        msg.innerText = '❌ ' + (data.error || 'Errore durante l\'iscrizione.');
+        msg.style.display = 'block';
       }
-  });
+    } catch (e) {
+      msg.style.color = '#ef4444';
+      msg.innerText = '❌ Errore di connessione. Riprova più tardi.';
+      msg.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '✅ Iscriviti';
+    }
+  };
 </script>
 </body>
 </html>
