@@ -1,6 +1,6 @@
 # 🏴‍☠️ Il Covo di Nello
 
-![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Fire%20TV%20%7C%20Android%20TV%20%7C%20Web-orange.svg)
 ![Tech Stack](https://img.shields.io/badge/tech-HTML%20%7C%20CSS%20%7C%20JS%20%7C%20Firebase%20%7C%20Vercel-purple.svg)
@@ -167,3 +167,21 @@ Questo progetto è distribuito sotto licenza MIT. Sentiti libero di utilizzarlo,
 
 ---
 *Sviluppato con ❤️ per la community di Fire TV e Android TV.*
+
+---
+
+## 📝 Changelog
+
+### v1.2.0 — 24 Febbraio 2026
+- **Fix**: `api/subscribe.js` riscritto con Firebase REST API al posto dell'SDK client — eliminato errore 500 su iscrizione notifiche in ambienti serverless Vercel.
+- **Fix**: Rimosso override hardcoded APKCombo in `createAppCard()` — il tasto "Scarica" di Paramount+ ora usa correttamente `/api/download-paramount` (APK diretto da Uptodown).
+- **Fix**: Gestione duplicati iscrizioni via email refactored — usa chiave sanitizzata nel nodo Firebase invece di query `orderBy` (che richiedeva indici non configurati).
+
+### v1.1.0
+- Sistema notifiche email con selezione app granulare.
+- Pulsante campana 🔔 in header, modal iscrizione con griglia app.
+- Integrazione Resend per invio email filtrato per app.
+- Cron job Troypoint per aggiornamento automatico catalogo.
+
+### v1.0.0
+- Release iniziale: catalogo APK Fire TV, pannello admin, Firebase Realtime DB, cron job Paramount+/Stremio/ReVanced.

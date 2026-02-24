@@ -980,14 +980,6 @@ body.lite-mode.light-theme .search-box input {
 
   function createAppCard(name, code, desc, firebaseKey, iconPath, timestamp, clicks, category, type = 'apps') {
       let link = code;
-      // Override manuale temporaneo per Paramount+
-      if (name && name.startsWith("Paramount+")) {
-          // Se il link punta ad APKMirror, lo forziamo ad APKCombo
-          // Rimuovi il controllo code.includes("apkmirror.com") per forzare SEMPRE
-          // perché Firebase potrebbe avere un link vecchio o diverso
-          link = "https://apkcombo.com/it/paramount-plus/com.cbs.ott/download/apk";
-          console.log("Forcing Paramount+ link to: ", link);
-      }
 
       if(code.match(/^\d+$/)) {
           link = 'https://go.aftvnews.com/' + code;
