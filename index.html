@@ -1051,7 +1051,8 @@ body.lite-mode .active {
       if (savedMode) {
           if (savedMode === 'lite') {
               document.body.classList.add('lite-mode');
-        document.getElementById('lite-mode-banner').style.display = 'none'; // Hide banner if mode is active
+              document.getElementById('lite-mode-banner').style.display = 'none';
+          }
       }
       
       const ua = navigator.userAgent;
