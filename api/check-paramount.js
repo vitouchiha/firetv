@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, get, push, update } from "firebase/database";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { notifyAll } from "./utils/notify.js";
 
 export default async function handler(req, res) {
     // Verifica che la richiesta provenga da Vercel Cron (sicurezza)
@@ -33,8 +34,9 @@ export default async function handler(req, res) {
         console.log(`Versione trovata su Uptodown: ${version}`);
 
         // 2.5 Costruisci il link diretto alla pagina di download dell'APK
-        // L'utente vuole scaricare da Uptodown perché fornisce APK diretti senza App Bundle
-        const directDownloadPageUrl = `https://com-cbs-ott.en.uptodown.com/android/download`;
+        // L'utente vuole scaricare direttamente l'APK. Poiché i link di Uptodown scadono,
+        // usiamo un nostro endpoint API che genera il link fresco al momento del click.
+        const directDownloadPageUrl = `/api/download-paramount`;
 
         // 3. Configura Firebase
         const firebaseConfig = {
@@ -84,7 +86,7 @@ export default async function handler(req, res) {
         const newAppData = {
             name: appName,
             code: directDownloadPageUrl, // Link alla pagina di download di Uptodown
-            desc: "Scarica da Uptodown (APK diretto)",
+            desc: `Versione ${version} — APK diretto Uptodown`,
             icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Paramount_Plus.svg/512px-Paramount_Plus.svg.png",
             category: "Streaming",
             timestamp: Date.now()
@@ -96,12 +98,20 @@ export default async function handler(req, res) {
             newAppData.order = -1; // Mettilo all'inizio solo se è nuovo
             await push(dbRef, newAppData);
             console.log("Scheda aggiunta con successo!");
+            
+            // Invia notifiche Telegram e Email
+            await notifyAll(appName, version, `https://${req.headers.host || 'tuosito.com'}${directDownloadPageUrl}`);
+            
             return res.status(200).json({ success: true, message: `Aggiunta nuova versione: ${version}` });
         } else {
-            // Se esiste già, controlliamo se dobbiamo aggiornarla (es. link vuoto o versione vecchia o icona diversa)
-            if (existingApp.name !== appName || !existingApp.code || existingApp.code === "" || existingApp.icon !== newAppData.icon) {
+            // Se esiste già, controlliamo se dobbiamo aggiornarla (es. link diverso, versione vecchia o icona diversa)
+            if (existingApp.name !== appName || existingApp.code !== directDownloadPageUrl || existingApp.desc !== newAppData.desc) {
                 console.log(`Aggiorno la scheda esistente a ${appName}...`);
                 await update(ref(db, `apps/${existingKey}`), newAppData);
+                
+                // Invia notifiche Telegram e Email
+                await notifyAll(appName, version, `https://${req.headers.host || 'tuosito.com'}${directDownloadPageUrl}`);
+                
                 return res.status(200).json({ success: true, message: `Aggiornata versione esistente a: ${version}` });
             } else {
                 console.log("La versione è già presente e aggiornata nel database.");

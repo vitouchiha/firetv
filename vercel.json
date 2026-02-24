@@ -15,6 +15,10 @@
     {
       "path": "/api/check-windows-tools",
       "schedule": "0 15 * * *"
+    },
+    {
+      "path": "/api/cron-troypoint",
+      "schedule": "0 8 * * *" 
     }
   ]
 }

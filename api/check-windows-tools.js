@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, update } from "firebase/database";
+import { getDatabase, ref, update, get } from "firebase/database";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import https from 'https';
+import { notifyAll } from "./utils/notify.js";
 
 // --- CONFIGURAZIONE APP WINDOWS ---
 const APPS = {
@@ -122,15 +123,30 @@ export default async function handler(req, res) {
                 const asset = release.assets.find(a => config.assetFilter(a.name));
 
                 if (asset) {
-                    updates[`software/${config.firebaseKey}`] = {
-                        name: config.name,
-                        version: version,
-                        code: asset.browser_download_url, // Link diretto al download
-                        icon: config.icon,
-                        lastUpdated: new Date().toISOString(),
-                        releaseNote: `Release: ${release.name}`
-                    };
-                    log.push(`Trovato aggiornamento per ${config.name}: ${version} -> ${asset.name}`);
+                    // Controlla la versione attuale nel database
+                    const dbRef = ref(db, `software/${config.firebaseKey}`);
+                    const snapshot = await get(dbRef);
+                    let currentVersion = null;
+                    if (snapshot.exists()) {
+                        currentVersion = snapshot.val().version;
+                    }
+
+                    if (currentVersion !== version) {
+                        updates[`software/${config.firebaseKey}`] = {
+                            name: config.name,
+                            version: version,
+                            code: asset.browser_download_url, // Link diretto al download
+                            icon: config.icon,
+                            lastUpdated: new Date().toISOString(),
+                            releaseNote: `Release: ${release.name}`
+                        };
+                        log.push(`Trovato aggiornamento per ${config.name}: ${version} -> ${asset.name}`);
+                        
+                        // Invia notifica
+                        await notifyAll(config.name, version, asset.browser_download_url, config.icon);
+                    } else {
+                        log.push(`Nessun aggiornamento per ${config.name}. Versione attuale: ${version}`);
+                    }
                 } else {
                     log.push(`Nessun asset corrispondente trovato per ${config.name} nella release ${version}`);
                     // Logghiamo i nomi degli asset disponibili per debug

@@ -3,336 +3,432 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Centro di Controllo di Nello</title>
+<title>Il Covo di Nello</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg1:#071126; --bg2:#0b1f2f;
-  --card-bg: rgba(255,255,255,0.04);
-  --btn-bg:#22c55e; --btn-bg2:#06b6d4;
-  --text:#e6f0f8; --focus-shadow: 0 0 40px rgba(34,197,94,0.16);
+:root {
+  --neon-purple: #a855f7;
+  --neon-cyan: #22d3ee;
+  --neon-pink: #ec4899;
+  --neon-blue: #3b82f6;
+  --dark-bg: #0a0a0f;
+  --card-bg: rgba(15, 15, 25, 0.8);
+  --card-border: rgba(168, 85, 247, 0.3);
+  --primary: var(--neon-purple);
+  --primary-hover: #9333ea;
+  --secondary: var(--neon-cyan);
+  --secondary-hover: #0891b2;
+  --danger: #ef4444;
+  --text: #f0f0f0;
+  --text-muted: rgba(255, 255, 255, 0.6);
 }
-html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));font-family:Arial,Helvetica,sans-serif;color:var(--text);}
-header{padding:18px;text-align:center}
-header h1{margin:0;font-size:24px;display:flex;align-items:center;justify-content:center;gap:10px}
-header img{width:36px;height:36px;border-radius:50%}
 
-/* Main */
-main{display:flex;flex-wrap:wrap;gap:14px;padding:14px;justify-content:center}
-
-/* Card */
-.card{
-  width:340px; background:var(--card-bg); border-radius:14px; padding:12px; display:flex; gap:12px; align-items:center;
-  box-shadow:0 8px 26px rgba(0,0,0,0.45); transition:transform .14s,box-shadow .14s; min-height:108px;
+body.light-theme {
+  --dark-bg: #f8fafc;
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --card-border: rgba(168, 85, 247, 0.2);
+  --text: #0f172a;
+  --text-muted: #64748b;
 }
-.card:focus{outline:none;transform:translateY(-6px);box-shadow:var(--focus-shadow); border:1px solid rgba(34,197,94,0.12);}
-.icon-container{width:64px;height:64px;flex:0 0 64px;border-radius:16px;overflow:hidden;background:#0b1622;display:flex;align-items:center;justify-content:center}
-.icon-container img{width:100%;height:100%;object-fit:contain;display:block}
-.icon-fallback{width:64px;height:64px;display:flex;align-items:center;justify-content:center;border-radius:16px;background:linear-gradient(135deg,#0b1622,#041022);}
+body.light-theme::before {
+  background: linear-gradient(135deg, #f8fafc 0%, rgba(168, 85, 247, 0.1) 25%, #f8fafc 50%, rgba(34, 211, 238, 0.1) 75%, #f8fafc 100%);
+}
+body.light-theme .card-text h4 { color: #0f172a; }
+body.light-theme .bookmark-hint strong { color: #0f172a; }
+body.light-theme .icon-container { background: rgba(255,255,255,0.8); box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); }
+body.light-theme .btn { color: var(--neon-purple); background: rgba(168, 85, 247, 0.1); }
+body.light-theme .btn:hover { color: #fff; background: var(--neon-purple); }
+body.light-theme .guide-card code { background: rgba(0,0,0,0.05); color: #0f172a; }
+body.light-theme .form-input { background: rgba(255,255,255,0.8); color: #0f172a; border-color: rgba(0,0,0,0.1); }
+body.light-theme .modal-content { background: #f8fafc; }
 
-/* text */
-.card-text{flex:1;min-width:0}
-.card-text h4{margin:0;font-size:15px;line-height:1.25;word-wrap:break-word;white-space:normal}
-.card-text span{display:block;margin-top:6px;font-size:12px;opacity:.85}
+body { 
+  font-family: 'Inter', sans-serif; 
+  background: var(--dark-bg); 
+  color: var(--text); 
+  min-height: 100vh; 
+  margin: 0; 
+  padding-bottom: 50px; 
+  position: relative;
+  z-index: 1;
+}
 
-/* actions */
-.actions{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
-.btn{background:var(--btn-bg);color:#041814;padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:800}
-.btn.secondary{background:var(--btn-bg2);color:#021517}
-
-/* wide single button for 250931 */
-.big{width:100%;display:flex;justify-content:center;margin-top:8px}
-.big .btn{width:86%;max-width:700px;padding:14px 20px;font-size:16px;}
-
-/* guides column */
-.aside{width:360px;max-height:78vh;overflow:auto;padding:12px;border-radius:12px;background:rgba(255,255,255,0.03);box-shadow:0 8px 26px rgba(0,0,0,0.45);font-size:14px;line-height:1.45; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05);}
-.aside h3{margin:6px 0;font-size:16px; color: var(--btn-bg2);}
-
-/* Add App Form Section */
-.add-app-section {
+/* Animated gradient background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  max-width: 600px;
-  margin: 30px auto;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.05); /* slightly lighter than card-bg */
-  border-radius: 16px;
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  text-align: center;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(135deg,
+          var(--dark-bg) 0%,
+          rgba(88, 28, 135, 0.3) 25%,
+          var(--dark-bg) 50%,
+          rgba(6, 78, 97, 0.3) 75%,
+          var(--dark-bg) 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
 }
 
-.add-app-section h3 {
-  margin-top: 0;
-  color: var(--btn-bg);
-  margin-bottom: 15px;
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background:
+      radial-gradient(ellipse at 20% 20%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(34, 211, 238, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(236, 72, 153, 0.1) 0%, transparent 60%);
+  animation: pulseGlow 8s ease-in-out infinite;
 }
 
-.form-group {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
-.form-input {
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.2);
-    background: rgba(0,0,0,0.3);
-    color: var(--text);
-    outline: none;
-    flex: 1;
-    min-width: 150px;
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
 }
 
-.form-btn {
-    padding: 10px 20px;
-    background: var(--btn-bg2);
-    color: #021517;
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+/* Floating particles */
+.particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: -1; }
+.particle { position: absolute; width: 4px; height: 4px; background: var(--neon-purple); border-radius: 50%; box-shadow: 0 0 10px var(--neon-purple), 0 0 20px var(--neon-purple); animation: floatUp 20s linear infinite; opacity: 0.6; }
+.particle:nth-child(2n) { background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
+.particle:nth-child(3n) { background: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
+.particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 25s; }
+.particle:nth-child(2) { left: 20%; animation-delay: 2s; animation-duration: 20s; }
+.particle:nth-child(3) { left: 30%; animation-delay: 4s; animation-duration: 28s; }
+.particle:nth-child(4) { left: 40%; animation-delay: 1s; animation-duration: 22s; }
+.particle:nth-child(5) { left: 50%; animation-delay: 3s; animation-duration: 18s; }
+.particle:nth-child(6) { left: 60%; animation-delay: 5s; animation-duration: 24s; }
+.particle:nth-child(7) { left: 70%; animation-delay: 2s; animation-duration: 26s; }
+.particle:nth-child(8) { left: 80%; animation-delay: 0s; animation-duration: 21s; }
+.particle:nth-child(9) { left: 90%; animation-delay: 4s; animation-duration: 23s; }
+
+@keyframes floatUp {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.6; }
+  100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
 }
 
-.form-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+header { padding: 40px 20px 20px; text-align: center; }
+header img { 
+  width: 80px; height: 80px; border-radius: 50%; 
+  border: 2px solid transparent;
+  background: linear-gradient(var(--dark-bg), var(--dark-bg)) padding-box,
+              linear-gradient(135deg, var(--neon-purple), var(--neon-cyan)) border-box;
+  box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+  margin-bottom: 15px; transition: all 0.4s ease; 
+}
+header img:hover { transform: scale(1.05); box-shadow: 0 0 50px rgba(34, 211, 238, 0.5); }
+header h1 { 
+  margin: 0; font-family: 'Orbitron', sans-serif; font-size: 32px; font-weight: 900; letter-spacing: 2px; 
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-cyan), var(--neon-pink));
+  background-size: 200% 200%;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: textGlow 3s ease infinite; text-transform: uppercase;
 }
 
-/* Animations */
-@keyframes fadeIn { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
-.card { animation: fadeIn 0.5s ease-out backwards; }
-/* Stagger animation for cards */
-.card:nth-child(1) { animation-delay: 0.05s; }
-.card:nth-child(2) { animation-delay: 0.1s; }
-.card:nth-child(3) { animation-delay: 0.15s; }
-.card:nth-child(4) { animation-delay: 0.2s; }
-.card:nth-child(5) { animation-delay: 0.25s; }
-.card:nth-child(6) { animation-delay: 0.3s; }
-.card:nth-child(7) { animation-delay: 0.35s; }
-.card:nth-child(8) { animation-delay: 0.4s; }
-.card:nth-child(9) { animation-delay: 0.45s; }
-.card:nth-child(10) { animation-delay: 0.5s; }
+@keyframes textGlow {
+  0%, 100% { background-position: 0% 50%; filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.5)); }
+  50% { background-position: 100% 50%; filter: drop-shadow(0 0 20px rgba(34, 211, 238, 0.5)); }
+}
 
-/* responsive */
-@media (max-width:980px){
-  .aside{width:100%}
-  main{gap:12px}
+.bookmark-hint {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: rgba(34, 211, 238, 0.1); border: 1px solid rgba(34, 211, 238, 0.3);
+  padding: 10px 20px; border-radius: 50px; margin-top: 20px;
+  font-size: 14px; color: var(--neon-cyan);
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.1);
+  backdrop-filter: blur(10px);
+}
+.bookmark-hint strong { color: #fff; }
+
+/* Search & Filters */
+.controls-bar { max-width: 1200px; margin: 0 auto 20px; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
+.search-box { flex: 1; min-width: 250px; position: relative; }
+.search-box input { width: 100%; padding: 14px 20px 14px 45px; border-radius: 50px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text); font-family: inherit; font-size: 15px; outline: none; backdrop-filter: blur(10px); box-shadow: 0 0 20px rgba(168, 85, 247, 0.1); transition: all 0.3s; box-sizing: border-box; }
+.search-box input:focus { border-color: var(--neon-cyan); box-shadow: 0 0 30px rgba(34, 211, 238, 0.2); }
+.search-box::before { content: '🔍'; position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-size: 16px; opacity: 0.7; }
+
+.category-filters { display: flex; gap: 10px; flex-wrap: wrap; }
+.filter-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); padding: 8px 16px; border-radius: 50px; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; transition: all 0.3s; backdrop-filter: blur(5px); }
+.filter-btn:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+.filter-btn.active { background: rgba(168, 85, 247, 0.2); color: #fff; border-color: var(--neon-purple); box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
+
+/* Badges & Counters */
+.badge-new { position: absolute; top: -10px; left: -10px; background: var(--neon-pink); color: #fff; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; box-shadow: 0 0 15px var(--neon-pink); animation: pulseGlow 2s infinite; z-index: 5; letter-spacing: 1px; }
+.click-counter { position: absolute; bottom: 10px; right: 16px; font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; opacity: 0.7; }
+
+/* Theme Toggle & QR */
+.header-actions { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; }
+.icon-btn { background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; backdrop-filter: blur(10px); transition: all 0.3s; box-shadow: 0 0 15px rgba(0,0,0,0.2); }
+.icon-btn:hover { transform: scale(1.1); border-color: var(--neon-cyan); box-shadow: 0 0 20px rgba(34, 211, 238, 0.3); }
+
+#qr-modal img { width: 200px; height: 200px; border-radius: 16px; margin: 0 auto 20px; display: block; border: 4px solid #fff; box-shadow: 0 0 30px rgba(168, 85, 247, 0.4); }
+
+main { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; justify-content: center; max-width: 1200px; margin: 0 auto; }
+
+.card {
+  width: 320px; background: var(--card-bg); border-radius: 24px; padding: 16px; display: flex; gap: 16px; align-items: center;
+  box-shadow: 0 0 40px rgba(168, 85, 247, 0.2), 0 0 80px rgba(34, 211, 238, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1); 
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  transition: all 0.4s ease; position: relative;
+}
+.card:hover { 
+  transform: translateY(-6px) scale(1.02); 
+  border-color: rgba(34, 211, 238, 0.5);
+  box-shadow: 0 0 60px rgba(168, 85, 247, 0.3), 0 0 100px rgba(34, 211, 238, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15); 
+}
+
+/* Drag & Drop styles only for admin */
+body.is-admin .card { cursor: grab; }
+body.is-admin .card:active { cursor: grabbing; }
+.card.dragging { opacity: 0.4; transform: scale(0.95); border: 2px dashed var(--neon-cyan); }
+
+.icon-container { width: 64px; height: 64px; flex-shrink: 0; border-radius: 16px; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px; box-sizing: border-box; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); }
+.icon-container img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4)); }
+
+.card-text { flex: 1; min-width: 0; }
+.card-text h4 { margin: 0 0 6px 0; font-size: 15px; font-weight: 600; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: #fff; }
+.card-text span { font-size: 13px; color: var(--text-muted); display: block; line-height: 1.4; }
+
+.btn { 
+  background: rgba(168, 85, 247, 0.2); color: #fff; padding: 10px 18px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease; 
+  border: 1px solid rgba(168, 85, 247, 0.5); cursor: pointer; 
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.2); 
+}
+.btn:hover { 
+  background: rgba(168, 85, 247, 0.4); transform: scale(1.05); 
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.4); 
+  border-color: var(--neon-purple);
+}
+
+/* Admin controls */
+.admin-only { display: none !important; }
+body.is-admin .admin-only { display: flex !important; }
+body.is-admin .admin-only-block { display: block !important; }
+
+.admin-controls { position: absolute; top: -12px; right: -12px; gap: 8px; z-index: 10; }
+.admin-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); transition: all 0.3s ease; }
+.admin-btn:hover { transform: scale(1.15); }
+.btn-edit { background: rgba(34, 211, 238, 0.3); border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(34, 211, 238, 0.3); }
+.btn-edit:hover { background: rgba(34, 211, 238, 0.6); box-shadow: 0 0 25px rgba(34, 211, 238, 0.5); }
+.btn-delete { background: rgba(236, 72, 153, 0.3); border-color: var(--neon-pink); box-shadow: 0 0 15px rgba(236, 72, 153, 0.3); }
+.btn-delete:hover { background: rgba(236, 72, 153, 0.6); box-shadow: 0 0 25px rgba(236, 72, 153, 0.5); }
+
+/* Add App Section */
+.add-app-section { max-width: 600px; margin: 40px auto; padding: 30px; background: var(--card-bg); border-radius: 24px; border: 1px solid var(--card-border); backdrop-filter: blur(20px); box-shadow: 0 0 40px rgba(168, 85, 247, 0.2); }
+.add-app-section h3 { margin-top: 0; color: var(--neon-cyan); text-align: center; font-size: 22px; margin-bottom: 20px; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }
+.form-group { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.form-input { flex: 1; min-width: 140px; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); color: white; font-family: inherit; outline: none; transition: all 0.3s ease; font-size: 14px; }
+.form-input:focus { border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(34, 211, 238, 0.3); }
+.form-btn { width: 100%; padding: 16px; background: rgba(34, 211, 238, 0.2); color: white; border: 1px solid rgba(34, 211, 238, 0.5); border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(34, 211, 238, 0.2); }
+.form-btn:hover { background: rgba(34, 211, 238, 0.4); transform: translateY(-2px); box-shadow: 0 0 25px rgba(34, 211, 238, 0.4); border-color: var(--neon-cyan); }
+
+/* Footer & Login */
+footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-size: 14px; }
+.login-trigger { background: none; border: none; color: var(--text-muted); cursor: pointer; text-decoration: underline; margin-top: 15px; font-family: inherit; font-size: 13px; transition: color 0.2s; }
+.login-trigger:hover { color: var(--neon-cyan); }
+
+/* Modal */
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 100; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+.modal.active { display: flex; opacity: 1; }
+.modal-content { background: var(--dark-bg); padding: 35px; border-radius: 24px; width: 90%; max-width: 380px; border: 1px solid var(--card-border); box-shadow: 0 0 50px rgba(168, 85, 247, 0.3); transform: translateY(20px); transition: transform 0.3s; }
+.modal.active .modal-content { transform: translateY(0); }
+.modal-content h3 { margin-top: 0; text-align: center; font-size: 24px; margin-bottom: 25px; font-family: 'Orbitron', sans-serif; color: var(--neon-purple); }
+.modal-content .form-input { width: 100%; box-sizing: border-box; margin-bottom: 15px; }
+.modal-content .form-btn { background: rgba(168, 85, 247, 0.2); border-color: rgba(168, 85, 247, 0.5); box-shadow: 0 0 15px rgba(168, 85, 247, 0.2); }
+.modal-content .form-btn:hover { background: rgba(168, 85, 247, 0.4); border-color: var(--neon-purple); box-shadow: 0 0 25px rgba(168, 85, 247, 0.4); }
+.close-modal { background: none; border: none; color: var(--text-muted); width: 100%; margin-top: 15px; cursor: pointer; font-family: inherit; transition: color 0.2s; }
+.close-modal:hover { color: white; }
+
+/* Guides Section */
+.guides-section { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.guide-card { background: var(--card-bg); border-radius: 24px; padding: 24px; border: 1px solid var(--card-border); backdrop-filter: blur(20px); box-shadow: 0 0 30px rgba(168, 85, 247, 0.1); transition: all 0.4s ease; }
+.guide-card:hover { border-color: rgba(34, 211, 238, 0.4); box-shadow: 0 0 40px rgba(34, 211, 238, 0.2); }
+.guide-card h3 { margin-top: 0; color: var(--neon-cyan); font-size: 18px; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-family: 'Orbitron', sans-serif; }
+.guide-card ol { margin: 0; padding-left: 20px; color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+.guide-card li { margin-bottom: 8px; }
+.guide-card a { color: var(--neon-pink); text-decoration: none; font-weight: 600; transition: all 0.2s; }
+.guide-card a:hover { text-decoration: underline; text-shadow: 0 0 10px rgba(236, 72, 153, 0.5); }
+/* --- LITE MODE (Fire TV / Low End) --- */
+body.lite-mode {
+    background: #111 !important;
+}
+body.lite-mode::before, 
+body.lite-mode::after, 
+body.lite-mode .particles {
+    display: none !important;
+}
+body.lite-mode * {
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    animation: none !important;
+    transition: none !important;
+}
+body.lite-mode .card, 
+body.lite-mode .guide-card, 
+body.lite-mode .add-app-section,
+body.lite-mode .modal-content,
+body.lite-mode .search-box input,
+body.lite-mode .filter-btn,
+body.lite-mode .icon-btn {
+    background: #1a1a1a !important;
+    border: 1px solid #333 !important;
+}
+body.lite-mode .card:hover {
+    transform: none !important;
+    border-color: var(--neon-cyan) !important;
+}
+body.lite-mode .btn,
+body.lite-mode .form-btn,
+body.lite-mode .admin-btn {
+    background: #333 !important;
+    border: 1px solid #555 !important;
+}
+body.lite-mode header img {
+    box-shadow: none !important;
+    border: 3px solid var(--neon-purple) !important;
+}
+body.lite-mode h1 {
+    background: none !important;
+    -webkit-text-fill-color: var(--neon-purple) !important;
+    color: var(--neon-purple) !important;
+}
+body.lite-mode .active {
+    background: var(--neon-purple) !important;
+    color: white !important;
 }
 </style>
 </head>
 <body>
 
+<!-- Floating particles -->
+<div class="particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
+<!-- Debug User Agent & Manual Switch -->
+<div id="lite-mode-banner" style="display:block; background:#ef4444; color:white; padding:20px; text-align:center; font-weight:bold; cursor:pointer;" onclick="activateLiteModeManual()">
+    ⚡ CLICCA QUI PER VERSIONE VELOCE FIRE TV ⚡<br>
+    <span style="font-size:12px; font-weight:normal;">Se vedi questo messaggio, clicca per attivare la modalità leggera e rimuovere lag.</span>
+    <div style="font-size:10px; font-weight:normal; opacity:0.8; margin-top:5px; user-select:all;" id="ua-debug"></div>
+</div>
+
 <header>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleLiteMode()" title="Modalità Grafica Veloce">⚡</button>
+    <button class="icon-btn" onclick="toggleTheme()" title="Cambia Tema">🌓</button>
+    <button class="icon-btn" onclick="showQR()" title="Mostra QR Code">📱</button>
+    <button id="login-btn" class="icon-btn" onclick="document.getElementById('login-modal').classList.add('active')" title="Accesso Amministratore">🔐</button>
+    <button id="logout-btn" class="icon-btn admin-only" onclick="logoutAdmin()" title="Esci dall'Amministrazione">🔓</button>
+  </div>
   <img src="assets/nello.png" alt="Nello">
-  <h1>Centro di Controllo di Nello</h1>
+  <h1>Il Covo di Nello</h1>
 </header>
 
-<!-- cards -->
-<main role="list" aria-label="Elenco programmi" id="main-content">
-
-  <!-- Xrom -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/4537574">
-    <div class="icon-container"><img data-src="assets/android-os.png" alt="Xrom"></div>
-    <div class="card-text">
-      <h4>Xrom</h4>
-      <span>4537574 — Custom ROM / launcher</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/4537574">Scarica</a></div>
+<div class="controls-bar">
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Cerca un'app..." oninput="filterApps()">
   </div>
-
-  <!-- Vimu Craccato -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/6768823">
-    <div class="icon-container"><img data-src="assets/play-button-circled.png" alt="Vimu"></div>
-    <div class="card-text">
-      <h4>Vimu Craccato</h4>
-      <span>6768823 — Vimu media player</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/6768823">Scarica</a></div>
+  <div class="category-filters" id="categoryFilters">
+    <button class="filter-btn active" onclick="setCategory('Tutte')">Tutte</button>
   </div>
+</div>
 
-  <!-- Stremio Cell Mod VLC -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/5578609">
-    <div class="icon-container"><img data-src="assets/stremio.png" alt="Stremio"></div>
-    <div class="card-text">
-      <h4>Stremio Cell Mod VLC</h4>
-      <span>5578609 — Stremio mobile mod</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/5578609">Scarica</a></div>
-  </div>
-
-  <!-- Stremio TV Mod VLC -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/3988093">
-    <div class="icon-container"><img data-src="assets/stremio.png" alt="Stremio TV"></div>
-    <div class="card-text">
-      <h4>Stremio TV Mod VLC</h4>
-      <span>3988093 — Stremio TV mod</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/3988093">Scarica</a></div>
-  </div>
-
-  <!-- Stremio Proxy MPD -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/4095972">
-    <div class="icon-container"><img data-src="assets/proxy.png" alt="Proxy"></div>
-    <div class="card-text">
-      <h4>Stremio Proxy MPD</h4>
-      <span>4095972 — Proxy MPD</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/4095972">Scarica</a></div>
-  </div>
-
-  <!-- Smart Tube -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/9587028">
-    <div class="icon-container"><img data-src="assets/youtube-play.png" alt="SmartTube"></div>
-    <div class="card-text">
-      <h4>Smart Tube</h4>
-      <span>9587028 — Player YouTube-like</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/9587028">Scarica</a></div>
-  </div>
-
-  <!-- Kodi -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/2130077">
-    <div class="icon-container"><img data-src="assets/kodi.png" alt="Kodi"></div>
-    <div class="card-text">
-      <h4>Kodi</h4>
-      <span>2130077 — Media center</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/2130077">Scarica</a></div>
-  </div>
-
-  <!-- Veezie -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/2895641">
-    <div class="icon-container"><img data-src="assets/video.png" alt="Veezie"></div>
-    <div class="card-text">
-      <h4>Veezie</h4>
-      <span>2895641 — Player / aggregator</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/2895641">Scarica</a></div>
-  </div>
-
-  <!-- Launcher Manager 1.15 -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/7113338">
-    <div class="icon-container"><img data-src="assets/launcher.png" alt="Launcher"></div>
-    <div class="card-text">
-      <h4>Launcher Manager 1.15</h4>
-      <span>7113338 — Gestore launcher</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/7113338">Scarica</a></div>
-  </div>
-
-  <!-- Launcher Manager 1.04 AndroidTV -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/2096234">
-    <div class="icon-container"><img data-src="assets/tv-settings.png" alt="Launcher TV"></div>
-    <div class="card-text">
-      <h4>Launcher Manager 1.04 (AndroidTV)</h4>
-      <span>2096234</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/2096234">Scarica</a></div>
-  </div>
-
-  <!-- Launcher Fire TV -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/5683409">
-    <div class="icon-container"><img data-src="assets/tv.png" alt="Launcher Fire TV"></div>
-    <div class="card-text">
-      <h4>Launcher Fire TV</h4>
-      <span>5683409 — Launcher ottimizzato</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/5683409">Scarica</a></div>
-  </div>
-
-  <!-- Vimu Installer -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/3188516">
-    <div class="icon-container"><img data-src="assets/downloads.png" alt="Vimu Installer"></div>
-    <div class="card-text">
-      <h4>Vimu Installer</h4>
-      <span>3188516 — Installa Vimu</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/3188516">Scarica</a></div>
-  </div>
-
-  <!-- Xrom Lite -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/3271802">
-    <div class="icon-container"><img data-src="assets/android-file.png" alt="Xrom Lite"></div>
-    <div class="card-text">
-      <h4>Xrom Lite</h4>
-      <span>3271802 — Versione leggera</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/3271802">Scarica</a></div>
-  </div>
-
-  <!-- Xrom Nuovo -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/2306309">
-    <div class="icon-container"><img data-src="assets/android-new.png" alt="Xrom Nuovo"></div>
-    <div class="card-text">
-      <h4>Xrom Nuovo</h4>
-      <span>2306309 — Nuova versione</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/2306309">Scarica</a></div>
-  </div>
-
-  <!-- Tutti i File -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/730116">
-    <div class="icon-container"><img data-src="assets/folder-invoices.png" alt="Tutti i File"></div>
-    <div class="card-text">
-      <h4>Tutti i File</h4>
-      <span>730116 — Archivio completo</span>
-    </div>
-    <div class="actions"><a class="btn" href="https://go.aftvnews.com/730116">Scarica</a></div>
-  </div>
-
-  <!-- 250931 (Altri link utili / archivio) -->
-  <div class="card" tabindex="0" role="listitem" data-link="https://go.aftvnews.com/250931">
-    <div class="icon-container"><img data-src="assets/star.png" alt="Archivio"></div>
-    <div class="card-text">
-      <h4>Archivio completo / Altri link utili</h4>
-      <span>250931 — Raccolta link e file</span>
-    </div>
-    <div class="actions"><a class="btn secondary" href="https://go.aftvnews.com/250931">Apri 250931</a></div>
-  </div>
-
+<main id="main-content">
+  <div id="loading-msg" style="width:100%;text-align:center;padding:40px;color:var(--text-muted);font-size:18px;">Caricamento App...</div>
 </main>
 
-<!-- guides column -->
-<div style="padding:14px;max-width:980px;margin:0 auto">
-  <div class="aside">
+<div class="notification-section" style="max-width: 800px; margin: 40px auto; padding: 30px; background: var(--card-bg); border-radius: 24px; border: 1px solid var(--card-border); backdrop-filter: blur(20px); box-shadow: 0 0 40px rgba(168, 85, 247, 0.2); text-align: center;">
+  <h3 style="margin-top: 0; color: var(--neon-purple); font-size: 24px; margin-bottom: 15px; font-family: 'Orbitron', sans-serif;">🔔 Rimani Aggiornato</h3>
+  <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 15px;">Ricevi una notifica quando le app vengono aggiornate a una nuova versione!</p>
+  
+  <div style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
+    <!-- Telegram Button -->
+    <a href="https://t.me/ilcovodinello" target="_blank" class="btn" style="display: inline-flex; align-items: center; gap: 10px; background: rgba(0, 136, 204, 0.2); border-color: rgba(0, 136, 204, 0.5); box-shadow: 0 0 15px rgba(0, 136, 204, 0.2); font-size: 16px; padding: 12px 24px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21.1406 2.85938C21.1406 2.85938 22.6406 2.25 22.5 3.75C22.4531 4.35938 21.9375 7.64062 21.4219 11.25L19.6406 20.25C19.6406 20.25 19.5 21.375 18.6562 21.5625C17.8125 21.75 16.4531 20.8125 16.1719 20.625C15.9375 20.4375 11.8594 17.8125 10.4062 16.5C10.0312 16.1719 9.5625 15.5156 10.4531 14.7188C12.4688 12.8438 14.8125 10.6406 15.8906 9.5625C16.3594 9.09375 16.8281 7.875 14.6719 9.32812C11.625 11.3906 7.5 14.1562 7.5 14.1562C7.5 14.1562 6.5625 14.7188 4.82812 14.1562C2.67188 13.5 1.5 13.125 1.5 13.125C1.5 13.125 0.5625 12.5625 1.96875 12C5.34375 10.5 11.3438 8 15.1875 6.42188C16.9688 5.67188 21.1406 3.9375 21.1406 2.85938Z" fill="#0088CC"/>
+      </svg>
+      Unisciti al Canale Telegram
+    </a>
+
+    <div style="width: 100%; max-width: 400px; position: relative; margin: 10px 0;">
+      <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: rgba(255,255,255,0.1); z-index: 1;"></div>
+      <span style="position: relative; z-index: 2; background: var(--card-bg); padding: 0 15px; color: var(--text-muted); font-size: 14px;">OPPURE</span>
+    </div>
+
+    <!-- Email Form -->
+    <form id="subscribe-form" style="width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 12px;">
+      <input type="email" id="subscribe-email" class="form-input" placeholder="La tua email..." required style="text-align: center;">
+      <button type="submit" class="form-btn" id="subscribe-btn">Iscriviti via Email</button>
+      <div id="subscribe-msg" style="font-size: 14px; margin-top: 5px; display: none;"></div>
+    </form>
+  </div>
+</div>
+
+<div class="guides-section">
+  <div class="guide-card">
     <h3>🎬 Riproduzione 4K & live — Vimu / Stremio</h3>
     <ol>
-      <li>Installa da qui: <a href="https://go.aftvnews.com/3188516" style="color:var(--btn-bg);text-decoration:none;font-weight:bold;">Vimu Installer</a> (usa il pulsante sopra).</li>
-      <li>Inserisci la chiave: <code>fea63c49-a7f2-441e-be4a-e75cc36b74d8</code></li>
-      <li>In <strong>Stremio</strong>: Impostazioni → Riproduzione → Player predefinito → seleziona <em>player esterno</em>.</li>
-      <li>Se audio non automatico in italiano: apri Vimu → Options → Settings → Content → Preferred Audio Language → Italiano.</li>
+      <li>Installa da qui: <a href="https://go.aftvnews.com/3188516">Vimu Installer</a> (usa il pulsante sopra).</li>
+      <li>Inserisci la chiave: <code style="cursor:pointer;" onclick="copyToClipboard('fea63c49-a7f2-441e-be4a-e75cc36b74d8', event)" title="Clicca per copiare">fea63c49-a7f2-441e-be4a-e75cc36b74d8</code></li>
+      <li>In <strong>Stremio</strong>: Impostazioni ➔ Riproduzione ➔ Player predefinito ➔ seleziona <em>player esterno</em>.</li>
+      <li>Se audio non automatico in italiano: apri Vimu ➔ Options ➔ Settings ➔ Content ➔ Preferred Audio Language ➔ Italiano.</li>
     </ol>
-    <h3>🌍 Impostare lingua Italiana su Kodi</h3>
+  </div>
+  <div class="guide-card">
+    <h3>🇮🇹 Impostare lingua Italiana su Kodi</h3>
     <ol>
-      <li><a href="https://go.aftvnews.com/2130077" style="color:var(--btn-bg);text-decoration:none;font-weight:bold;">Installa Kodi</a> (pulsante sopra).</li>
-      <li>Kodi → ⚙️ Impostazioni → Interfaccia → Regional / Regione → Language → Italiano.</li>
+      <li><a href="https://go.aftvnews.com/2130077">Installa Kodi</a> (pulsante sopra).</li>
+      <li>Kodi ➔ ⚙️ Impostazioni ➔ Interfaccia ➔ Regional / Regione ➔ Language ➔ Italiano.</li>
     </ol>
-    <h3>🛠️ Configurazione Kodi + WLTV</h3>
+  </div>
+  <div class="guide-card">
+    <h3>📺 Configurazione Kodi + WLTV</h3>
     <ol>
-      <li>Home Kodi → ⚙️ → File → Aggiungi sorgente → URL: <code>http://worldlivetv.github.io/repo/</code> (Nome: WLTV Repo).</li>
-      <li>Add-ons → Installa da file zip → repository.wltv-1.x.x.zip → Installa da repository → WLTV Helper.</li>
-      <li>Home → Add-ons → WLTV Helper → Lista → Sezione TV.</li>
+      <li>Home Kodi ➔ ⚙️ ➔ File ➔ Aggiungi sorgente ➔ URL: <code style="cursor:pointer;" onclick="copyToClipboard('http://worldlivetv.github.io/repo/', event)" title="Clicca per copiare">http://worldlivetv.github.io/repo/</code> (Nome: WLTV Repo).</li>
+      <li>Add-ons ➔ Installa da file zip ➔ repository.wltv-1.x.x.zip ➔ Installa da repository ➔ WLTV Helper.</li>
+      <li>Home ➔ Add-ons ➔ WLTV Helper ➔ Lista ➔ Sezione TV.</li>
     </ol>
+  </div>
+  <div class="guide-card">
     <h3>🧪 Scienziato Pazzo su Kodi</h3>
     <ol>
-      <li>⚙️ Home Kodi → Ingranaggio</li>
-      <li>📂 File > Aggiungi sorgente → 🔗 <code>http://aandroide.github.io/installer/repo/</code></li>
-      <li>📦 Add-ons → 📦 Scatola → Installa da file zip </li>
-      <li>📚 Installa da repository</li>
+      <li>⚙️ Home Kodi ➔ Ingranaggio</li>
+      <li>📁 File > Aggiungi sorgente ➔ 🔗 <code style="cursor:pointer;" onclick="copyToClipboard('http://aandroide.github.io/installer/repo/', event)" title="Clicca per copiare">http://aandroide.github.io/installer/repo/</code></li>
+      <li>📦 Add-ons ➔ 📦 Scatola ➔ Installa da file zip </li>
+      <li>📥 Installa da repository</li>
     </ol>
-    <h3>🔧 Avvio automatico TV (Kodi)</h3>
+  </div>
+  <div class="guide-card">
+    <h3>📺 Avvio automatico TV (Kodi)</h3>
     <ol>
-      <li>Impostazioni → Interfaccia → Altro / Skin → Startup window → seleziona TV → Riavvia Kodi.</li>
+      <li>Impostazioni ➔ Interfaccia ➔ Altro / Skin ➔ Startup window ➔ seleziona TV ➔ Riavvia Kodi.</li>
     </ol>
   </div>
 </div>
 
-<!-- Add App Section -->
-<div class="add-app-section">
+<div class="add-app-section admin-only admin-only-block">
   <h3>➕ Gestione Applicazioni</h3>
   <div class="form-group">
       <input type="hidden" id="editingKey">
@@ -341,110 +437,265 @@ main{display:flex;flex-wrap:wrap;gap:14px;padding:14px;justify-content:center}
   </div>
   <div class="form-group">
       <input type="text" id="appDesc" class="form-input" placeholder="Descrizione breve">
-      <button onclick="addApp()" class="form-btn">Aggiungi Scheda</button>
+      <div style="display: flex; gap: 10px; width: 100%;">
+          <input type="text" id="appIcon" class="form-input" placeholder="URL Icona (opzionale)" style="flex: 1;">
+          <button onclick="searchIcon()" class="form-btn" style="width: auto; padding: 0 15px; font-size: 14px;" title="Cerca icona in base al nome">🔍 Cerca</button>
+      </div>
+      <input type="text" id="appCategory" class="form-input" placeholder="Categoria (es. Streaming)" list="categoryList">
+      <datalist id="categoryList"></datalist>
   </div>
-  <p style="font-size:12px;opacity:0.7;margin-top:10px">Nota: Le modifiche sono locali e temporanee per la sessione corrente.</p>
+  <div style="display: flex; gap: 10px; margin-top: 15px;">
+      <button id="submitAppBtn" onclick="addApp()" class="form-btn" style="flex: 2;">Aggiungi Scheda</button>
+      <button onclick="updateAllIcons()" class="form-btn" style="flex: 1; background: rgba(34, 211, 238, 0.2); border-color: rgba(34, 211, 238, 0.5);" title="Cerca e aggiorna le icone mancanti per tutte le app">🔄 Aggiorna Tutte le Icone</button>
+  </div>
 </div>
 
-<footer style="text-align:center;padding:10px 0;font-size:13px;opacity:.9">
-  Centro di Controllo di Nello — Codice universale: <strong>6097284</strong>
+<div style="text-align: center; margin-top: 40px;">
+  <div class="bookmark-hint">
+    🦴 <span><strong>Aggiungi ai preferiti:</strong> se hai una Fire TV, tieni premuto il tasto <strong>☰</strong> (3 lineette) sul telecomando.</span>
+  </div>
+</div>
+
+<footer>
+  Il Covo di Nello — Codice: <strong>9888634</strong><br>
 </footer>
 
-<script>
-(function(){
-  document.querySelectorAll('img[data-src]').forEach(img=>{
-    const src = img.getAttribute('data-src');
-    // Aggiungi logging per debugging
-    console.log('Loading image:', src);
-    
-    img.onerror = () => {
-      console.error('FAILED to load image:', img.src);
-      const fallback = document.createElement('div');
-      fallback.className = 'icon-fallback';
-      fallback.innerHTML = '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">'
-        + '<rect width="24" height="24" rx="4" fill="#0b1622"/><path d="M7 12h10" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round"/><path d="M7 8h10" stroke="#06b6d4" stroke-width="1.8" stroke-linecap="round"/></svg>';
-      img.parentNode.replaceChild(fallback, img);
-    };
-    // Imposta src DOPO aver definito l'handler di errore
-    img.src = src;
-  });
+<!-- Login Modal -->
+<div id="login-modal" class="modal">
+  <div class="modal-content">
+    <h3>Accesso Admin</h3>
+    <input type="email" id="adminEmail" class="form-input" placeholder="Email">
+    <input type="password" id="adminPass" class="form-input" placeholder="Password">
+    <button onclick="loginAdmin()" class="form-btn">Accedi</button>
+    <button onclick="document.getElementById('login-modal').classList.remove('active')" class="close-modal">Annulla</button>
+  </div>
+</div>
 
-  const cards = Array.from(document.querySelectorAll('.card'));
-  let idx = 0;
-  function focusCard(i){
-    if(idx !== i && cards[idx]) cards[idx].blur(); 
-    if(i<0) i=0; if(i>=cards.length) i=cards.length-1;
-    idx = i;
-    cards[i].focus();
-    cards[i].scrollIntoView({behavior:'smooth', block:'center'});
-  }
-  // Initial focus
-  if(cards.length > 0) setTimeout(()=> focusCard(0), 240);
-})();
-</script>
+<!-- QR Modal -->
+<div id="qr-modal" class="modal">
+  <div class="modal-content" style="text-align:center;">
+    <h3>Condividi Sito</h3>
+    <img id="qr-image" src="" alt="QR Code">
+    <p style="color:var(--text-muted);font-size:14px;margin-bottom:20px;">Inquadra con la fotocamera per aprire Il Covo di Nello sul telefono.</p>
+    <button onclick="document.getElementById('qr-modal').classList.remove('active')" class="form-btn">Chiudi</button>
+  </div>
+</div>
 
 <!-- Firebase SDKs -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
   
-  // Importiamo la configurazione dal file esterno
   import { firebaseConfig } from "./firebase-config.js";
 
-  // Se la config ha ancora i placeholder (siamo in locale senza setup), avvisa o usa fallback se necessario
-  if (firebaseConfig.apiKey === "FIREBASE_API_KEY_PLACEHOLDER") {
-    console.warn("Firebase non è configurato correttamente. Assicurati di aver eseguito lo script di build o impostato le variabili.");
-  }
-
-  // Se la config è vuota o invalida, avvisa l'utente
   if (!firebaseConfig.databaseURL || firebaseConfig.databaseURL.includes("PLACEHOLDER")) {
-
-    console.warn("Firebase non configurato. Le app aggiunte non verranno salvate nel cloud.");
-    // Fallback a localStorage (temporaneo) se Firebase manca
+    console.warn("Firebase non configurato.");
   } else {
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    
-    // 1. CARICAMENTO APPS (Manuali - nodo 'apps')
-    const appsRef = ref(db, 'apps');
-    onValue(appsRef, (snapshot) => {
-      // Pulisci solo le card 'apps'
-      document.querySelectorAll('.dynamic-card-apps').forEach(e => e.remove());
+    const auth = getAuth(app);
+    const dbRef = ref(db, 'apps');
 
-      const data = snapshot.val();
-      if (data) {
-        Object.entries(data).forEach(([key, app]) => {
-          createAppCard(app.name, app.code, app.desc, key, 'apps');
-        });
+    // Gestione Autenticazione
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.body.classList.add('is-admin');
+        document.getElementById('login-btn').style.display = 'none';
+      } else {
+        document.body.classList.remove('is-admin');
+        document.getElementById('login-btn').style.display = 'inline-block';
       }
     });
 
-    // 2. CARICAMENTO SOFTWARE (Automatici - nodo 'software')
-    const swRef = ref(db, 'software');
-    onValue(swRef, (snapshot) => {
-      // Pulisci solo le card 'software'
-      document.querySelectorAll('.dynamic-card-software').forEach(e => e.remove());
+    window.loginAdmin = function() {
+      const email = document.getElementById('adminEmail').value;
+      const pass = document.getElementById('adminPass').value;
+      if(!email || !pass) return alert("Inserisci email e password");
+      
+      signInWithEmailAndPassword(auth, email, pass)
+        .then(() => {
+          document.getElementById('login-modal').classList.remove('active');
+          document.getElementById('adminEmail').value = '';
+          document.getElementById('adminPass').value = '';
+        })
+        .catch(e => alert("Errore login: Credenziali non valide."));
+    };
 
-      const data = snapshot.val();
-      if (data) {
-        Object.entries(data).forEach(([key, sw]) => {
-          // I dati software hanno campi leggermente diversi (version, lastUpdated)
-          let extraInfo = sw.version ? `v${sw.version}` : '';
-          if (sw.lastUpdated) {
-             const date = new Date(sw.lastUpdated).toLocaleDateString();
-             extraInfo += ` (${date})`;
+    window.logoutAdmin = function() {
+      signOut(auth).then(() => alert("Disconnesso con successo."));
+    };
+
+    // Ascolta i cambiamenti in tempo reale
+    let allAppsData = [];
+    let appsData = {};
+    let softwareData = {};
+    let currentCategory = 'Tutte';
+
+    function mergeAndRender() {
+      const loading = document.getElementById('loading-msg');
+      if(loading) loading.style.display = 'none';
+
+      const appsArray = Object.entries(appsData).map(([key, val]) => ({
+          id: key, 
+          type: 'apps',
+          ...val
+      }));
+
+      const softwareArray = Object.entries(softwareData).map(([key, val]) => {
+          let description = val.version ? `v${val.version}` : '';
+          if (val.lastUpdated) {
+             const date = new Date(val.lastUpdated).toLocaleDateString();
+             description += ` (${date})`;
           }
-          // Usiamo 'code' come URL
-          createAppCard(sw.name, sw.code, extraInfo, key, 'software');
-        });
+          return {
+              id: key,
+              type: 'software',
+              name: val.name,
+              code: val.code,
+              desc: description,
+              category: 'Strumenti',
+              icon: val.icon || 'assets/downloads.png',
+              timestamp: new Date(val.lastUpdated || Date.now()).getTime(),
+              order: Date.now() // Mettiamo in fondo o ordiniamo per data
+          };
+      });
+
+      allAppsData = [...appsArray, ...softwareArray].sort((a,b) => (a.order || 0) - (b.order || 0));
+      
+      updateCategoryFilters();
+      renderApps();
+    }
+
+    onValue(dbRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        appsData = data;
+      } else {
+         initDefaultApps(dbRef);
       }
+      mergeAndRender();
     });
 
-    // Rendi globale la funzione addApp per l'HTML
+    onValue(ref(db, 'software'), (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        softwareData = data;
+      }
+      mergeAndRender();
+    });
+
+    function updateCategoryFilters() {
+        const categories = new Set();
+        allAppsData.forEach(app => {
+            if(app.category) categories.add(app.category);
+        });
+        
+        const filterContainer = document.getElementById('categoryFilters');
+        filterContainer.innerHTML = `<button class="filter-btn ${currentCategory === 'Tutte' ? 'active' : ''}" onclick="setCategory('Tutte')">Tutte</button>`;
+        
+        const datalist = document.getElementById('categoryList');
+        if(datalist) datalist.innerHTML = '';
+        
+        Array.from(categories).sort().forEach(cat => {
+            // Add to filters
+            const btn = document.createElement('button');
+            btn.className = `filter-btn ${currentCategory === cat ? 'active' : ''}`;
+            btn.onclick = () => setCategory(cat);
+            btn.innerText = cat;
+            filterContainer.appendChild(btn);
+            
+            // Add to datalist
+            if(datalist) {
+                const option = document.createElement('option');
+                option.value = cat;
+                datalist.appendChild(option);
+            }
+        });
+    }
+
+    window.renderApps = function() {
+        const main = document.getElementById('main-content');
+        main.innerHTML = '';
+        
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        
+        const filteredApps = allAppsData.filter(app => {
+            const matchesSearch = app.name.toLowerCase().includes(searchTerm) || (app.desc && app.desc.toLowerCase().includes(searchTerm));
+            const matchesCategory = currentCategory === 'Tutte' || app.category === currentCategory;
+            return matchesSearch && matchesCategory;
+        });
+
+        if(filteredApps.length === 0) {
+            main.innerHTML = '<div style="width:100%;text-align:center;padding:40px;color:var(--text-muted);">Nessuna app trovata.</div>';
+            return;
+        }
+
+        filteredApps.forEach((app) => {
+          createAppCard(app.name, app.code, app.desc, app.id, app.icon, app.timestamp, app.clicks, app.category, app.type);
+        });
+    };
+
+    window.filterApps = function() {
+        renderApps();
+    };
+
+    window.setCategory = function(cat) {
+        currentCategory = cat;
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.innerText === cat);
+        });
+        renderApps();
+    };
+
+    window.searchIcon = async function() {
+        const name = document.getElementById('appName').value;
+        if (!name) {
+            alert("Inserisci prima il nome dell'app per cercare l'icona!");
+            return;
+        }
+        
+        const iconInput = document.getElementById('appIcon');
+        const originalPlaceholder = iconInput.placeholder;
+        iconInput.placeholder = "Ricerca in corso...";
+        iconInput.value = "";
+        
+        try {
+            const response = await fetch(`/api/search-icon?name=${encodeURIComponent(name)}`);
+            
+            if (!response.ok) {
+                // Se il server restituisce un errore (es. 404 o 500)
+                try {
+                    const errorData = await response.json();
+                    console.warn("Ricerca icona fallita:", errorData.error);
+                } catch (e) {
+                    console.warn("Nessuna icona trovata o errore del server.");
+                }
+                // Ripristiniamo il placeholder ma NON blocchiamo l'utente
+                iconInput.placeholder = "URL Icona (opzionale)";
+                return;
+            }
+
+            const data = await response.json();
+            
+            if (data.success && data.icon) {
+                iconInput.value = data.icon;
+            } else {
+                console.warn("Nessuna icona trovata per questo nome.");
+            }
+        } catch (error) {
+            console.error("Errore durante la ricerca dell'icona:", error);
+        } finally {
+            iconInput.placeholder = "URL Icona (opzionale)";
+        }
+    };
+
     window.addApp = function() {
       const name = document.getElementById('appName').value;
       const code = document.getElementById('appCode').value;
       const desc = document.getElementById('appDesc').value;
+      const icon = document.getElementById('appIcon').value;
+      const category = document.getElementById('appCategory').value || 'Altro';
       const editingKey = document.getElementById('editingKey').value;
       
       if(!name || !code) return alert("Inserisci almeno Nome e Codice!");
@@ -453,58 +704,115 @@ main{display:flex;flex-wrap:wrap;gap:14px;padding:14px;justify-content:center}
         name: name,
         code: code,
         desc: desc,
-        timestamp: Date.now()
+        icon: icon,
+        category: category,
+        timestamp: Date.now(),
+        order: editingKey ? undefined : Date.now() 
       };
 
+      Object.keys(appData).forEach(key => appData[key] === undefined && delete appData[key]);
+
       if (editingKey) {
-        // MODIFICA ESISTENTE SU 'apps'
-        // (Nota: non supportiamo modifica manuale di 'software' da questa UI semplice)
         update(ref(db, 'apps/' + editingKey), appData)
-        .then(() => {
-          alert("App aggiornata con successo!");
-          resetForm();
-        }).catch((error) => {
-          alert("Errore modifica: " + error.message);
-        });
+        .then(() => { resetForm(); }).catch((error) => { alert("Errore modifica: " + error.message); });
       } else {
-        // NUOVA APP SU 'apps'
-        push(appsRef, appData).then(() => {
-          alert("App aggiunta al cloud!");
-          resetForm();
-        }).catch((error) => {
-          alert("Errore aggiunta: " + error.message);
-        });
+        push(dbRef, appData).then(() => { resetForm(); }).catch((error) => { alert("Errore aggiunta: " + error.message); });
       }
     };
+    
+    window.updateAllIcons = async function() {
+        if(!confirm("Vuoi avviare la ricerca automatica delle icone mancanti per tutte le app? L'operazione potrebbe richiedere un po' di tempo.")) return;
+        
+        let updatedCount = 0;
+        const updates = {};
+        
+        // Mostra un indicatore di caricamento
+        const btn = document.querySelector('button[onclick="updateAllIcons()"]');
+        const originalText = btn.innerText;
+        btn.innerText = "⏳ Aggiornamento in corso...";
+        btn.disabled = true;
 
-    // Funzione globale per rimuovere
+        try {
+            for (const app of allAppsData) {
+                // Salta se ha già un'icona valida (link http e non un'icona di default locale)
+                if (app.icon && app.icon.startsWith('http') && !app.icon.includes('nello.png') && !app.icon.includes('downloads.png')) {
+                    continue;
+                }
+
+                try {
+                    const response = await fetch(`/api/search-icon?name=${encodeURIComponent(app.name)}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success && data.icon) {
+                            const dbPath = app.type === 'software' ? `software/${app.id}/icon` : `apps/${app.id}/icon`;
+                            updates[dbPath] = data.icon;
+                            updatedCount++;
+                        }
+                    }
+                } catch (e) {
+                    console.error("Errore per", app.name, e);
+                }
+            }
+
+            if (updatedCount > 0) {
+                await update(ref(db), updates);
+                alert(`Operazione completata! Aggiornate ${updatedCount} icone.`);
+            } else {
+                alert("Nessuna icona da aggiornare. Tutte le app hanno già un'icona valida.");
+            }
+        } catch (error) {
+            console.error("Errore durante l'aggiornamento massivo:", error);
+            alert("Errore durante il salvataggio nel database.");
+        } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
+    };
+
+    window.saveOrder = function() {
+        const cards = document.querySelectorAll('.card');
+        const updates = {};
+        cards.forEach((card, index) => {
+            const key = card.getAttribute('data-key');
+            const type = card.getAttribute('data-type') || 'apps';
+            const icon = card.getAttribute('data-icon');
+            if(key) {
+                const dbPath = type === 'software' ? `software/${key}/order` : `apps/${key}/order`;
+                updates[dbPath] = index;
+                
+                // Assicuriamoci di non perdere l'icona durante il salvataggio dell'ordine
+                if (icon) {
+                    const iconPath = type === 'software' ? `software/${key}/icon` : `apps/${key}/icon`;
+                    updates[iconPath] = icon;
+                }
+            }
+        });
+        update(ref(db), updates).catch(e => console.error(e));
+    };
+
     window.removeAppFromCloud = function(key, type) {
       if(confirm('Sei sicuro di voler eliminare definitivamente questa app?')) {
-        // Se type non è passato, assumiamo 'apps' per compatibilità, ma ora lo passiamo
         const dbPath = (type === 'software') ? 'software/' : 'apps/';
-        remove(ref(db, dbPath + key))
-          .catch(e => alert("Errore eliminazione: " + e.message));
+        remove(ref(db, dbPath + key)).catch(e => alert("Errore eliminazione: " + e.message));
       }
     };
 
-    // Funzione globale per preparare la modifica
-    window.editAppFromCloud = function(key, name, code, desc, type) {
+    window.editAppFromCloud = function(key, name, code, desc, icon, category, type) {
         if (type === 'software') {
             alert("Questa app è gestita automaticamente dagli script. Modificala tramite backend o script.");
             return;
         }
-
         document.getElementById('appName').value = name;
         document.getElementById('appCode').value = code;
-        document.getElementById('appDesc').value = desc;
+        document.getElementById('appDesc').value = desc || '';
+        document.getElementById('appIcon').value = icon || '';
+        document.getElementById('appCategory').value = category || '';
         document.getElementById('editingKey').value = key;
         
-        // Cambia il tasto e scrolla
         const btn = document.querySelector('.form-btn');
         btn.innerText = "💾 Salva Modifiche";
-        btn.style.background = "#eab308"; // Giallo per modifica
-        btn.onclick = window.addApp; // Assicura che chiami sempre addApp che ora gestisce entrambi
-
+        btn.style.background = "#eab308";
+        
         document.querySelector('.add-app-section').scrollIntoView({behavior: 'smooth'});
     };
 
@@ -512,153 +820,295 @@ main{display:flex;flex-wrap:wrap;gap:14px;padding:14px;justify-content:center}
         document.getElementById('appName').value = '';
         document.getElementById('appCode').value = '';
         document.getElementById('appDesc').value = '';
+        document.getElementById('appIcon').value = '';
+        document.getElementById('appCategory').value = '';
         document.getElementById('editingKey').value = '';
         
         const btn = document.querySelector('.form-btn');
         btn.innerText = "Aggiungi Scheda";
-        btn.style.background = ""; // Ripristina colore
+        btn.style.background = "";
     }
   }
+  
+  function initDefaultApps(dbRef) {
+      const defaults = [
+          {name: "Xrom", code: "4537574", desc: "Custom ROM / launcher", icon: "assets/android-os.png", category: "Launcher"},
+          {name: "Vimu Craccato", code: "6768823", desc: "Vimu media player", icon: "assets/play-button-circled.png", category: "Streaming"},
+          {name: "Stremio Cell Mod VLC", code: "5578609", desc: "Stremio mobile mod", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Stremio_Icon.svg/512px-Stremio_Icon.svg.png", category: "Mod"},
+          {name: "Stremio TV Mod VLC", code: "3988093", desc: "Stremio TV mod", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Stremio_Icon.svg/512px-Stremio_Icon.svg.png", category: "Mod"},
+          {name: "Stremio Proxy MPD", code: "4095972", desc: "Proxy MPD", icon: "assets/proxy.png", category: "Strumenti"},
+          {name: "Smart Tube", code: "9587028", desc: "Player YouTube-like", icon: "assets/youtube-play.png", category: "Streaming"},
+          {name: "Kodi", code: "2130077", desc: "Media center", icon: "assets/kodi.png", category: "Streaming"},
+          {name: "Veezie", code: "2895641", desc: "Player / aggregator", icon: "assets/video.png", category: "Streaming"},
+          {name: "Launcher Manager 1.15", code: "7113338", desc: "Gestore launcher", icon: "assets/launcher.png", category: "Strumenti"},
+          {name: "Launcher Manager 1.04 AndroidTV", code: "2096234", desc: "", icon: "assets/tv-settings.png", category: "Strumenti"},
+          {name: "Launcher Fire TV", code: "5683409", desc: "Launcher ottimizzato", icon: "assets/tv.png", category: "Launcher"},
+          {name: "Vimu Installer", code: "3188516", desc: "Installa Vimu", icon: "assets/downloads.png", category: "Strumenti"},
+          {name: "Xrom Lite", code: "3271802", desc: "Versione leggera", icon: "assets/android-file.png", category: "Launcher"},
+          {name: "Xrom Nuovo", code: "2306309", desc: "Nuova versione", icon: "assets/android-new.png", category: "Launcher"},
+          {name: "Tutti i File", code: "730116", desc: "Archivio completo", icon: "assets/folder-invoices.png", category: "Altro"},
+          {name: "Archivio completo / Altri", code: "250931", desc: "Raccolta link e file", icon: "assets/star.png", category: "Altro"}
+      ];
+      
+      defaults.forEach((app, index) => {
+          push(dbRef, {...app, order: index, timestamp: Date.now()});
+      });
+  }
 
-  // Funzione di utility per creare la card
-  function createAppCard(name, code, desc, firebaseKey, type) {
+  function createAppCard(name, code, desc, firebaseKey, iconPath, timestamp, clicks, category, type = 'apps') {
       let link = code;
-      // Se è un codice numerico, crea link AFTVNews
-      if(String(code).match(/^\d+$/)) {
+      // Override manuale temporaneo per Paramount+
+      if (name && name.startsWith("Paramount+")) {
+          // Se il link punta ad APKMirror, lo forziamo ad APKCombo
+          // Rimuovi il controllo code.includes("apkmirror.com") per forzare SEMPRE
+          // perché Firebase potrebbe avere un link vecchio o diverso
+          link = "https://apkcombo.com/it/paramount-plus/com.cbs.ott/download/apk";
+          console.log("Forcing Paramount+ link to: ", link);
+      }
+
+      if(code.match(/^\d+$/)) {
           link = 'https://go.aftvnews.com/' + code;
       }
       
       const main = document.getElementById('main-content');
       const newCard = document.createElement('div');
+      newCard.className = 'card';
+      newCard.draggable = true;
+      newCard.setAttribute('data-key', firebaseKey);
+      newCard.setAttribute('data-type', type);
+      newCard.setAttribute('data-icon', iconPath || '');
       
-      // Classi: card base + dynamic-card (generica) + specifica (per cleanups)
-      newCard.className = `card dynamic-card dynamic-card-${type}`;
-      newCard.tabIndex = 0;
-      newCard.setAttribute('role', 'listitem');
-      newCard.setAttribute('data-link', link);
+      const finalIcon = iconPath || 'assets/nello.png';
       
-      // Stili bottoni gestione
-      const btnStyle = "width:28px;height:28px;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;transition:transform 0.2s;";
+      const displayCode = code.startsWith('http') ? '' : code;
+      const displayDesc = [displayCode, desc].filter(Boolean).join(' — ');
+
+      // Badge Nuovo (ultimi 3 giorni)
+      const isNew = timestamp && (Date.now() - timestamp < 3 * 24 * 60 * 60 * 1000);
+      const badgeHtml = isNew ? '<div class="badge-new">NUOVO</div>' : '';
       
-      // Icona o stile leggermente diverso per distinguerle?
-      const iconLabel = (type === 'software') ? '🤖' : '☁️'; 
+      // Contatore Click
+      const clickCount = clicks || 0;
+      const clickHtml = `<div class="click-counter">⬇️ ${clickCount}</div>`;
+
+      const escapeAppValue = (str) => {
+          if (!str) return '';
+          return str.replace(/\\/g, '\\\\')
+                    .replace(/'/g, "\\'")
+                    .replace(/"/g, '&quot;')
+                    .replace(/\n/g, '\\n')
+                    .replace(/\r/g, '');
+      };
 
       const controlsHtml = `
-        <div style="position:absolute;top:5px;right:5px;display:flex;gap:5px;z-index:10;">
-            <button onclick="editAppFromCloud('${firebaseKey}', '${name.replace(/'/g, "\\'")}', '${code}', '${desc ? desc.replace(/'/g, "\\'") : ''}', '${type}')" 
-                    style="${btnStyle}background:rgba(34, 197, 94, 0.4);" title="Modifica">✏️</button>
+        <div class="admin-controls admin-only">
+            <button onclick="editAppFromCloud('${firebaseKey}', '${escapeAppValue(name)}', '${String(code)}', '${escapeAppValue(desc)}', '${escapeAppValue(iconPath)}', '${escapeAppValue(category)}', '${type}')" 
+                    class="admin-btn btn-edit" title="Modifica">✏️</button>
             <button onclick="removeAppFromCloud('${firebaseKey}', '${type}')" 
-                    style="${btnStyle}background:rgba(239, 68, 68, 0.4);" title="Elimina">🗑️</button>
+                    class="admin-btn btn-delete" title="Elimina">🗑️</button>
         </div>
       `;
       
+      // Se è un codice numerico, mostriamo "Scarica" (che apre il link)
+      const actionBtnHtml = `<a class="btn" href="${link}" target="_blank">Scarica</a>`;
+
       newCard.innerHTML = `
+        ${badgeHtml}
         ${controlsHtml}
-        <div class="icon-container"><div class="icon-fallback" style="width:100%;height:100%;font-size:30px;color:white;display:flex;align-items:center;justify-content:center;">${iconLabel}</div></div>
+        <div class="icon-container"><img src="${finalIcon}" onerror="this.src='assets/nello.png'" alt="${name}"></div>
         <div class="card-text">
           <h4>${name}</h4>
-          <span>${code} ${desc ? '— ' + desc : ''}</span>
+          <span>${displayDesc}</span>
         </div>
-        <div class="actions"><a class="btn" href="${link}">Scarica</a></div>
+        <div class="actions">${actionBtnHtml}</div>
+        ${clickHtml}
       `;
       
-      newCard.style.animation = 'fadeIn 0.5s ease-out backwards';
-      main.appendChild(newCard); // Aggiungi in fondo
+      main.appendChild(newCard);
       
       newCard.addEventListener('click', (e)=>{ 
-        // Evita click se premiamo i bottoni di gestione
-        if(e.target.closest('button')) return;
-        window.location.href = link; 
+        if(e.target.closest('button') || e.target.closest('a')) return;
+        
+        // Incrementa contatore click
+        if(firebaseKey) {
+            import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ getDatabase, ref, runTransaction }) => {
+                const db = getDatabase();
+                runTransaction(ref(db, 'apps/' + firebaseKey + '/clicks'), (currentClicks) => {
+                    return (currentClicks || 0) + 1;
+                });
+            });
+        }
+        
+        window.open(link, '_blank'); 
+      });
+
+      newCard.addEventListener('dragstart', (e) => {
+          if(!document.body.classList.contains('is-admin')) { e.preventDefault(); return; }
+          newCard.classList.add('dragging');
+      });
+      newCard.addEventListener('dragend', () => {
+          newCard.classList.remove('dragging');
+          if(document.body.classList.contains('is-admin')) window.saveOrder();
       });
   }
-</script>
-
-
-<script>
-// Script Unificato per la Gestione Navigazione e Focus (Statico + Dinamico)
-(function(){
-  let cards = [];
-  let idx = 0;
-
-  function updateCards() {
-    cards = Array.from(document.querySelectorAll('.card'));
-  }
-
-  function focusCard(index) {
-    if(!cards.length) return;
-    if(index < 0) index = 0;
-    if(index >= cards.length) index = cards.length - 1;
-    
-    cards[idx].classList.remove('active');
-    idx = index;
-    cards[idx].classList.add('active');
-    cards[idx].focus();
-    
-    // Auto-scroll
-    cards[idx].scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-      inline: 'center'
-    });
-  }
-
-  // Inizializza
-  updateCards();
-  if(cards.length > 0) focusCard(0);
-
-  // Monitora cambiamenti nel DOM (nuove card aggiunte da Firebase)
-  const observer = new MutationObserver((mutations) => {
-    updateCards();
-  });
-  const mainContent = document.getElementById('main-content');
-  if(mainContent) {
-    observer.observe(mainContent, { childList: true });
-  }
-
-  // Gestione Input Tastiera
-  document.addEventListener('keydown', (e) => {
-    // Ignora se siamo negli input text
-    if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
-    if(cards.length === 0) return;
-
-    // Colonne stimate (es. 4 su desktop, 1 su mobile)
-    // Per semplicità usiamo avanti/indietro lineare, o logica a griglia
-    const cols = Math.floor(mainContent.offsetWidth / cards[0].offsetWidth) || 1;
-
-    if(e.key === 'ArrowRight') {
+  
+  const mainContainer = document.getElementById('main-content');
+  mainContainer.addEventListener('dragover', e => {
+      if(!document.body.classList.contains('is-admin')) return;
       e.preventDefault();
-      focusCard(idx + 1);
-    } else if(e.key === 'ArrowLeft') {
-      e.preventDefault();
-      focusCard(idx - 1);
-    } else if(e.key === 'ArrowDown') {
-      e.preventDefault();
-      // Salta una riga
-      focusCard(idx + cols);
-    } else if(e.key === 'ArrowUp') {
-      e.preventDefault();
-      focusCard(idx - cols);
-    } else if(e.key === 'Enter') {
-       e.preventDefault();
-       cards[idx].click();
-    }
-  });
-
-  // Gestione Mouse
-  document.body.addEventListener('mousemove', (e) => {
-    const card = e.target.closest('.card');
-    if(card) {
-      const newIdx = cards.indexOf(card);
-      if(newIdx !== -1 && newIdx !== idx) {
-        cards[idx].classList.remove('active');
-        idx = newIdx;
-        cards[idx].classList.add('active');
+      const afterElement = getDragAfterElement(mainContainer, e.clientY, e.clientX);
+      const draggable = document.querySelector('.dragging');
+      if(draggable) {
+          if (afterElement == null) {
+              mainContainer.appendChild(draggable);
+          } else {
+              mainContainer.insertBefore(draggable, afterElement);
+          }
       }
-    }
   });
-})();
-</script>
 
+  function getDragAfterElement(container, y, x) {
+      const draggableElements = [...container.querySelectorAll('.card:not(.dragging)')];
+      return draggableElements.reduce((closest, child) => {
+          const box = child.getBoundingClientRect();
+          const offsetX = x - box.left - box.width / 2;
+          const offsetY = y - box.top - box.height / 2;
+          const dist = Math.hypot(offsetX, offsetY);
+          if (dist < closest.offset) {
+              return { offset: dist, element: child };
+          } else {
+              return closest;
+          }
+      }, { offset: Number.POSITIVE_INFINITY }).element;
+  }
+
+  // Theme Toggle
+  window.toggleTheme = function() {
+      document.body.classList.toggle('light-theme');
+      const isLight = document.body.classList.contains('light-theme');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  };
+  if(localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme');
+
+  // Lite Mode (Fast/FireTV) Toggle
+  window.toggleLiteMode = function() {
+      document.body.classList.toggle('lite-mode');
+      const isLite = document.body.classList.contains('lite-mode');
+      localStorage.setItem('mode', isLite ? 'lite' : 'full');
+      // Show feedback
+      const btn = document.querySelector('button[onclick="toggleLiteMode()"]');
+      if (btn) btn.innerHTML = isLite ? '🎨' : '⚡'; // Switch icon
+      if (isLite) {
+          alert("Modalità Lite Attiva: Animazioni e trasparenze rimosse per massima velocità.");
+      }
+  };
+
+  // Auto-Detect FireTV or Low End device
+  function detectLowEndDevice() {
+      // Check localStorage first
+      const savedMode = localStorage.getItem('mode');
+      if (savedMode) {
+          if (savedMode === 'lite') {
+              document.body.classList.add('lite-mode');
+        document.getElementById('lite-mode-banner').style.display = 'none'; // Hide banner if mode is active
+      }
+      
+      const ua = navigator.userAgent;
+      document.getElementById('ua-debug').innerText = "Device: " + ua;
+      
+      // Common FireTV identifiers: "AFT", "Silk", "Android" on TV, and "Downloader" for the Downloader app
+      const isFireTV = /AFT|Silk|Amazon|Android.*TV|SmartTV|HbbTV|CrKey|Roku|AppleTV|Downloader|AFTS|AFTB|AFTT|AFTM|AFTN|AFTRS|Mobile VR|Dalvik|Android 5|Android 6|Android 7|Android 8|Android 9/.test(ua);
+      
+      if (isFireTV) {
+          activateLiteModeManual(); // Reuse function
+      }
+  }
+
+  window.activateLiteModeManual = function() {
+      console.log("Enabling Lite Mode manually.");
+      document.body.classList.add('lite-mode');
+      localStorage.setItem('mode', 'lite');
+      const btn = document.querySelector('button[onclick="toggleLiteMode()"]');
+      if (btn) btn.innerHTML = '🎨';
+      document.getElementById('lite-mode-banner').style.display = 'none';
+  };
+  detectLowEndDevice();
+
+  // QR Code
+  window.showQR = function() {
+      const url = encodeURIComponent(window.location.href);
+      document.getElementById('qr-image').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${url}&bgcolor=0a0a0f&color=a855f7`;
+      document.getElementById('qr-modal').classList.add('active');
+  };
+
+  // Copia Codice per Downloader
+  window.copyToClipboard = function(text, event) {
+      if(event) event.stopPropagation();
+      
+      navigator.clipboard.writeText(text).then(() => {
+          // Mostra un piccolo feedback visivo sul bottone cliccato
+          if(event && event.target) {
+              const btn = event.target;
+              const originalText = btn.innerHTML;
+              btn.innerHTML = "✅ Copiato!";
+              btn.style.background = "var(--primary)";
+              btn.style.color = "#fff";
+              
+              setTimeout(() => {
+                  btn.innerHTML = originalText;
+                  btn.style.background = "";
+                  btn.style.color = "";
+              }, 2000);
+          } else {
+              alert("Codice " + text + " copiato negli appunti! Incollalo nell'app Downloader sulla tua TV.");
+          }
+      }).catch(err => {
+          console.error('Errore nella copia: ', err);
+          alert("Codice: " + text);
+      });
+  };
+
+  // Gestione Iscrizione Email
+  document.getElementById('subscribe-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('subscribe-email');
+      const btn = document.getElementById('subscribe-btn');
+      const msg = document.getElementById('subscribe-msg');
+      const email = emailInput.value.trim();
+
+      if (!email) return;
+
+      btn.disabled = true;
+      btn.innerHTML = 'Iscrizione in corso...';
+      msg.style.display = 'none';
+
+      try {
+          const response = await fetch('/api/subscribe', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+              msg.style.color = '#10b981'; // Green
+              msg.innerText = '✅ Iscrizione completata con successo!';
+              emailInput.value = '';
+          } else {
+              msg.style.color = '#ef4444'; // Red
+              msg.innerText = '❌ ' + (data.error || 'Errore durante l\'iscrizione.');
+          }
+      } catch (error) {
+          console.error('Errore iscrizione:', error);
+          msg.style.color = '#ef4444';
+          msg.innerText = '❌ Errore di connessione. Riprova più tardi.';
+      } finally {
+          msg.style.display = 'block';
+          btn.disabled = false;
+          btn.innerHTML = 'Iscriviti via Email';
+      }
+  });
+</script>
 </body>
 </html>

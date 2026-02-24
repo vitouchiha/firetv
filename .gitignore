@@ -10,3 +10,5 @@ Thumbs.db
 node_modules/
 package-lock.json
 yarn.lock
+.vercel
+.env*.local

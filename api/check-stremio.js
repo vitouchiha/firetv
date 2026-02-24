@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, get, push } from "firebase/database";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { notifyAll } from "./utils/notify.js";
 
 export default async function handler(req, res) {
     // Verifica che la richiesta provenga da Vercel Cron (sicurezza)
@@ -84,6 +85,10 @@ export default async function handler(req, res) {
             
             await push(dbRef, newApp);
             console.log("Scheda aggiunta con successo!");
+            
+            // Invia notifiche
+            await notifyAll(appName, version, link, newApp.icon);
+            
             return res.status(200).json({ success: true, message: `Aggiunta nuova versione: ${version}` });
         } else {
             console.log("La versione è già presente nel database.");

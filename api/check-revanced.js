@@ -4,6 +4,7 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import admZip from 'adm-zip';
 import xml2js from 'xml2js';
 import https from 'https';
+import { notifyAll } from "./utils/notify.js";
 
 // --- CONFIGURAZIONE ---
 // Definiamo i pacchetti da tracciare e le loro fonti
@@ -228,14 +229,29 @@ export default async function handler(req, res) {
 
                 // Aggiorna DB se abbiamo trovato qualcosa
                 if (version) {
-                    updates[`software/${config.firebaseKey}`] = {
-                        name: config.name,
-                        version: version,
-                        code: downloadUrl, // URL download o pagina
-                        lastUpdated: new Date().toISOString(),
-                        compatibleWithPatches: patchesRelease.tag_name,
-                        icon: config.icon || ""
-                    };
+                    // Controlla la versione attuale nel database
+                    const dbRef = ref(db, `software/${config.firebaseKey}`);
+                    const snapshot = await get(dbRef);
+                    let currentVersion = null;
+                    if (snapshot.exists()) {
+                        currentVersion = snapshot.val().version;
+                    }
+
+                    if (currentVersion !== version) {
+                        updates[`software/${config.firebaseKey}`] = {
+                            name: config.name,
+                            version: version,
+                            code: downloadUrl, // URL download o pagina
+                            lastUpdated: new Date().toISOString(),
+                            compatibleWithPatches: patchesRelease.tag_name,
+                            icon: config.icon || ""
+                        };
+                        
+                        // Invia notifica
+                        await notifyAll(config.name, version, downloadUrl, config.icon);
+                    } else {
+                        log.push(`Nessun aggiornamento per ${config.name}. Versione attuale: ${version}`);
+                    }
                 }
 
             } catch (err) {
