@@ -998,9 +998,7 @@ body.lite-mode.light-theme .search-box input {
       const displayCode = (code.startsWith('http') || code.startsWith('/')) ? '' : code;
       const displayDesc = [displayCode, desc].filter(Boolean).join(' — ');
 
-      // Badge Nuovo (ultimi 3 giorni)
-      const isNew = timestamp && (Date.now() - timestamp < 3 * 24 * 60 * 60 * 1000);
-      const badgeHtml = isNew ? '<div class="badge-new">NUOVO</div>' : '';
+      const badgeHtml = '';
       
       // Contatore Click
       const clickCount = clicks || 0;

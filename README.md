@@ -1,6 +1,6 @@
 # 🏴‍☠️ Il Covo di Nello
 
-![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Fire%20TV%20%7C%20Android%20TV%20%7C%20Web-orange.svg)
 ![Tech Stack](https://img.shields.io/badge/tech-HTML%20%7C%20CSS%20%7C%20JS%20%7C%20Firebase%20%7C%20Vercel-purple.svg)
@@ -116,7 +116,8 @@ Il progetto sfrutta **Vercel Cron Jobs** per mantenere il catalogo aggiornato se
 
 | Cron Job | Orario (UTC) | Funzione |
 |---|---|---|
-| `check-paramount` | 13:00 | Scraping Uptodown per Paramount+ |
+| `check-paramount` | 13:00 | Scraping Uptodown per Paramount+ (mobile/tablet) |
+| `check-paramount-tv` | 13:00 | Scraping APKMirror RSS per Paramount+ Android TV |
 | `check-revanced` | 14:00 | Nuove release ReVanced da GitHub |
 | `check-stremio` | 12:00 | Ultima versione Stremio |
 | `check-windows-tools` | 15:00 | Strumenti Windows |
@@ -171,6 +172,14 @@ Questo progetto è distribuito sotto licenza MIT. Sentiti libero di utilizzarlo,
 ---
 
 ## 📝 Changelog
+
+### v1.3.0 — 25 Febbraio 2026
+- **Nuovo**: Aggiunta scheda **Paramount+ Android TV** separata con download APK diretto da APKMirror (`/api/download-paramount?tv=true`).
+- **Modifica**: Scheda Paramount+ mobile ora indica chiaramente "Solo cellulare/tablet" nella descrizione.
+- **Nuovo**: `api/check-paramount-tv.js` — cron giornaliero che controlla aggiornamenti della versione Android TV via RSS APKMirror.
+- **Refactor**: `api/download-paramount.js` unificato gestisce sia mobile (Uptodown) che TV (APKMirror) tramite parametro `?tv=true`.
+- **Fix**: `api/check-paramount.js` riscritto con Firebase REST API (eliminato SDK client che crashava in serverless).
+- **UI**: Rimosso badge "NUOVO" da tutte le card.
 
 ### v1.2.0 — 24 Febbraio 2026
 - **Fix**: `api/subscribe.js` riscritto con Firebase REST API al posto dell'SDK client — eliminato errore 500 su iscrizione notifiche in ambienti serverless Vercel.
