@@ -1,6 +1,6 @@
 # 🏴‍☠️ Il Covo di Nello
 
-![Version](https://img.shields.io/badge/version-1.4.2-blue.svg)
+![Version](https://img.shields.io/badge/version-1.4.3-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Fire%20TV%20%7C%20Android%20TV%20%7C%20Web-orange.svg)
 ![Tech Stack](https://img.shields.io/badge/tech-HTML%20%7C%20CSS%20%7C%20JS%20%7C%20Firebase%20%7C%20Vercel-purple.svg)
@@ -172,6 +172,11 @@ Questo progetto è distribuito sotto licenza MIT. Sentiti libero di utilizzarlo,
 ---
 
 ## 📝 Changelog
+
+### v1.4.3 — 25 Febbraio 2026
+- **Fix**: Ripristinate le icone originali per 78 app usando i dati dello scraping TROYPOINT (`scraped_apps.json`) — le icone corrispondono ora esattamente a quelle mostrate sul sito TROYPOINT.
+- **Fix**: Corrette manualmente 10 icone assegnate in modo errato dal matching automatico (Paramount+, varianti Stremio, Vimu, APKMirror, Smart Tube, scrcpy, ADB AppControl).
+- **Fix**: Android TV Tools V4, LM Settings e app aggiuntive ora hanno icone appropriate.
 
 ### v1.4.2 — 25 Febbraio 2026
 - **Fix**: Eliminate 8 voci duplicate dal catalogo (Adobe, ADB Tools, Airscreen, scrcpy aggiunte due volte).
