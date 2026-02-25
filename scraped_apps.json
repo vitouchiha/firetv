@@ -1,0 +1,554 @@
+[
+  {
+    "name": "#1 Ranked TROYPOINT VPNCutting-edge release of Surfshark VPN",
+    "code": "https://downloads.surfshark.com/android/Surfshark.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/z1NtERzo1BXeZvZheqYKtSEv-3X_p0e_Ho1Bq74j4Vt5Pl_FmboPyuFHmRRmpu9qKWMnWqLXFuUYu2mCm2RZGcY",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Kodi 21.3 Omega Stable ReleaseFor Fire TV & Most Android TV Boxes",
+    "code": "https://mirrors.kodi.tv/releases/android/arm/kodi-21.3-Omega-armeabi-v7a.apk?https=1",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/RQvf62YkkS_hpGAfP2iBoT2yf7b0oohFQHhBB8Chp8nHNPSqmZgEkwwpKtqdtqQ_ZvM",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Kodi 21.3 Omega Stable ReleaseOnly 64BIT Devices",
+    "code": "https://mirrors.kodi.tv/releases/android/arm64-v8a/kodi-21.3-Omega-arm64-v8a.apk?https=1",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/RQvf62YkkS_hpGAfP2iBoT2yf7b0oohFQHhBB8Chp8nHNPSqmZgEkwwpKtqdtqQ_ZvM",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Kodi 19.5",
+    "code": "https://mirrors.kodi.tv/releases/android/arm/kodi-19.5-Matrix-armeabi-v7a.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/RQvf62YkkS_hpGAfP2iBoT2yf7b0oohFQHhBB8Chp8nHNPSqmZgEkwwpKtqdtqQ_ZvM",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Kodi 18.9",
+    "code": "https://mirrors.kodi.tv/releases/android/arm/kodi-18.9-Leia-armeabi-v7a.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/RQvf62YkkS_hpGAfP2iBoT2yf7b0oohFQHhBB8Chp8nHNPSqmZgEkwwpKtqdtqQ_ZvM",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "TROYPOINT 21.3 Kodi Fork",
+    "code": "https://www.mediafire.com/file_premium/fv7qujtutgo4vi2/TROYPOINT_21.3_Fork_signed32.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/RQvf62YkkS_hpGAfP2iBoT2yf7b0oohFQHhBB8Chp8nHNPSqmZgEkwwpKtqdtqQ_ZvM",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "TROYPOINT 21.3 Kodi ForkOnly 64BIT Devices",
+    "code": "https://www.mediafire.com/file_premium/vq8gndrgythgkg9/TROYPOINT_21.3_Fork_signed64.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/RQvf62YkkS_hpGAfP2iBoT2yf7b0oohFQHhBB8Chp8nHNPSqmZgEkwwpKtqdtqQ_ZvM",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "TROYPOINT 21.2 Kodi Fork",
+    "code": "https://www.mediafire.com/file_premium/b99smyh1fc29ewy/TROYPOINT_21.2_Fork_signed.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/RQvf62YkkS_hpGAfP2iBoT2yf7b0oohFQHhBB8Chp8nHNPSqmZgEkwwpKtqdtqQ_ZvM",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "TROYPOINT 20.5 Kodi Fork",
+    "code": "https://troypoint.mediafire.com/file/ewo0zae2lr9xbyi/TROYPOINT_20.5_Fork.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/RQvf62YkkS_hpGAfP2iBoT2yf7b0oohFQHhBB8Chp8nHNPSqmZgEkwwpKtqdtqQ_ZvM",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "TROYPOINT 19.5 Kodi Fork",
+    "code": "https://troypoint.mediafire.com/file/iedit1o5rtqsiq4/TROYPOINT_19.5_Fork.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/RQvf62YkkS_hpGAfP2iBoT2yf7b0oohFQHhBB8Chp8nHNPSqmZgEkwwpKtqdtqQ_ZvM",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "TROYPOINT 18.9 Kodi Fork",
+    "code": "https://www.mediafire.com/file/tte673rfx5c4sc9/troypoint-k189.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/RQvf62YkkS_hpGAfP2iBoT2yf7b0oohFQHhBB8Chp8nHNPSqmZgEkwwpKtqdtqQ_ZvM",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Stremio 1.9.7 Stable ReleaseFor Fire TV & Most Android TV Boxes",
+    "code": "https://dl.strem.io/android/v1.9.7-androidTV/com.stremio.one-1.9.7-11049219-armeabi-v7a.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/k3489BQdgNeGZKMV8HIOMVZlMyY2EXkiWB0MN6yTl5omfd3_MCSCU75UTXqwh-7j-Qs",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Stremio 1.9.7 Stable Release &#8211; 64BITOnly 64BIT Devices",
+    "code": "https://dl.strem.io/android/v1.9.7-androidTV/com.stremio.one-1.9.7-13146371-arm64-v8a.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/k3489BQdgNeGZKMV8HIOMVZlMyY2EXkiWB0MN6yTl5omfd3_MCSCU75UTXqwh-7j-Qs",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Syncler 2.0",
+    "code": "https://syncler.net/d",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/8GH0RvjdKu8UAx4rBQ5SwSNQkLwz7cZxH6K5yxxZVczAzLEteOJk7G2vHos6j7nNdKA",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "STRMR Latest Release",
+    "code": "https://github.com/strmrdev/strmr-releases/releases/latest/download/STRMR-latest.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/k3489BQdgNeGZKMV8HIOMVZlMyY2EXkiWB0MN6yTl5omfd3_MCSCU75UTXqwh-7j-Qs",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "CloudStream 4.6.0",
+    "code": "https://github.com/recloudstream/cloudstream/releases/download/v4.6.0/4.6.0.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/RWCI1ToZHheeHJ9y2IbxXuQayzPS_409FALxfPIRByzUa1d2brfCpi4wYrd_XJ2yow",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Stremize Latest Version",
+    "code": "https://stremize.com/download-file?version=recommended&amp;device=tv",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/jm0217jbZ0VJhGU7ecHHoi7MOcY7KMvxY5t1bIsc3KSVwLNbTwkwsfvtHvQkfabSmyNH",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "WuPlay Beta",
+    "code": "https://github.com/wuplayapp/wuplay-releases/releases/latest/download/wuplay-androidtv.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/Tf1eqdV3RMiWBOq4ay46MouVnsc8Imk2jwarT2knH9j9BXizGOUXzsa6C447nIHDCw",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Nuvio TV Beta",
+    "code": "https://github.com/tapframe/NuvioTV/releases/download/0.4.3-beta/app-armeabi-v7a-release.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/pQ-BUhXHPnUC0ojEbQMtDhQFEKoG5K4HMt3NSPG8mrDgG5_fjMmzFow5H4AlAFOkEEY",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "TiviMate 5.2.0 Stable Release",
+    "code": "https://troypoint.mediafire.com/file/haybe6djgnkqeoi/tivimate.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/K0OlOwxUR3GXrAZyfaCKz2PYn-LCbKm0pMe112Y0VwohgB0thHePNcz8pqy_vYJSBAs",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Wave IPTV 2.0.1",
+    "code": "https://github.com/sm4rtw4v3t3ch/WAVE-IPTV/releases/download/2_0_1/wave_iptv_Fire_TV_2_0_1.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/eTEGlV8W-nYO_XSNqb2YNb7Wdsk12SyPqg-SKGcW7wmUHzOi-z1lgItTfqUklO2JejJKPsnjAMQz0s2EFa6m",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "XCIPTV Player 7.0",
+    "code": "https://troypoint.mediafire.com/file/7hs950tj0d8w53o/XCIPTV_PLAYER_7.0.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/FQulqtbNqFFjkRHCpIvGW1yjXHEpU3TAYQN8eI1DlfmOoSys235PwEY352nHbBCrQdk",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Sparkle TV 2.2.2",
+    "code": "https://dl.dropbox.com/scl/fi/6huxctu1d3uznqtl6swx9/sparkle_202028.apk?rlkey=b3784fffrt5m9mptd3wh92fum&amp;st=js1hbvtw&amp;dl=1",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/eYfJHADMYNZpqaiTslBETpzIoZdHiNT_IZ2hQ_pG8_gNG6hEfW2C6ENEEPaIvHNVOA",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "IPTV Smarters Pro",
+    "code": "https://www.mediafire.com/file_premium/xrlnqh9kppx349u/IPTV_Smarters_Pro_%255B3.1.5.1%255D.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/dxRsuHvEgFhzWzWdIXxZLypCAIgETKfP0aEKqL48Yglj89x769N_guAIvWHU0LpDyw",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "NexTV IPTV Player",
+    "code": "https://api.nextv.fr/download/apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/2QL-n3LJfxVrKwtVEkIKM8Z7rZ9GeTp9xJkXHWqK0qgW7W_0TmvBToXv7SPIgw3lzTU",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "iMPlayer",
+    "code": "https://implayer.tv/d",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/qHc3BFA-u-m6wGEfipB0CNGYAjetzAKvM6sbswRJANKlzfP_gPOcwcG4Lo0t5uT4hA",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Wiseplay",
+    "code": "https://static.wiseplay.tv/files/wiseplay-tv-latest.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Streaming",
+    "icon": "https://play-lh.googleusercontent.com/_SHQjLM1rdpx-5EhldGl8yTLIb5tfBF5p_ELnto0XqON3WjKN07C3pDmKT6sob1ER3A",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Projectivy Launcher 4.68",
+    "code": "https://github.com/spocky/miproja1/releases/download/4.68/ProjectivyLauncher-4.68-c82-xda-release.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Launcher",
+    "icon": "https://play-lh.googleusercontent.com/6bigO3_72JW9xTdkX7Mpm8fTBiP7ISDCUcI2E3C79P21uwuJC6VWD8pFxH-bXvc-CVZm",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "LTvLauncher (Formerly FLauncher)",
+    "code": "https://github.com/LeanBitLab/FlauncherL/releases/download/v3.0.0/LTvLauncher-armeabi-v7a-release.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Launcher",
+    "icon": "https://play-lh.googleusercontent.com/M5Taa-EJhdYABa7-DfHQCBjz91tZF6hI7O1OBfIX4B9G9y8PnsEEZFRFum1QDX0yovTM",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Leanback Launcher 1.59",
+    "code": "https://github.com/tsynik/LeanbackLauncher/releases/download/v1.59/LeanbackOnFire_v1.59-release.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Launcher",
+    "icon": "https://play-lh.googleusercontent.com/coP0hBQWWsCJehZVFkm6pvwowzcX3ArvJaZuu4kLzQtf9gK9u2d46dhHpF7NpBTHZg8",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Wolf Launcher 0.1.9",
+    "code": "https://www.mediafire.com/file/188i5v90fl2tib3/Wolf_Launcher_0.1.9.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Launcher",
+    "icon": "https://play-lh.googleusercontent.com/d0m6icyI6DptK9JzLhFQNpq4qhGAddKv81iB-tCHXtmmw3fL8SPAxbXxj3l76ExhFsM",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Sideload Launcher",
+    "code": "https://www.mediafire.com/file_premium/cipeqaxgsnukhct/Sideload_Launcher_%255B1.05%255D.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Launcher",
+    "icon": "https://play-lh.googleusercontent.com/RzAG20v5dw-rXGcCncPm2jQu2hNdO6l0IvIPxJsIo1OwKDO_BMgvYVSnDEBU4ZkEAcpC",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Premium TV Launcher",
+    "code": "https://smartago.net/us/downloads/com.premium.tv.launcher.ui.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Launcher",
+    "icon": "https://play-lh.googleusercontent.com/FY-Gauc3P0D8EyJtaOKMux-spv1z1YPmroHB04Yvk8HnmVGWKb4qdf0FAspg_tUor4ZOdzJB-LiSutzEkjNhq5c",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "SmartTubeNext Ad-Free YouTube (Latest Stable Release)",
+    "code": "https://kutt.it/stn_stable",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/c_g2M09ZnjMYvRLrKai_qbwIlZnp6ZEu_KEMe4fbJWLeF3FnIm83NK8EWBDg96ta9G4",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "SmartTubeNext Ad-Free YouTube (Latest Beta Release)",
+    "code": "https://kutt.it/stn_beta",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/c_g2M09ZnjMYvRLrKai_qbwIlZnp6ZEu_KEMe4fbJWLeF3FnIm83NK8EWBDg96ta9G4",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "TizenTube Ad-Free YouTube (Latest Release)",
+    "code": "https://github.com/reisxd/TizenTubeCobalt/releases/download/v1.0.2/cobalt-arm.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/QcQEYhZr-OfidvEMqCEYEthOgrMejhRjeYv3GnXbEqVaRF65B07xJGq9R0GhnC2YSRR7E183MJlse0Iz2VbYk5k",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Just (Video) Player",
+    "code": "https://troypoint.mediafire.com/file/98fl06nt62pgwt0/Just+(Video)+Player_0.203-legacy.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/LNF01ydGbukqvbFU9pTcZDSRfi86ipAqSdH0Mksb4vk3B4urmMx5qO37OvYXlBalXBE",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "MX Player Pro with Codecs",
+    "code": "https://files.catbox.moe/byw1it.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/e_rNLzyR9i3wwy8BwEsIS4uz0fFu29p5RoXoNZt2L0Ef7cJ2QhAcw1x_K51A19HpzQ",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "TPlayer 6.5b Premium Lite",
+    "code": "https://files.catbox.moe/7wtfq6.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "assets/nello.png",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "BPlayer v1.2.5 Premium (No Ads)",
+    "code": "https://files.catbox.moe/nse7mg.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/POB_FI9l6Wxfi2H2ezHrA1u_-dD0YJSfHcicI8Acd5tSLLEij3pnzi_UnJnUaKO-GB8",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Netflix for Non Certified Android TV BoxesMouse Toggle Required",
+    "code": "https://www.mediafire.com/file_premium/cedwn97aox0f1t6/com.netflix.mediaclient_6.26.1_build_15_31696-31696_minAPI21%2528armeabi-v7a%2529%2528nodpi%2529.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/TBRwjS_qfJCSj1m7zZB93FnpJM5fSpMA_wUlFDLxWAb45T9RmwBvQd5cWR5viJJOhkI",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Prime Video for Non Certified Android TV BoxesMouse Toggle Required",
+    "code": "https://www.mediafire.com/file_premium/r5wun001f9kgf2r/com.amazon.avod.thirdpartyclient_3.0.395.1345-395001345_minAPI21%2528armeabi-v7a%2529%2528nodpi%2529.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/mZ6pRo5-NnrO9GMwFNrK5kShF0UrN5UOARVAw64_5aFG6NgEHSlq-BX5I8TEXtTOk9s",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "APKTime Latest Release",
+    "code": "https://apktime.com/apps/APKTime-v2.2-Original.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/8GH0RvjdKu8UAx4rBQ5SwSNQkLwz7cZxH6K5yxxZVczAzLEteOJk7G2vHos6j7nNdKA",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Unlinked Latest Release",
+    "code": "https://dl.unlinked.link/",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/8GH0RvjdKu8UAx4rBQ5SwSNQkLwz7cZxH6K5yxxZVczAzLEteOJk7G2vHos6j7nNdKA",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "FileSynced Latest Release",
+    "code": "https://filesynced.com/get-app",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/Pqz3LhR8EjS7p80AL7QW1ImDfGQh_J3Q4EKGp5vX_sfibCR_D-nCfjccwtICMUvk_OY",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Aptoide TV 5.1.3",
+    "code": "https://pool.apk.aptoide.com/carolyne-silva/cm-aptoidetv-pt-542-72049303-6212d8ef0991eaf05b32f8f0141dadb8.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "assets/nello.png",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Aurora Store 4.6.4",
+    "code": "https://auroraoss.com/downloads/AuroraStore/Release/AuroraStore-4.6.4.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/Q0bwbZrxLycxuqjIbMRS_1V1akgcZkeYSMFjkb34BUAIf3iqrvqNT0JHM7BpFuqUTc8",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "App Cloner (Latest Version)Use Download Mirror if first Download button doesn&#8217;t work.",
+    "code": "https://android.app-cloner.com/app-cloner.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/PBhfqKIZnPvM0sm4VKjFIh6HhNXp8WFPHa4bAWQrnSraIdYYGhIkAB00vvg8CuR_riam",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Launch on Boot 1.13 (12)",
+    "code": "https://f-droid.org/repo/news.androidtv.launchonboot_12.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/xmS6npLv_sX3UTv8ok1_vya6uaM-kPgFGX2KWQkceZWg99eQGKKiZzpznNtAxcoGujA",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Launcher Manager 1.0.4 for Android TVFor Android TV Boxes such asOnn Google TV, NVIDIA SHIELD,MECOOL, Chromecast w Google TV",
+    "code": "https://www.mediafire.com/file/no9jjayog4r55og/LM_%2528ATV%2529_-_1.0.4.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/qaXTXjbeuD0m-JDrJ2Y76_5Ghr_UDGQOJRmuYfLGekbMK0s5VXkGFjNCHS4tUJxumQ",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Launcher Manager v1.1.8 for Fire TVSpecial thanks goes out to Pro-me3us and SweenWolf for developing this!Use Download Mirror if first Download button doesn&#8217;t work.",
+    "code": "https://xdaforums.com/attachments/lm_1-1-8-apk.6295512/",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/JeTSlCm1iqKXYvXi9nQfXOoQeSSL2wPCg5jQL8iIrD66vG1frXyJmjvw7VMWeBjxGQ",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "FireTV ToolboxSpecial thanks goes out to Pro-me3us and SweenWolf for developing this!",
+    "code": "https://troypoint.mediafire.com/file/viol5l5i4eios1q/FireTV+Toolbox_1.8.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/5u3NrqtmIQmpHG8e2bgsiunhPAZnyBaXNfu-kpV-P835gP8AOS4TGptUsu0lgBqQJxOb",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "LM Settings 1.1Special thanks goes out to Pro-me3us and SweenWolf for developing this!Use Download Mirror if first Download button doesn&#8217;t work.",
+    "code": "https://xdaforums.com/attachments/lm-settings_1-1-apk.6094390/",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "assets/nello.png",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Analiti Speed Test",
+    "code": "https://troypoint.mediafire.com/file/ups9oumum6bi3kl/analiti_v2025.09.89920_MOD.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/Fzjxzbfz9pW_DziEluFasdQIuYUAgGBbt-j8OjSbC9S4NTq3LYkV5xItJm_MmT4U4J8",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "APKPREEM Installer",
+    "code": "https://www.mediafire.com/file_premium/93uwb4egg7t5jea/APKPREEM_Installer_%255B4.4%255D.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/04zdh0xwgkxR0kTE_pAzURKJjihHjR9Nz5RSU1R7toS9W8-QCLE1RtJBS4Csl-ueEUU",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Remote ADB App",
+    "code": "https://www.mediafire.com/file/rolq54mb7vm10px/remote-adb-shell.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/k7lEVSrxLA54xzKtV7TUXew2fjrCuej-gBkeihuGYa4u9_cGdMRcBNEmx3JwpbY0E4JN",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "ES File Explorer Pro 1.1.3",
+    "code": "https://troypoint.com/estb",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/35euntW2gTciNDv82LmgrwdcTFBsvctwGHoYY_bZ0dHmG5swbasBp5GUXJZ6V8ghLjM",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Firestick Mouse Toggle 1.12",
+    "code": "https://files.catbox.moe/mbgo5v.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/mdfdBLX1nUaXCdKBiURX6qUIalJSibPhFUbnOWaB3JXNOx9g3O6C0PutAlZztA4FQ8O0",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Android TV/Google TV Mouse Toggle",
+    "code": "https://github.com/aquirozc/matvt/releases/download/v1.0.7-internal-pre-release05/MATVT.1.0.7-rs_adbserver_testbranch-main_lab-test25.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/mdfdBLX1nUaXCdKBiURX6qUIalJSibPhFUbnOWaB3JXNOx9g3O6C0PutAlZztA4FQ8O0",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "NVIDIA SHIELD Mouse Toggle",
+    "code": "https://troypoint.com/mousenvidiatb",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/Nmt3YpIALQBEtOefiPgIq2ZVAN7XVcDMos-QUS37qox-rDUcIIV8gsDAZZnKz4yksjg",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "VPNPrivacyDot",
+    "code": "https://a.vpnprivacydot.com/",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/MTggKxZDuVgPcnI1hr2zneAer8AslaQOs3Bh0spZLmW_a8VL_OFvsicijwJiWeYeLg",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Fast Task Killer",
+    "code": "https://troypoint.com/fasttaskkillertb",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/ggyCuk4zPkIJhDBEgfVNKGjA8YfXERvDrGd4AjDS4uS5KjeyM1_odUSIZOcHrWm7x9Ue",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "TV Bro Browser",
+    "code": "https://troypoint.com/tvbrotb",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/662xkJIL0R76OO_cB1KnHhQ3YRjZyNKwrlG6rDgGHgPqLZNOI617W8Gr-TqDTaD69KI",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Set Orientation",
+    "code": "https://www.mediafire.com/file/59rr201u5hkp0ql/Set_Orientation_%255B1.1.4%255D.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/ly4_sp7UruSDFKu9SLbRidY5XK4Ay0QHsFzFx94UpyE0tET2ZLf-qfD1DkSKK0LajQNU",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "AppStarter",
+    "code": "https://troypoint.com/as",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/XQF8Y3CdUZMeHmT6YNvZQejaQ2dWK54myvV_mDdL_4Lf3Pd91_cx4tt1W2u68ASwWO0",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "VirusTotal V2.5",
+    "code": "https://www.mediafire.com/file_premium/lng9rrmc1fp8x4z/virustotal-mobile-2-5.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/ZUiWm8aB4hQ5zsto2ZP7Z7hDbNYPT7nAfwDhLeKZerlRx54pAVHU4eSCe9ujgOb1LDc",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "MECOOL KM2 PLUS Deluxe Remote Pairing App",
+    "code": "https://troypoint.mediafire.com/file/9q3h0g51dcm9zfv/km2-plus-deluxe-remote-tv.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/CKnMibSvBDLe8ajwZK7anXtzr1dPkzLhc0_5_3UQr5xCDgdaBfP8j77HnUGVs58gHYeN",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Easy Fire Tools",
+    "code": "https://www.mediafire.com/file_premium/mu7qhdchf4n5lk2/Easy_Fire_Tools_%255B1.1.6%255D.apk/file",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/bnl7LmT6Q3BI9S9tOxBs_HffMMpJmw2A2U4J0TLi-jIlH0Ufzn8TSDKSrEGwb7psGA",
+    "timestamp": 1771875851097
+  },
+  {
+    "name": "Revanced Manager 1.20.1",
+    "code": "https://github.com/ReVanced/revanced-manager/releases/download/v1.20.1/revanced-manager-v1.20.1.apk",
+    "desc": "Imported from TroyPoint",
+    "category": "Strumenti",
+    "icon": "https://play-lh.googleusercontent.com/bMH75P6fmgVp1zE52aicrs2Txp1EjvhlUXMQeBl2A-Ox13pyWigEtQjlvistBkVSe9vh",
+    "timestamp": 1771875851097
+  }
+]

@@ -4,43 +4,25 @@ export default async function handler(req, res) {
     try {
         if (isTV) {
             // --- Paramount+ Android TV (APKMirror) ---
-            const headers = {
-                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.5',
-                'Referer': 'https://www.apkmirror.com/'
-            };
-
-            const rssRes = await fetch('https://www.apkmirror.com/apk/viacomcbs-streaming/paramount-android-tv/feed/', { headers });
+            // APKMirror blocks server-side scraping via Cloudflare.
+            // Strategy: use RSS feed to get latest release slug → build download page URL → redirect user there.
+            // The RSS feed is publicly accessible and not protected.
+            const rssRes = await fetch(
+                'https://www.apkmirror.com/apk/viacomcbs-streaming/paramount-android-tv/feed/',
+                { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; RSS reader)' } }
+            );
             const rssText = await rssRes.text();
 
             const linkMatch = rssText.match(/<link>https:\/\/www\.apkmirror\.com\/apk\/viacomcbs-streaming\/paramount-android-tv\/([^<]+?-release)\/<\/link>/);
-            if (!linkMatch) {
-                return res.status(404).send('Release non trovata nel feed RSS APKMirror');
-            }
+            const releaseSlug = linkMatch ? linkMatch[1] : 'paramount-android-tv-latest-release';
 
-            const releaseSlug = linkMatch[1];
-            const releasePage = `https://www.apkmirror.com/apk/viacomcbs-streaming/paramount-android-tv/${releaseSlug}/`;
+            // Construct the APK download confirmation page URL from the slug
+            // Slug pattern: paramount-android-tv-X-Y-Z-release
+            // Download page: paramount-android-tv-X-Y-Z-android-apk-download
+            const apkSlug = releaseSlug.replace('-release', '-android-apk-download');
+            const apkDownloadUrl = `https://www.apkmirror.com/apk/viacomcbs-streaming/paramount-android-tv/${releaseSlug}/${apkSlug}/`;
 
-            const releaseRes = await fetch(releasePage, { headers });
-            const releaseHtml = await releaseRes.text();
-
-            const dlPageMatch = releaseHtml.match(/href="(\/apk\/viacomcbs-streaming\/paramount-android-tv\/[^"]+?-android-apk-download\/)"/);
-            if (!dlPageMatch) {
-                return res.redirect(302, releasePage);
-            }
-
-            const downloadPageUrl = 'https://www.apkmirror.com' + dlPageMatch[1];
-            const dlPageRes = await fetch(downloadPageUrl, { headers });
-            const dlHtml = await dlPageRes.text();
-
-            const finalMatch = dlHtml.match(/href="(https:\/\/[^"]*downloadr[^"]+\.apk[^"]*)"/i)
-                || dlHtml.match(/href="([^"]*\/wp-content\/[^"]+\.apk[^"]*)"/i);
-
-            if (finalMatch) {
-                return res.redirect(302, finalMatch[1]);
-            }
-            return res.redirect(302, downloadPageUrl);
+            return res.redirect(302, apkDownloadUrl);
 
         } else {
             // --- Paramount+ Mobile/Tablet (Uptodown) ---

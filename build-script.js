@@ -1,5 +1,7 @@
+
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config();
 
 // File da modificare
 const configPath = path.join(__dirname, 'public', 'firebase-config.js');
@@ -21,9 +23,11 @@ try {
 
   // Esegui le sostituzioni
   let hasMissingVars = false;
+  // Use replace all occurences if multiple? Usually 1.
   for (const [placeholder, value] of Object.entries(replacements)) {
     if (value) {
-      content = content.replace(placeholder, value);
+      // UsereplaceAll if available or global regex
+      content = content.split(placeholder).join(value);
       console.log(`✅ Sostituito ${placeholder}`);
     } else {
       console.warn(`⚠️  Attenzione: Variabile d'ambiente mancante per ${placeholder}`);
@@ -33,7 +37,7 @@ try {
 
   // Sovrascrivi il file
   fs.writeFileSync(configPath, content);
-  console.log('🎉 firebase-config.js aggiornato con successo per la produzione!');
+  console.log('🎉 firebase-config.js aggiornato con successo!');
 
 } catch (err) {
   console.error('❌ Errore durante la build:', err);
