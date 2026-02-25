@@ -1,6 +1,6 @@
 # 🏴‍☠️ Il Covo di Nello
 
-![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.4.1-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Fire%20TV%20%7C%20Android%20TV%20%7C%20Web-orange.svg)
 ![Tech Stack](https://img.shields.io/badge/tech-HTML%20%7C%20CSS%20%7C%20JS%20%7C%20Firebase%20%7C%20Vercel-purple.svg)
@@ -172,6 +172,11 @@ Questo progetto è distribuito sotto licenza MIT. Sentiti libero di utilizzarlo,
 ---
 
 ## 📝 Changelog
+
+### v1.4.1 — 25 Febbraio 2026
+- **Fix**: Aggiunta descrizione in italiano a tutte le 107 app del catalogo — nessuna app rimasta senza testo descrittivo.
+- **Fix**: Sostituite le icone fallback (`nello.png`) con immagini ufficiali ad alta risoluzione per ogni app priva di icona.
+- **Qualità**: Tutte le schede ora mostrano correttamente icona + descrizione breve.
 
 ### v1.4.0 — 25 Febbraio 2026
 - **Fix**: `api/download-paramount.js` branch TV riscritto — invece di tentare lo scraping bloccato da Cloudflare, usa solo RSS APKMirror per costruire il redirect alla pagina di download della versione più recente.
