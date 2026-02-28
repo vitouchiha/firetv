@@ -1,6 +1,8 @@
 export default async function handler(req, res) {
     // mode=dedup → rimuove schede vecchie lasciando solo l'ultima versione per ogni app
     // mode=clean (default) → rimuove entry senza nome
+    // mode=purge-firestickhacks → rimuove tutte le voci aggiunte dallo scraper FirestickHacks
+    // mode=list → restituisce tutte le schede (per debug)
     const mode = req.query?.mode || 'clean';
 
     const dbUrl = process.env.FIREBASE_DATABASE_URL;
@@ -60,6 +62,40 @@ export default async function handler(req, res) {
                 removed: toDelete.length,
                 details: toDelete.map(e => e.app.name)
             });
+
+        } else if (mode === 'purge-firestickhacks') {
+            // Rimuove tutte le voci provenienti dallo scraper FirestickHacks
+            // Identificate da: code che contiene firestickhacks, OR source=firestickhacks, OR category=FirestickHacks
+            const toDelete = [];
+            for (const [key, appObj] of Object.entries(apps)) {
+                const code = (appObj.code || '').toLowerCase();
+                const source = (appObj.source || '').toLowerCase();
+                const category = (appObj.category || '').toLowerCase();
+                const name = (appObj.name || '').toLowerCase();
+                if (
+                    code.includes('firestickhacks') ||
+                    source.includes('firestickhacks') ||
+                    category.includes('firestickhacks') ||
+                    name.includes('firestickhacks')
+                ) {
+                    toDelete.push({ key, name: appObj.name });
+                }
+            }
+            for (const { key } of toDelete) {
+                await fetch(`${dbUrl}/apps/${key}.json?auth=${token}`, { method: 'DELETE' });
+            }
+            return res.status(200).json({
+                success: true,
+                removed: toDelete.length,
+                details: toDelete.map(e => e.name)
+            });
+
+        } else if (mode === 'list') {
+            // Elenca tutte le schede (per debug)
+            const entries = Object.entries(apps)
+                .filter(([, a]) => a.name)
+                .map(([key, a]) => ({ key, name: a.name, code: a.code, category: a.category, timestamp: a.timestamp }));
+            return res.status(200).json({ success: true, count: entries.length, entries });
 
         } else {
             // Modalità default: rimuovi entry senza nome
