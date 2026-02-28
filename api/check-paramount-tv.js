@@ -1,12 +1,11 @@
 import { notifyAll } from "./utils/notify.js";
 
 export default async function handler(req, res) {
-    console.log("Avvio controllo aggiornamenti Paramount+ Android TV...");
+    console.log("Avvio controllo aggiornamenti Paramount+ US (Fire TV)...");
 
     const headers = {
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
+        'User-Agent': 'Mozilla/5.0 (compatible; RSS reader)',
+        'Accept': 'application/rss+xml, application/xml, text/xml, */*',
     };
 
     const dbUrl = process.env.FIREBASE_DATABASE_URL;
@@ -15,28 +14,25 @@ export default async function handler(req, res) {
     const adminPassword = process.env.FIREBASE_ADMIN_PASSWORD;
 
     try {
-        // 1. Leggi RSS APKMirror per Paramount+ Android TV
-        const rssRes = await fetch('https://www.apkmirror.com/apk/viacomcbs-streaming/paramount-android-tv/feed/', { headers });
+        // 1. Leggi RSS APKMirror per Paramount+ US (com.cbs.app - versione americana, compatibile Fire TV)
+        const rssRes = await fetch('https://www.apkmirror.com/apk/cbs-interactive-inc/paramount/feed/', { headers });
         const rssText = await rssRes.text();
 
-        const titleMatch = rssText.match(/<title>Paramount\+[^<]*?(\d+\.\d+[\d.]*)[^<]*?<\/title>/);
-        const versionMatch = rssText.match(/paramount-android-tv-([\d-]+)-release/);
+        const titleMatch = rssText.match(/<title>Paramount\+\s*([\d.]+)[^<]*<\/title>/);
+        const slugMatch = rssText.match(/<link>https:\/\/www\.apkmirror\.com\/apk\/cbs-interactive-inc\/paramount\/(paramount-[\d-]+-release)\/<\/link>/);
 
-        if (!titleMatch && !versionMatch) {
-            return res.status(500).json({ error: 'Impossibile trovare la versione Paramount+ TV nel feed RSS.' });
+        if (!titleMatch) {
+            return res.status(500).json({ error: 'Impossibile trovare la versione Paramount+ US nel feed RSS.' });
         }
 
-        // Estrai la versione dal titolo o dallo slug
-        let version = '';
-        if (titleMatch) {
-            version = titleMatch[1];
-        } else if (versionMatch) {
-            version = versionMatch[1].replace(/-/g, '.');
-        }
+        const version = titleMatch[1];
+        const releaseSlug = slugMatch ? slugMatch[1] : null;
+        const appName = `Paramount+ ${version} US Fire TV`;
+        const downloadUrl = releaseSlug
+            ? `https://www.apkmirror.com/apk/cbs-interactive-inc/paramount/${releaseSlug}/${releaseSlug.replace('-release', '-android-apk-download')}/`
+            : `/api/download-paramount?tv=us`;
 
-        const appName = `Paramount+ ${version} Android TV`;
-        const downloadUrl = `/api/download-paramount?tv=true`;
-        console.log(`Versione trovata su APKMirror: ${version}`);
+        console.log(`Versione US trovata su APKMirror: ${version} — slug: ${releaseSlug}`);
 
         // 2. Autentica su Firebase
         const authResponse = await fetch(
@@ -61,7 +57,7 @@ export default async function handler(req, res) {
         let existingApp = null;
         if (apps) {
             for (const [key, app] of Object.entries(apps)) {
-                if (app.name && app.name.includes('Paramount+') && app.name.includes('Android TV')) {
+                if (app.name && app.name.includes('Paramount+') && (app.name.includes('Android TV') || app.name.includes('US Fire TV'))) {
                     existingKey = key;
                     existingApp = app;
                     break;
@@ -72,7 +68,7 @@ export default async function handler(req, res) {
         const newAppData = {
             name: appName,
             code: downloadUrl,
-            desc: `Versione ${version} — APK diretto APKMirror`,
+            desc: `Versione ${version} USA — APK diretto APKMirror (compatibile Fire TV con proxy US)`,
             icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Paramount_Plus.svg/512px-Paramount_Plus.svg.png",
             category: "Streaming",
             timestamp: Date.now()
@@ -88,8 +84,8 @@ export default async function handler(req, res) {
             });
             console.log('Nuova scheda Paramount+ TV aggiunta!');
 
-            await notifyAll(appName, version, `https://${req.headers.host}${downloadUrl}`);
-            return res.status(200).json({ success: true, message: `Aggiunta nuova versione TV: ${version}` });
+            await notifyAll(appName, version, downloadUrl);
+            return res.status(200).json({ success: true, message: `Aggiunta nuova versione US Fire TV: ${version}` });
 
         } else if (existingApp.name !== appName || existingApp.desc !== newAppData.desc) {
             // Aggiorna scheda esistente
@@ -98,10 +94,10 @@ export default async function handler(req, res) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newAppData)
             });
-            console.log(`Scheda Paramount+ TV aggiornata a ${version}`);
+            console.log(`Scheda Paramount+ US Fire TV aggiornata a ${version}`);
 
-            await notifyAll(appName, version, `https://${req.headers.host}${downloadUrl}`);
-            return res.status(200).json({ success: true, message: `Aggiornata versione TV: ${version}` });
+            await notifyAll(appName, version, downloadUrl);
+            return res.status(200).json({ success: true, message: `Aggiornata versione US Fire TV: ${version}` });
 
         } else {
             return res.status(200).json({ success: true, message: `Nessun aggiornamento. Versione TV attuale: ${version}` });

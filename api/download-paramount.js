@@ -1,27 +1,24 @@
 export default async function handler(req, res) {
-    const isTV = req.query?.tv === 'true' || req.query?.tv === '1';
+    const isTV = req.query?.tv === 'true' || req.query?.tv === '1' || req.query?.tv === 'us';
 
     try {
         if (isTV) {
-            // --- Paramount+ Android TV (APKMirror) ---
-            // APKMirror blocks server-side scraping via Cloudflare.
-            // Strategy: use RSS feed to get latest release slug → build download page URL → redirect user there.
-            // The RSS feed is publicly accessible and not protected.
+            // --- Paramount+ US Fire TV (APKMirror - com.cbs.app, versione americana) ---
             const rssRes = await fetch(
-                'https://www.apkmirror.com/apk/viacomcbs-streaming/paramount-android-tv/feed/',
+                'https://www.apkmirror.com/apk/cbs-interactive-inc/paramount/feed/',
                 { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; RSS reader)' } }
             );
             const rssText = await rssRes.text();
 
-            const linkMatch = rssText.match(/<link>https:\/\/www\.apkmirror\.com\/apk\/viacomcbs-streaming\/paramount-android-tv\/([^<]+?-release)\/<\/link>/);
-            const releaseSlug = linkMatch ? linkMatch[1] : 'paramount-android-tv-latest-release';
+            const slugMatch = rssText.match(/<link>https:\/\/www\.apkmirror\.com\/apk\/cbs-interactive-inc\/paramount\/(paramount-[\d-]+-release)\/<\/link>/);
+            const releaseSlug = slugMatch ? slugMatch[1] : null;
 
-            // Construct the APK download confirmation page URL from the slug
-            // Slug pattern: paramount-android-tv-X-Y-Z-release
-            // Download page: paramount-android-tv-X-Y-Z-android-apk-download
-            const apkSlug = releaseSlug.replace('-release', '-android-apk-download');
-            const apkDownloadUrl = `https://www.apkmirror.com/apk/viacomcbs-streaming/paramount-android-tv/${releaseSlug}/${apkSlug}/`;
+            if (!releaseSlug) {
+                // Fallback alla pagina generale
+                return res.redirect(302, 'https://www.apkmirror.com/apk/cbs-interactive-inc/paramount/');
+            }
 
+            const apkDownloadUrl = `https://www.apkmirror.com/apk/cbs-interactive-inc/paramount/${releaseSlug}/${releaseSlug.replace('-release', '-android-apk-download')}/`;
             return res.redirect(302, apkDownloadUrl);
 
         } else {
