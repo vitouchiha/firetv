@@ -1,6 +1,6 @@
 # 🏴‍☠️ Il Covo di Nello
 
-![Version](https://img.shields.io/badge/version-1.4.3-blue.svg)
+![Version](https://img.shields.io/badge/version-1.5.3-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Fire%20TV%20%7C%20Android%20TV%20%7C%20Web-orange.svg)
 ![Tech Stack](https://img.shields.io/badge/tech-HTML%20%7C%20CSS%20%7C%20JS%20%7C%20Firebase%20%7C%20Vercel-purple.svg)
@@ -172,6 +172,18 @@ Questo progetto è distribuito sotto licenza MIT. Sentiti libero di utilizzarlo,
 ---
 
 ## 📝 Changelog
+
+### v1.5.3 — 27 Febbraio 2026
+- **Nuovo**: Due schede separate per Paramount+ US Fire TV — **APK standalone** (Uptodown, installa direttamente) e **Bundle APKM** (APKMirror, richiede APKMirror Installer).
+- **Nuovo**: Download Paramount+ US via APKMirror con `got-scraping` (bypass Cloudflare) + **Webshare proxy** residenziale rotante. Proxy con IP diretti (free plan non supporta endpoint rotante).
+- **Nuovo**: `api/fix-db.js` riscritto con Firebase REST API — supporta `?mode=clean` (entry senza nome) e `?mode=dedup` (mantiene solo versione più alta per app, ordinamento per versione come chiave primaria).
+- **Pulizia**: DB ridotto da 101 → 94 schede, eliminando duplicati obsoleti (Kodi 18.9, Stremio 1.9.7, TROYPOINT Fork versioni vecchie).
+- **Fix**: Ordinamento dedup corretto — versione come chiave primaria (non timestamp) per gestire entry con stesso timestamp aggiunte dallo scraping TroyPoint.
+
+### v1.5.0 — 26 Febbraio 2026
+- **Fix**: Aggiornamenti Stremio, notifiche email e iscrizioni corretti.
+- **Fix**: `api/fix-db.js` riscritto con Firebase REST API (eliminato SDK client che crashava).
+- **Nuovo**: `fix-db?mode=dedup` per rimuovere manualmente versioni obsolete (incorpora il precedente `dedup-apps.js`, eliminato per rispettare limite 12 funzioni Vercel Hobby).
 
 ### v1.4.3 — 25 Febbraio 2026
 - **Fix**: Ripristinate le icone originali per 78 app usando i dati dello scraping TROYPOINT (`scraped_apps.json`) — le icone corrispondono ora esattamente a quelle mostrate sul sito TROYPOINT.
