@@ -1,8 +1,7 @@
 
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, get, update, push, set } from "firebase/database";
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getDatabase, ref, get, update, push } from "firebase/database";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import gplay from 'google-play-scraper';
 import { notifyAll } from "./utils/notify.js";
 
 const firebaseConfig = {
@@ -15,7 +14,7 @@ const firebaseConfig = {
     appId: process.env.FIREBASE_APP_ID
 };
 
-const app = initializeApp(firebaseConfig);
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
@@ -144,12 +143,13 @@ export default async function handler(req, res) {
                 const newRef = push(ref(db, 'apps'));
                 const newCat = categorizeApp(scraped.name);
                 
-                // Try fetch icon
+                // Try fetch icon (import dinamico per evitare crash serverless)
                 let icon = "assets/nello.png";
                 try {
+                    const gplay = (await import('google-play-scraper')).default;
                     const results = await gplay.search({ term: scraped.name, num: 1 });
                     if (results && results.length > 0) icon = results[0].icon;
-                } catch(e) {}
+                } catch(e) { console.warn("gplay icon fetch failed:", e.message); }
                 
                 updates[`apps/${newRef.key}`] = {
                     name: scraped.name,

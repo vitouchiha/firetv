@@ -1,4 +1,12 @@
 {
+  "functions": {
+    "api/cron-troypoint.js": { "maxDuration": 60 },
+    "api/check-stremio.js": { "maxDuration": 30 },
+    "api/check-paramount.js": { "maxDuration": 30 },
+    "api/check-paramount-tv.js": { "maxDuration": 30 },
+    "api/check-revanced.js": { "maxDuration": 30 },
+    "api/check-windows-tools.js": { "maxDuration": 30 }
+  },
   "crons": [
     {
       "path": "/api/check-stremio",
