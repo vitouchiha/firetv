@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getDatabase, ref, get } from "firebase/database";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
@@ -58,7 +58,8 @@ export async function sendEmailNotification(appName, version, downloadUrl, iconU
             appId: process.env.FIREBASE_APP_ID
         };
 
-        const app = initializeApp(firebaseConfig);
+        // Riusa l'app Firebase già inizializzata se presente (evita duplicate-app in serverless)
+        const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const auth = getAuth(app);
 

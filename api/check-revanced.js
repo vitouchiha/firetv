@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getDatabase, ref, set, get, update, child } from "firebase/database";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import admZip from 'adm-zip';
@@ -146,7 +146,7 @@ export default async function handler(req, res) {
     };
 
     // Singleton app initialization
-    const app = initializeApp(firebaseConfig); // Potrebbe dare errore se già inizializzata, gestire in prod reale
+    const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const auth = getAuth(app);
 

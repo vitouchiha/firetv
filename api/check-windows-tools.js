@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getDatabase, ref, update, get } from "firebase/database";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import https from 'https';
@@ -94,7 +94,7 @@ export default async function handler(req, res) {
         appId: process.env.FIREBASE_APP_ID
     };
 
-    const app = initializeApp(firebaseConfig);
+    const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const auth = getAuth(app);
 

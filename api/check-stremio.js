@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getDatabase, ref, get, push, remove, child } from "firebase/database";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { notifyAll } from "./utils/notify.js";
@@ -45,11 +45,9 @@ export default async function handler(req, res) {
             appId: process.env.FIREBASE_APP_ID
         };
 
-        const app = initializeApp(firebaseConfig);
+        const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const auth = getAuth(app);
-
-        // 4. Effettua il login come amministratore
         const adminEmail = process.env.FIREBASE_ADMIN_EMAIL;
         const adminPassword = process.env.FIREBASE_ADMIN_PASSWORD;
 
