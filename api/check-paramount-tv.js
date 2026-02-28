@@ -26,12 +26,13 @@ export default async function handler(req, res) {
         }
 
         const version = titleMatch[1];
-        const releaseSlug = slugMatch ? slugMatch[1] : null;
-        const appName = `Paramount+ ${version} US Fire TV`;
         // Usa sempre l'endpoint API che gestisce il download via proxy (got-scraping + Webshare)
-        const downloadUrl = `/api/download-paramount?tv=us`;
+        const downloadUrlApk    = `/api/download-paramount?tv=us&type=apk`;
+        const downloadUrlBundle = `/api/download-paramount?tv=us&type=bundle`;
+        const nameApk    = `Paramount+ ${version} US Fire TV APK`;
+        const nameBundle = `Paramount+ ${version} US Fire TV Bundle`;
 
-        console.log(`Versione US trovata su APKMirror: ${version} — slug: ${releaseSlug}`);
+        console.log(`Versione US trovata su APKMirror: ${version}`);
 
         // 2. Autentica su Firebase
         const authResponse = await fetch(
@@ -48,56 +49,72 @@ export default async function handler(req, res) {
         }
         const token = authData.idToken;
 
-        // 3. Leggi il DB per trovare una scheda esistente per Paramount+ TV
+        // 3. Leggi il DB per trovare le schede esistenti (APK e Bundle)
         const appsRes = await fetch(`${dbUrl}/apps.json?auth=${token}`);
         const apps = await appsRes.json();
 
-        let existingKey = null;
-        let existingApp = null;
+        let keyApk = null, keyBundle = null, existingApk = null, existingBundle = null;
         if (apps) {
             for (const [key, app] of Object.entries(apps)) {
-                if (app.name && app.name.includes('Paramount+') && (app.name.includes('Android TV') || app.name.includes('US Fire TV'))) {
-                    existingKey = key;
-                    existingApp = app;
-                    break;
+                if (!app.name) continue;
+                if (app.name.includes('Paramount+') && app.name.includes('US Fire TV APK')) {
+                    keyApk = key; existingApk = app;
+                } else if (app.name.includes('Paramount+') && app.name.includes('US Fire TV Bundle')) {
+                    keyBundle = key; existingBundle = app;
+                } else if (app.name.includes('Paramount+') && (app.name.includes('Android TV') || app.name.includes('US Fire TV'))
+                           && !app.name.includes('APK') && !app.name.includes('Bundle')) {
+                    // Vecchia scheda singola → diventa Bundle
+                    keyBundle = key; existingBundle = app;
                 }
             }
         }
 
-        const newAppData = {
-            name: appName,
-            code: downloadUrl,
-            desc: `Versione ${version} USA — Download diretto APKMirror (compatibile Fire TV con proxy US)`,  
-            icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Paramount_Plus.svg/512px-Paramount_Plus.svg.png",
-            category: "Streaming",
-            timestamp: Date.now()
+        const iconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Paramount_Plus.svg/512px-Paramount_Plus.svg.png";
+        const ts = Date.now();
+
+        const dataApk = {
+            name: nameApk,
+            code: downloadUrlApk,
+            desc: `Versione ${version} USA — APK standalone (Uptodown, compatibile Fire TV con proxy US)`,
+            icon: iconUrl, category: "Streaming", timestamp: ts
+        };
+        const dataBundle = {
+            name: nameBundle,
+            code: downloadUrlBundle,
+            desc: `Versione ${version} USA — Bundle APKM (APKMirror, richiede APKMirror Installer o split APK)`,
+            icon: iconUrl, category: "Streaming", timestamp: ts
         };
 
-        if (!existingKey) {
-            // Aggiungi nuova scheda
-            newAppData.order = -1;
-            await fetch(`${dbUrl}/apps.json?auth=${token}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newAppData)
-            });
-            console.log('Nuova scheda Paramount+ TV aggiunta!');
+        let updated = 0;
 
-            await notifyAll(appName, version, downloadUrl);
-            return res.status(200).json({ success: true, message: `Aggiunta nuova versione US Fire TV: ${version}` });
+        // --- Gestione scheda APK ---
+        if (!keyApk) {
+            dataApk.order = -1;
+            await fetch(`${dbUrl}/apps.json?auth=${token}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dataApk) });
+            console.log('Nuova scheda APK aggiunta');
+            await notifyAll(nameApk, version, downloadUrlApk);
+            updated++;
+        } else if (existingApk.name !== nameApk) {
+            await fetch(`${dbUrl}/apps/${keyApk}.json?auth=${token}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dataApk) });
+            console.log(`Scheda APK aggiornata a ${version}`);
+            await notifyAll(nameApk, version, downloadUrlApk);
+            updated++;
+        }
 
-        } else if (existingApp.name !== appName || existingApp.desc !== newAppData.desc) {
-            // Aggiorna scheda esistente
-            await fetch(`${dbUrl}/apps/${existingKey}.json?auth=${token}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newAppData)
-            });
-            console.log(`Scheda Paramount+ US Fire TV aggiornata a ${version}`);
+        // --- Gestione scheda Bundle ---
+        if (!keyBundle) {
+            dataBundle.order = -1;
+            await fetch(`${dbUrl}/apps.json?auth=${token}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dataBundle) });
+            console.log('Nuova scheda Bundle aggiunta');
+            updated++;
+        } else if (existingBundle.name !== nameBundle) {
+            await fetch(`${dbUrl}/apps/${keyBundle}.json?auth=${token}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dataBundle) });
+            console.log(`Scheda Bundle aggiornata a ${version}`);
+            updated++;
+        }
 
-            await notifyAll(appName, version, downloadUrl);
-            return res.status(200).json({ success: true, message: `Aggiornata versione US Fire TV: ${version}` });
-
+        if (updated > 0) {
+            return res.status(200).json({ success: true, message: `Aggiornate ${updated} schede US Fire TV: ${version}` });
         } else {
             return res.status(200).json({ success: true, message: `Nessun aggiornamento. Versione TV attuale: ${version}` });
         }

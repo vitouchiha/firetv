@@ -1,9 +1,25 @@
 export default async function handler(req, res) {
     const isTV = req.query?.tv === 'true' || req.query?.tv === '1' || req.query?.tv === 'us';
+    const type = req.query?.type || 'bundle'; // 'apk' = Uptodown standalone, 'bundle' = APKMirror .apkm
 
     try {
-        if (isTV) {
-            // --- Paramount+ US Fire TV (APKMirror via got-scraping + Webshare proxy) ---
+        if (isTV && type === 'apk') {
+            // --- Paramount+ US Fire TV APK standalone (Uptodown - nessun Cloudflare) ---
+            const response = await fetch('https://com-cbs-ott.en.uptodown.com/android/download', {
+                headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+            });
+            const html = await response.text();
+            const match = html.match(/id="detail-download-button"[^>]*data-url="([^"]+)"/);
+            if (match) {
+                const dlUrl = 'https://dw.uptodown.com/dwn/' + match[1];
+                const redirectRes = await fetch(dlUrl, { redirect: 'manual' });
+                return res.redirect(302, redirectRes.headers.get('location') || dlUrl);
+            } else {
+                return res.redirect(302, 'https://com-cbs-ott.en.uptodown.com/android/');
+            }
+
+        } else if (isTV) {
+            // --- Paramount+ US Fire TV Bundle .apkm (APKMirror via got-scraping + Webshare proxy) ---
             const proxyUser = process.env.WEBSHARE_PROXY_USER?.trim();
             const proxyPass = process.env.WEBSHARE_PROXY_PASS?.trim();
             // Lista proxy (quelli funzionanti per Cloudflare prima)
