@@ -1,6 +1,7 @@
 {
   "functions": {
     "api/cron-troypoint.js": { "maxDuration": 60 },
+    "api/cron-firestickhacks.js": { "maxDuration": 60 },
     "api/check-stremio.js": { "maxDuration": 30 },
     "api/check-paramount.js": { "maxDuration": 30 },
     "api/check-paramount-tv.js": { "maxDuration": 30 },
@@ -9,6 +10,10 @@
     "api/download-paramount.js": { "maxDuration": 30 }
   },
   "crons": [
+    {
+      "path": "/api/cron-firestickhacks",
+      "schedule": "0 9 * * *"
+    },
     {
       "path": "/api/check-stremio",
       "schedule": "0 12 * * *"

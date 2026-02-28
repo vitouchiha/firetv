@@ -35,6 +35,8 @@ body.light-theme::before {
 }
 body.light-theme .card-text h4 { color: #0f172a; }
 body.light-theme .card-text .card-date { color: rgba(0,0,0,0.35); }
+body.light-theme .subcategory-header h3 { color: #0891b2; }
+body.light-theme .subcategory-header hr { border-color: rgba(8,145,178,0.2); }
 body.light-theme .bookmark-hint strong { color: #0f172a; }
 body.light-theme .icon-container { background: rgba(255,255,255,0.8); box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); }
 body.light-theme .btn { color: var(--neon-purple); background: rgba(168, 85, 247, 0.1); }
@@ -203,6 +205,12 @@ body.is-admin .card:active { cursor: grabbing; }
 .card-text h4 { margin: 0 0 6px 0; font-size: 15px; font-weight: 600; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: #fff; }
 .card-text span { font-size: 13px; color: var(--text-muted); display: block; line-height: 1.4; }
 .card-text .card-date { font-size: 11px; color: rgba(255,255,255,0.28); margin-top: 4px; display: block; }
+
+/* Subcategory section header */
+.subcategory-header { width: 100%; padding: 10px 4px 6px; margin: 16px 0 4px; display: flex; align-items: center; gap: 12px; }
+.subcategory-header h3 { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; white-space: nowrap; }
+.subcategory-header hr { flex: 1; border: none; border-top: 1px solid rgba(34,211,238,0.2); margin: 0; }
+.subcategory-header .sub-count { font-size: 11px; color: rgba(255,255,255,0.3); white-space: nowrap; }
 
 .btn { 
   background: rgba(168, 85, 247, 0.2); color: #fff; padding: 10px 18px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease; 
@@ -757,9 +765,46 @@ body.lite-mode.light-theme .search-box input {
             return;
         }
 
-        filteredApps.forEach((app) => {
-          createAppCard(app.name, app.code, app.desc, app.id, app.icon, app.timestamp, app.clicks, app.category, app.type);
-        });
+        // Se stiamo vedendo "FireTV Hack", raggruppa per sotto-categoria
+        const SUBCATEGORY_ORDER = [
+            "Film & Serie TV", "Sport", "TV Live", "IPTV", "Player IPTV",
+            "Social", "Anime", "Utility", "Giochi", "Musica", "App Store", "VPN"
+        ];
+
+        if (currentCategory === 'FireTV Hack' && !searchTerm) {
+            // Raggruppa per subcategory rispettando l'ordine
+            const groups = {};
+            filteredApps.forEach(app => {
+                const sub = app.subcategory || 'Altro';
+                if (!groups[sub]) groups[sub] = [];
+                groups[sub].push(app);
+            });
+
+            // Ordina i gruppi
+            const orderedSubs = [
+                ...SUBCATEGORY_ORDER.filter(s => groups[s]),
+                ...Object.keys(groups).filter(s => !SUBCATEGORY_ORDER.includes(s))
+            ];
+
+            orderedSubs.forEach(sub => {
+                const subApps = groups[sub];
+                if (!subApps?.length) return;
+
+                // Intestazione sotto-categoria
+                const header = document.createElement('div');
+                header.className = 'subcategory-header';
+                header.innerHTML = `<h3>${sub}</h3><hr><span class="sub-count">${subApps.length} app</span>`;
+                main.appendChild(header);
+
+                subApps.forEach(app => {
+                    createAppCard(app.name, app.code, app.desc, app.id, app.icon, app.timestamp, app.clicks, app.category, app.type);
+                });
+            });
+        } else {
+            filteredApps.forEach((app) => {
+                createAppCard(app.name, app.code, app.desc, app.id, app.icon, app.timestamp, app.clicks, app.category, app.type);
+            });
+        }
     };
 
     window.filterApps = function() {
