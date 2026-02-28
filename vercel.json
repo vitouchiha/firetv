@@ -6,7 +6,8 @@
     "api/check-paramount-tv.js": { "maxDuration": 30 },
     "api/check-revanced.js": { "maxDuration": 30 },
     "api/check-windows-tools.js": { "maxDuration": 30 },
-    "api/download-paramount.js": { "maxDuration": 30 }
+    "api/download-paramount.js": { "maxDuration": 30 },
+    "api/fix-db.js": { "maxDuration": 60 }
   },
   "crons": [
     {
