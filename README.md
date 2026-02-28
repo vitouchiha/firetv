@@ -1,9 +1,10 @@
 # 🏴‍☠️ Il Covo di Nello
 
-![Version](https://img.shields.io/badge/version-1.4.3-blue.svg)
+![Version](https://img.shields.io/badge/version-1.6.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Fire%20TV%20%7C%20Android%20TV%20%7C%20Web-orange.svg)
-![Tech Stack](https://img.shields.io/badge/tech-HTML%20%7C%20CSS%20%7C%20JS%20%7C%20Firebase%20%7C%20Vercel-purple.svg)
+![Tech Stack](https://img.shields.io/badge/tech-HTML%20%7C%20Material%20Design%203%20%7C%20Firebase%20%7C%20Vercel-purple.svg)
+![UI](https://img.shields.io/badge/UI-Material%20Design%203-6750A4.svg)
 
 **Il Covo di Nello** è un portale web moderno e reattivo, progettato specificamente per facilitare il download e l'installazione di applicazioni (APK) su dispositivi **Amazon Fire TV Stick** e **Android TV**. 
 
@@ -28,7 +29,7 @@ Il progetto include un'interfaccia utente accattivante, un pannello di amministr
 
 ## 🛠️ Stack Tecnologico
 
-- **Frontend**: HTML5, CSS3 (Custom Properties, Animazioni, Glassmorphism), Vanilla JavaScript.
+- **Frontend**: HTML5, **Material Design 3** (token CSS, Surface/Card/Chip/FAB), Vanilla JavaScript, Google Fonts Roboto + Material Icons Round.
 - **Backend / API**: Node.js (Vercel Serverless Functions).
 - **Database**: Firebase Realtime Database.
 - **Autenticazione**: Firebase Authentication.
@@ -172,6 +173,16 @@ Questo progetto è distribuito sotto licenza MIT. Sentiti libero di utilizzarlo,
 ---
 
 ## 📝 Changelog
+
+### v1.6.0 — Redesign Material Design 3
+- **Redesign UI completo**: sostituita la grafica neon glassmorphism con [Material Design 3](https://m3.material.io/) — color tokens seed `#6750A4`, surface/on-surface, tonal elevation.
+- **Nuovi componenti MD3**: Top App Bar (`md-top-bar`), Search Bar con icona Material, Chips filtro categoria, App Grid con card MD3 Surface, Snackbar MD3 (sostituisce tutti i `alert()`), sezione guide e form in stile MD3.
+- **Font aggiornato**: Orbitron/Inter → **Roboto** (300/400/500/700) + **Material Icons Round** (Google Fonts CDN).
+- **Tema Chiaro/Scuro MD3**: token light/dark separati (`--md-surface: #FFFBFE` / `#1C1B1F`), variabili legacy preservate per retrocompatibilità JS.
+- **GitHub Actions**: aggiunto `.github/workflows/release.yml` — crea automaticamente tag git e GitHub Release ad ogni push su `main` con changelog dai commit.
+- **Script update-readme**: `scripts/update-readme.js` + npm script `update-readme` per aggiornare il badge versione nel README da `package.json`.
+- **JS cleanup**: tutti i `alert()` sostituiti con `showSnackbar()` (MD3 Snackbar), fix `style.display = 'inline-flex'` per il pulsante login.
+- **Lite mode**: revisione modalità Fire TV per disabilitare solo transizioni/shadow, senza rompere la struttura MD3.
 
 ### v1.4.3 — 25 Febbraio 2026
 - **Fix**: Ripristinate le icone originali per 78 app usando i dati dello scraping TROYPOINT (`scraped_apps.json`) — le icone corrispondono ora esattamente a quelle mostrate sul sito TROYPOINT.
