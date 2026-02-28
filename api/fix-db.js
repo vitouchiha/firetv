@@ -3,6 +3,8 @@ export default async function handler(req, res) {
     // mode=clean (default) → rimuove entry senza nome
     // mode=purge-firestickhacks → rimuove tutte le voci aggiunte dallo scraper FirestickHacks
     // mode=list → restituisce tutte le schede (per debug)
+    // mode=restore → ripristina app mancanti caricate manualmente (Xrom, Xrom Lite, Vimu Installer, Super Proxy, Stremio TV Mod VLC)
+    // mode=fix → corregge categorie Paramount+ e re-aggiunge Adobe apps
     const mode = req.query?.mode || 'clean';
 
     const dbUrl = process.env.FIREBASE_DATABASE_URL;
@@ -68,6 +70,75 @@ export default async function handler(req, res) {
                 removed: toDelete.length,
                 details: toDelete.map(e => e.app.name)
             });
+
+        } else if (mode === 'restore') {
+            // Ripristina app caricate manualmente che mancano nel DB
+            const appsToRestore = [
+                {
+                    name: "Xrom",
+                    code: "4537574",
+                    desc: "Custom ROM / launcher per Fire TV",
+                    category: "Launcher",
+                    icon: "assets/android-os.png",
+                    timestamp: Date.now()
+                },
+                {
+                    name: "Xrom Lite",
+                    code: "3271802",
+                    desc: "Versione leggera di Xrom per Fire TV",
+                    category: "Launcher",
+                    icon: "assets/android-file.png",
+                    timestamp: Date.now()
+                },
+                {
+                    name: "Vimu Installer",
+                    code: "3188516",
+                    desc: "Installa Vimu Media Player su Fire TV",
+                    category: "Strumenti",
+                    icon: "assets/downloads.png",
+                    timestamp: Date.now()
+                },
+                {
+                    name: "Super Proxy",
+                    code: "https://www.dropbox.com/scl/fi/10ifdk8arqtupxo7762ik/uptodown-com.scheler.superproxy.apk?rlkey=22ia21a34q3g2dypu5zwcd907&st=wr1ns3pr&dl=0",
+                    desc: "App proxy per Android TV e Fire TV",
+                    category: "VPN",
+                    icon: "assets/proxy.png",
+                    timestamp: Date.now()
+                },
+                {
+                    name: "Stremio TV Mod VLC",
+                    code: "3988093",
+                    desc: "Versione modificata di Stremio con player VLC per TV",
+                    category: "Film & Serie TV",
+                    icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Stremio_Icon.svg/512px-Stremio_Icon.svg.png",
+                    timestamp: Date.now()
+                }
+            ];
+
+            const existingNames = Object.values(apps).map(a => (a.name || '').toLowerCase().trim());
+            const patchBody = {};
+            const restored = [];
+            const skipped = [];
+
+            for (const app of appsToRestore) {
+                if (!existingNames.includes(app.name.toLowerCase())) {
+                    const newKey = 'restore_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+                    patchBody[newKey] = app;
+                    restored.push(app.name);
+                } else {
+                    skipped.push(app.name);
+                }
+            }
+
+            if (Object.keys(patchBody).length > 0) {
+                await fetch(`${dbUrl}/apps.json?auth=${token}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(patchBody)
+                });
+            }
+            return res.status(200).json({ success: true, restored, skipped });
 
         } else if (mode === 'fix') {
             // Fix puntali:
