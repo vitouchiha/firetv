@@ -22,9 +22,22 @@ export default async function handler(req, res) {
         if (!apps) return res.status(200).json({ success: true, message: 'DB vuoto', removed: 0 });
 
         if (mode === 'dedup') {
-            // Raggruppa per nome base (senza numeri di versione)
             function baseName(name) {
                 return name.replace(/\b\d+[\d.]+\b/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+            }
+            function extractVersion(name) {
+                const m = name.match(/\b(\d+)\.(\d+)(?:\.(\d+))?\b/);
+                return m ? [parseInt(m[1]), parseInt(m[2]), parseInt(m[3] || 0)] : null;
+            }
+            function compareEntries(a, b) {
+                const vA = extractVersion(a.app.name), vB = extractVersion(b.app.name);
+                if (vA && vB) {
+                    for (let i = 0; i < 3; i++) {
+                        const d = (vB[i] || 0) - (vA[i] || 0);
+                        if (d !== 0) return d; // versione più alta vince
+                    }
+                }
+                return (b.app.timestamp || 0) - (a.app.timestamp || 0);
             }
             const groups = {};
             for (const [key, appObj] of Object.entries(apps)) {
@@ -36,7 +49,7 @@ export default async function handler(req, res) {
             const toDelete = [];
             for (const entries of Object.values(groups)) {
                 if (entries.length <= 1) continue;
-                entries.sort((a, b) => (b.app.timestamp || 0) - (a.app.timestamp || 0));
+                entries.sort(compareEntries);
                 toDelete.push(...entries.slice(1));
             }
             for (const { key } of toDelete) {
@@ -54,54 +67,6 @@ export default async function handler(req, res) {
             for (const [key, appObj] of Object.entries(apps)) {
                 if (!appObj.name) {
                     await fetch(`${dbUrl}/apps/${key}.json?auth=${token}`, { method: 'DELETE' });
-                    removedCount++;
-                }
-            }
-            return res.status(200).json({ success: true, message: `Rimosse ${removedCount} entry corrotte.` });
-        }
-
-    } catch (error) {
-        console.error("Errore:", error);
-        return res.status(500).json({ error: error.message });
-    }
-}
-
-        const snapshot = await get(ref(db, 'apps'));
-        const apps = snapshot.val();
-        if (!apps) return res.status(200).json({ success: true, message: 'DB vuoto', removed: 0 });
-
-        if (mode === 'dedup') {
-            // Raggruppa per nome base (senza numeri di versione)
-            function baseName(name) {
-                return name.replace(/\b\d+[\d.]+\b/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
-            }
-            const groups = {};
-            for (const [key, app] of Object.entries(apps)) {
-                if (!app.name) continue;
-                const base = baseName(app.name);
-                if (!groups[base]) groups[base] = [];
-                groups[base].push({ key, app });
-            }
-            const toDelete = [];
-            for (const entries of Object.values(groups)) {
-                if (entries.length <= 1) continue;
-                entries.sort((a, b) => (b.app.timestamp || 0) - (a.app.timestamp || 0));
-                toDelete.push(...entries.slice(1));
-            }
-            for (const { key } of toDelete) {
-                await remove(ref(db, `apps/${key}`));
-            }
-            return res.status(200).json({
-                success: true,
-                removed: toDelete.length,
-                details: toDelete.map(e => e.app.name)
-            });
-        } else {
-            // Modalità default: rimuovi entry senza nome
-            let removedCount = 0;
-            for (const key in apps) {
-                if (!apps[key].name) {
-                    await remove(ref(db, `apps/${key}`));
                     removedCount++;
                 }
             }
