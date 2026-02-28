@@ -54,8 +54,14 @@ export default async function handler(req, res) {
                 entries.sort(compareEntries);
                 toDelete.push(...entries.slice(1));
             }
-            for (const { key } of toDelete) {
-                await fetch(`${dbUrl}/apps/${key}.json?auth=${token}`, { method: 'DELETE' });
+            if (toDelete.length > 0) {
+                const patchBody = {};
+                for (const { key } of toDelete) patchBody[key] = null;
+                await fetch(`${dbUrl}/apps.json?auth=${token}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(patchBody)
+                });
             }
             return res.status(200).json({
                 success: true,
@@ -65,24 +71,22 @@ export default async function handler(req, res) {
 
         } else if (mode === 'purge-firestickhacks') {
             // Rimuove tutte le voci provenienti dallo scraper FirestickHacks
-            // Identificate da: category="FireTV Hack" OR code contenente firestickhacks/pixeldrain/mediafire aggiunto in blocco
-            // Il modo sicuro: categoria "FireTV Hack" (impostata dallo scraper)
+            // Identificate da: category="FireTV Hack"
             const toDelete = [];
             for (const [key, appObj] of Object.entries(apps)) {
-                const code = (appObj.code || '').toLowerCase();
-                const source = (appObj.source || '').toLowerCase();
-                const category = (appObj.category || '');
-                const name = (appObj.name || '').toLowerCase();
-                if (
-                    category === 'FireTV Hack' ||
-                    source.includes('firestickhacks') ||
-                    name.includes('firestickhacks')
-                ) {
+                if ((appObj.category || '') === 'FireTV Hack' || (appObj.source || '').toLowerCase().includes('firestickhacks')) {
                     toDelete.push({ key, name: appObj.name });
                 }
             }
-            for (const { key } of toDelete) {
-                await fetch(`${dbUrl}/apps/${key}.json?auth=${token}`, { method: 'DELETE' });
+            if (toDelete.length > 0) {
+                // Batch delete: un singolo PATCH con tutti i null è molto più veloce di N DELETE separati
+                const patchBody = {};
+                for (const { key } of toDelete) patchBody[key] = null;
+                await fetch(`${dbUrl}/apps.json?auth=${token}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(patchBody)
+                });
             }
             return res.status(200).json({
                 success: true,
@@ -98,13 +102,18 @@ export default async function handler(req, res) {
             return res.status(200).json({ success: true, count: entries.length, entries });
 
         } else {
-            // Modalità default: rimuovi entry senza nome
+            // Modalità default: rimuovi entry senza nome (batch)
+            const patchBody = {};
             let removedCount = 0;
             for (const [key, appObj] of Object.entries(apps)) {
-                if (!appObj.name) {
-                    await fetch(`${dbUrl}/apps/${key}.json?auth=${token}`, { method: 'DELETE' });
-                    removedCount++;
-                }
+                if (!appObj.name) { patchBody[key] = null; removedCount++; }
+            }
+            if (removedCount > 0) {
+                await fetch(`${dbUrl}/apps.json?auth=${token}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(patchBody)
+                });
             }
             return res.status(200).json({ success: true, message: `Rimosse ${removedCount} entry corrotte.` });
         }
