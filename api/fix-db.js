@@ -22,8 +22,13 @@ export default async function handler(req, res) {
         if (!apps) return res.status(200).json({ success: true, message: 'DB vuoto', removed: 0 });
 
         if (mode === 'dedup') {
+            // Rimuove versione e normalizza per confronto esatto
             function baseName(name) {
                 return name.replace(/\b\d+[\d.]+\b/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+            }
+            // Prima parola significativa del nome (usata per raggruppamento "fuzzy")
+            function rootWord(name) {
+                return name.replace(/\b\d+[\d.]*\b/g, '').trim().split(/\s+/)[0]?.toLowerCase() || '';
             }
             function extractVersion(name) {
                 const m = name.match(/\b(\d+)\.(\d+)(?:\.(\d+))?\b/);
@@ -39,6 +44,8 @@ export default async function handler(req, res) {
                 }
                 return (b.app.timestamp || 0) - (a.app.timestamp || 0);
             }
+
+            // --- Fase 1: raggruppa per base-name esatto (versione rimossa) ---
             const groups = {};
             for (const [key, appObj] of Object.entries(apps)) {
                 if (!appObj.name) continue;
@@ -47,11 +54,34 @@ export default async function handler(req, res) {
                 groups[base].push({ key, app: appObj });
             }
             const toDelete = [];
+            const survivorKeys = new Set();
             for (const entries of Object.values(groups)) {
-                if (entries.length <= 1) continue;
+                if (entries.length <= 1) {
+                    survivorKeys.add(entries[0].key);
+                    continue;
+                }
                 entries.sort(compareEntries);
+                survivorKeys.add(entries[0].key);
                 toDelete.push(...entries.slice(1));
             }
+
+            // --- Fase 2: raggruppa i sopravvissuti per root-word (prima parola significativa) ---
+            const rootGroups = {};
+            for (const [key, appObj] of Object.entries(apps)) {
+                if (!appObj.name) continue;
+                if (!survivorKeys.has(key)) continue; // già segnato per eliminazione
+                const rw = rootWord(appObj.name);
+                if (!rw) continue;
+                if (!rootGroups[rw]) rootGroups[rw] = [];
+                rootGroups[rw].push({ key, app: appObj });
+            }
+            for (const entries of Object.values(rootGroups)) {
+                if (entries.length <= 1) continue;
+                entries.sort(compareEntries);
+                // Tieni il primo (versione più alta), elimina gli altri
+                toDelete.push(...entries.slice(1));
+            }
+
             for (const { key } of toDelete) {
                 await fetch(`${dbUrl}/apps/${key}.json?auth=${token}`, { method: 'DELETE' });
             }

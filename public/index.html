@@ -34,6 +34,7 @@ body.light-theme::before {
   background: linear-gradient(135deg, #f8fafc 0%, rgba(168, 85, 247, 0.1) 25%, #f8fafc 50%, rgba(34, 211, 238, 0.1) 75%, #f8fafc 100%);
 }
 body.light-theme .card-text h4 { color: #0f172a; }
+body.light-theme .card-text .card-date { color: rgba(0,0,0,0.35); }
 body.light-theme .bookmark-hint strong { color: #0f172a; }
 body.light-theme .icon-container { background: rgba(255,255,255,0.8); box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); }
 body.light-theme .btn { color: var(--neon-purple); background: rgba(168, 85, 247, 0.1); }
@@ -201,6 +202,7 @@ body.is-admin .card:active { cursor: grabbing; }
 .card-text { flex: 1; min-width: 0; }
 .card-text h4 { margin: 0 0 6px 0; font-size: 15px; font-weight: 600; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: #fff; }
 .card-text span { font-size: 13px; color: var(--text-muted); display: block; line-height: 1.4; }
+.card-text .card-date { font-size: 11px; color: rgba(255,255,255,0.28); margin-top: 4px; display: block; }
 
 .btn { 
   background: rgba(168, 85, 247, 0.2); color: #fff; padding: 10px 18px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s ease; 
@@ -365,6 +367,7 @@ body.lite-mode .form-input {
 }
 body.lite-mode .card-text h4 { color: var(--text) !important; }
 body.lite-mode .card-text span { color: var(--text-muted) !important; }
+body.lite-mode .card-text .card-date { color: var(--text-muted) !important; opacity: 0.5; }
 body.lite-mode .card:hover { transform: none !important; border-color: var(--neon-purple) !important; }
 body.lite-mode header img {
     border: 3px solid var(--neon-purple) !important;
@@ -1005,6 +1008,9 @@ body.lite-mode.light-theme .search-box input {
       const displayCode = (code.startsWith('http') || code.startsWith('/')) ? '' : code;
       const displayDesc = [displayCode, desc].filter(Boolean).join(' — ');
 
+      const dateStr = timestamp ? new Date(timestamp).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '';
+      const dateHtml = dateStr ? `<small class="card-date">Agg. ${dateStr}</small>` : '';
+
       const badgeHtml = '';
       
       // Contatore Click
@@ -1039,6 +1045,7 @@ body.lite-mode.light-theme .search-box input {
         <div class="card-text">
           <h4>${name}</h4>
           <span>${displayDesc}</span>
+          ${dateHtml}
         </div>
         <div class="actions">${actionBtnHtml}</div>
         ${clickHtml}

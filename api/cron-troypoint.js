@@ -18,6 +18,47 @@ const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
+// Restituisce la prima parola significativa del nome (ignora numeri di versione)
+function getFirstWord(name) {
+    return name
+        .replace(/\b\d+[\d.]*\b/g, '') // rimuovi versioni
+        .trim()
+        .split(/\s+/)[0]
+        ?.toLowerCase() || '';
+}
+
+// Estrae la versione come tupla numerica [major, minor, patch]
+function extractVersionTuple(name) {
+    const m = name.match(/\b(\d+)\.(\d+)(?:\.(\d+))?\b/);
+    return m ? [parseInt(m[1]), parseInt(m[2]), parseInt(m[3] || 0)] : null;
+}
+
+// Confronta due versioni: ritorna >0 se a > b
+function compareVersions(a, b) {
+    if (!a && !b) return 0;
+    if (!a) return -1;
+    if (!b) return 1;
+    for (let i = 0; i < 3; i++) {
+        const d = (a[i] || 0) - (b[i] || 0);
+        if (d !== 0) return d;
+    }
+    return 0;
+}
+
+// Genera una descrizione automatica basata su categoria e nome
+function generateDesc(name, category) {
+    if (category === 'Media Center') return 'Media center open source per Fire TV e Android TV';
+    if (category === 'Launcher') return 'Launcher ottimizzato per Fire TV';
+    if (category === 'Film & Serie TV') return 'Streaming film e serie TV gratis';
+    if (category === 'Sport') return 'Streaming sport in diretta';
+    if (category === 'Player IPTV') return 'Player IPTV per liste M3U e Xtream';
+    if (category === 'VPN') return 'VPN per streaming e privacy su Fire TV';
+    if (category === 'Store Alternativi') return 'Store alternativo per installare APK su Fire TV';
+    if (category === 'Streaming') return 'Streaming video per Fire TV';
+    if (category === 'Strumenti') return 'Strumento utile per Fire TV e Android TV';
+    return 'App per Fire TV e Android TV';
+}
+
 function categorizeApp(name, currentCat = '') {
     const lower = name.toLowerCase();
     
@@ -117,8 +158,9 @@ export default async function handler(req, res) {
 
             let foundKey = null;
             let existingApp = null;
+            let staleKeys = []; // chiavi obsolete con stesso root-word e versione inferiore
 
-            // Trova per nome (case-insensitive + trim per sicurezza)
+            // 1. Cerca match esatto per nome
             for (const [key, val] of Object.entries(existingApps)) {
                 if (val.name && val.name.toLowerCase().trim() === scrapedNameNorm) {
                     foundKey = key;
@@ -127,19 +169,67 @@ export default async function handler(req, res) {
                 }
             }
 
-            if (foundKey) {
-                // Check updates
-                if (existingApp.code !== scraped.code) {
-                    updates[`apps/${foundKey}/code`] = scraped.code;
-                    updates[`apps/${foundKey}/timestamp`] = Date.now();
-                    notifications.push({ name: scraped.name, version: "Aggiornata", link: scraped.code, icon: existingApp.icon });
+            // 2. Se non trovato esattamente, cerca per "prima parola significativa" (root-word)
+            //    Solo se la versione scraped è PIÙ ALTA dell'esistente
+            if (!foundKey) {
+                const scrapedRootWord = getFirstWord(scraped.name);
+                const scrapedVer = extractVersionTuple(scraped.name);
+
+                if (scrapedRootWord) {
+                    const sameRootEntries = [];
+                    for (const [key, val] of Object.entries(existingApps)) {
+                        if (!val.name) continue;
+                        const existingRoot = getFirstWord(val.name);
+                        if (existingRoot === scrapedRootWord) {
+                            sameRootEntries.push({ key, app: val });
+                        }
+                    }
+
+                    if (sameRootEntries.length > 0) {
+                        // Ordina per versione decrescente, scegli il più recente
+                        sameRootEntries.sort((a, b) =>
+                            compareVersions(extractVersionTuple(b.app.name), extractVersionTuple(a.app.name))
+                        );
+                        const best = sameRootEntries[0];
+                        const bestVer = extractVersionTuple(best.app.name);
+
+                        // Aggiorna solo se la nuova versione è superiore
+                        if (scrapedVer && bestVer && compareVersions(scrapedVer, bestVer) > 0) {
+                            foundKey = best.key;
+                            existingApp = best.app;
+                            // Le altre entry con root uguale e versione inferiore sono "stale"
+                            staleKeys = sameRootEntries.slice(1).map(e => e.key);
+                        }
+                    }
                 }
-                // Cleanup desc if needed
-                if (existingApp.desc === "Imported from TroyPoint") {
-                    updates[`apps/${foundKey}/desc`] = "";
+            }
+
+            if (foundKey) {
+                // Aggiorna voce esistente
+                if (existingApp.code !== scraped.code || existingApp.name !== scraped.name) {
+                    updates[`apps/${foundKey}/code`] = scraped.code;
+                    updates[`apps/${foundKey}/name`] = scraped.name;
+                    updates[`apps/${foundKey}/timestamp`] = Date.now();
+                    // Aggiorna categoria
+                    const newCat = categorizeApp(scraped.name, existingApp.category);
+                    if (newCat !== existingApp.category) updates[`apps/${foundKey}/category`] = newCat;
+                    // Aggiungi desc se mancante o placeholder
+                    if (!existingApp.desc || existingApp.desc === "Imported from TroyPoint" || existingApp.desc === "") {
+                        updates[`apps/${foundKey}/desc`] = generateDesc(scraped.name, newCat);
+                    }
+                    notifications.push({ name: scraped.name, version: "Aggiornata", link: scraped.code, icon: existingApp.icon });
+                } else {
+                    // Solo cleanup desc
+                    if (existingApp.desc === "Imported from TroyPoint") {
+                        updates[`apps/${foundKey}/desc`] = generateDesc(scraped.name, existingApp.category);
+                    }
+                }
+                // Elimina eventuali entry stale con stesso root-word
+                for (const staleKey of staleKeys) {
+                    updates[`apps/${staleKey}`] = null; // null = DELETE in Firebase update
                 }
             } else {
-                // New App
+                // Nuova app
                 const newRef = push(ref(db, 'apps'));
                 const newCat = categorizeApp(scraped.name);
                 
@@ -154,7 +244,7 @@ export default async function handler(req, res) {
                 updates[`apps/${newRef.key}`] = {
                     name: scraped.name,
                     code: scraped.code,
-                    desc: "",
+                    desc: generateDesc(scraped.name, newCat),
                     category: newCat,
                     icon: icon,
                     timestamp: Date.now()
@@ -172,9 +262,11 @@ export default async function handler(req, res) {
                 updates[`apps/${key}/category`] = newCat;
             }
             
-            // Remove "Imported from TroyPoint"
-            if (val.desc === "Imported from TroyPoint") {
-                updates[`apps/${key}/desc`] = "";
+            // Backfill description if empty or placeholder
+            if (!val.desc || val.desc === "Imported from TroyPoint" || val.desc === "") {
+                if (!updates[`apps/${key}/desc`]) { // non sovrascrivere se già impostato nel loop 1
+                    updates[`apps/${key}/desc`] = generateDesc(val.name, newCat);
+                }
             }
         }
 
@@ -185,6 +277,16 @@ export default async function handler(req, res) {
             for (const notif of notifications) {
                 await notifyAll(notif.name, notif.version, notif.link, notif.icon);
             }
+
+            // Dedup post-aggiornamento: elimina eventuali versioni obsolete rimaste
+            try {
+                const baseUrl = process.env.BASE_URL || 'https://nellofire.vercel.app';
+                const dedupRes = await fetch(`${baseUrl}/api/fix-db?mode=dedup`);
+                const dedupData = await dedupRes.json();
+                if (dedupData.removed > 0) {
+                    console.log(`[dedup] Rimosso ${dedupData.removed} schede obsolete:`, dedupData.details?.join(', '));
+                }
+            } catch(e) { console.warn("[dedup] Errore dedup post-cron:", e.message); }
         }
 
         return res.status(200).json({ success: true, updates: Object.keys(updates).length, ignored: ignoredNames.size });
