@@ -28,9 +28,8 @@ export default async function handler(req, res) {
         const version = titleMatch[1];
         const releaseSlug = slugMatch ? slugMatch[1] : null;
         const appName = `Paramount+ ${version} US Fire TV`;
-        const downloadUrl = releaseSlug
-            ? `https://www.apkmirror.com/apk/cbs-interactive-inc/paramount/${releaseSlug}/${releaseSlug.replace('-release', '-android-apk-download')}/`
-            : `/api/download-paramount?tv=us`;
+        // Usa sempre l'endpoint API che gestisce il download via proxy (got-scraping + Webshare)
+        const downloadUrl = `/api/download-paramount?tv=us`;
 
         console.log(`Versione US trovata su APKMirror: ${version} — slug: ${releaseSlug}`);
 
@@ -68,7 +67,7 @@ export default async function handler(req, res) {
         const newAppData = {
             name: appName,
             code: downloadUrl,
-            desc: `Versione ${version} USA — APK diretto APKMirror (compatibile Fire TV con proxy US)`,
+            desc: `Versione ${version} USA — Download diretto APKMirror (compatibile Fire TV con proxy US)`,  
             icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Paramount_Plus.svg/512px-Paramount_Plus.svg.png",
             category: "Streaming",
             timestamp: Date.now()
