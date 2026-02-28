@@ -53,7 +53,23 @@ export default async function handler(req, res) {
         const checkData = await checkResponse.json();
 
         if (checkData && checkData.email) {
-            return res.status(400).json({ error: 'Sei già iscritto alle notifiche!' });
+            // Email già iscritta: aggiorna le app selezionate
+            const updateResponse = await fetch(`${dbUrl}/subscribers/${emailKey}.json?auth=${token}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    apps: appsToSave,
+                    timestamp: Date.now()
+                })
+            });
+
+            if (!updateResponse.ok) {
+                const updateError = await updateResponse.json();
+                console.error("Errore aggiornamento Firebase:", updateError);
+                return res.status(500).json({ error: 'Errore interno del server' });
+            }
+
+            return res.status(200).json({ success: true, updated: true, message: 'Iscrizione aggiornata con successo!' });
         }
 
         // 3. Aggiungi il nuovo iscritto con email come chiave

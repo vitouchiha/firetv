@@ -76,10 +76,19 @@ export async function sendEmailNotification(appName, version, downloadUrl, iconU
         
         // Filtra chi è iscritto a 'all' o specificamente a questa app
         const appNameLower = appName.toLowerCase();
+        // Estratto il nome base dell'app (es. "stremio" da "Stremio 1.9.8 ARM TV")
+        const appBaseName = appNameLower.split(' ')[0];
         const emails = Object.values(subscribers)
             .filter(sub => {
                 if (!sub.apps || sub.apps.includes('all')) return true; // vecchi iscritti + "tutte"
-                return sub.apps.some(a => a.toLowerCase() === appNameLower);
+                return sub.apps.some(a => {
+                    const aLower = a.toLowerCase();
+                    // Match esatto
+                    if (aLower === appNameLower) return true;
+                    // Match per nome base (es. "stremio" matcha qualsiasi versione di Stremio)
+                    const subBaseName = aLower.split(' ')[0];
+                    return subBaseName === appBaseName && appBaseName.length > 2;
+                });
             })
             .map(sub => sub.email);
 

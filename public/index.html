@@ -606,7 +606,7 @@ body.lite-mode.light-theme .search-box input {
 <!-- Firebase SDKs -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  import { getDatabase, ref, push, onValue, remove, update, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
   
   import { firebaseConfig } from "./firebase-config.js";
@@ -913,10 +913,17 @@ body.lite-mode.light-theme .search-box input {
         update(ref(db), updates).catch(e => console.error(e));
     };
 
-    window.removeAppFromCloud = function(key, type) {
+    window.removeAppFromCloud = function(key, type, appName) {
       if(confirm('Sei sicuro di voler eliminare definitivamente questa app?')) {
         const dbPath = (type === 'software') ? 'software/' : 'apps/';
         remove(ref(db, dbPath + key)).catch(e => alert("Errore eliminazione: " + e.message));
+        // Se è un'app (non software), aggiungila alla blacklist di TroyPoint
+        // così il cron non la re-inserisce automaticamente al prossimo giro
+        if (type === 'apps' && appName) {
+          const ignoredKey = appName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+          set(ref(db, 'troypoint_ignored/' + ignoredKey), { name: appName, timestamp: Date.now() })
+            .catch(e => console.warn('Blacklist write failed:', e));
+        }
       }
     };
 
@@ -1017,7 +1024,7 @@ body.lite-mode.light-theme .search-box input {
         <div class="admin-controls admin-only">
             <button onclick="editAppFromCloud('${firebaseKey}', '${escapeAppValue(name)}', '${String(code)}', '${escapeAppValue(desc)}', '${escapeAppValue(iconPath)}', '${escapeAppValue(category)}', '${type}')" 
                     class="admin-btn btn-edit" title="Modifica">✏️</button>
-            <button onclick="removeAppFromCloud('${firebaseKey}', '${type}')" 
+            <button onclick="removeAppFromCloud('${firebaseKey}', '${type}', '${escapeAppValue(name)}')" 
                     class="admin-btn btn-delete" title="Elimina">🗑️</button>
         </div>
       `;
@@ -1191,6 +1198,9 @@ body.lite-mode.light-theme .search-box input {
   window.goToNotifyStep1 = function() {
     document.querySelectorAll('.notify-step').forEach(s => s.classList.remove('active'));
     document.getElementById('notify-step-1').classList.add('active');
+    // Reset step-3 heading in case it was changed by an update flow
+    const step3h3 = document.querySelector('#notify-step-3 h3');
+    if (step3h3) step3h3.textContent = '✅ Iscritto!';
   };
 
   window.goToNotifyStep2 = function() {
@@ -1268,7 +1278,13 @@ body.lite-mode.light-theme .search-box input {
       const data = await res.json();
       if (res.ok) {
         const label = selectedApps[0] === 'all' ? 'tutte le app' : `${selectedApps.length} app`;
-        document.getElementById('notify-success-msg').innerText = `Riceverai notifiche per ${label}.`;
+        if (data.updated) {
+          document.getElementById('notify-success-msg').innerText = `Iscrizione aggiornata. Riceverai notifiche per ${label}.`;
+          document.querySelector('#notify-step-3 h3').textContent = '✏️ Aggiornato!';
+        } else {
+          document.getElementById('notify-success-msg').innerText = `Riceverai notifiche per ${label}.`;
+          document.querySelector('#notify-step-3 h3').textContent = '✅ Iscritto!';
+        }
         document.querySelectorAll('.notify-step').forEach(s => s.classList.remove('active'));
         document.getElementById('notify-step-3').classList.add('active');
       } else {

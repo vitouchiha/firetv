@@ -87,21 +87,41 @@ export default async function handler(req, res) {
             await signInWithEmailAndPassword(auth, process.env.FIREBASE_ADMIN_EMAIL, process.env.FIREBASE_ADMIN_PASSWORD);
         }
 
-        const snapshot = await get(ref(db, 'apps'));
+        const [snapshot, ignoredSnapshot] = await Promise.all([
+            get(ref(db, 'apps')),
+            get(ref(db, 'troypoint_ignored'))
+        ]);
+
         const existingApps = snapshot.val() || {};
         const scrapedApps = await scrapeTroypoint();
+
+        // Costruisci set dei nomi ignorati (normalizzati)
+        const ignoredNames = new Set();
+        if (ignoredSnapshot.exists()) {
+            Object.values(ignoredSnapshot.val()).forEach(entry => {
+                if (entry.name) ignoredNames.add(entry.name.toLowerCase().trim());
+            });
+        }
         
         const updates = {};
         const notifications = [];
         
         // 1. Process Scraped Data (Add new or Update existing links)
         for (const scraped of scrapedApps) {
+            const scrapedNameNorm = scraped.name.toLowerCase().trim();
+
+            // Salta se l'admin ha eliminato questa app in precedenza
+            if (ignoredNames.has(scrapedNameNorm)) {
+                console.log(`Skipping ignored app: ${scraped.name}`);
+                continue;
+            }
+
             let foundKey = null;
             let existingApp = null;
 
-            // Find existing by name
+            // Trova per nome (case-insensitive + trim per sicurezza)
             for (const [key, val] of Object.entries(existingApps)) {
-                if (val.name === scraped.name) {
+                if (val.name && val.name.toLowerCase().trim() === scrapedNameNorm) {
                     foundKey = key;
                     existingApp = val;
                     break;
@@ -167,7 +187,7 @@ export default async function handler(req, res) {
             }
         }
 
-        return res.status(200).json({ success: true, updates: Object.keys(updates).length });
+        return res.status(200).json({ success: true, updates: Object.keys(updates).length, ignored: ignoredNames.size });
 
     } catch (error) {
         console.error(error);

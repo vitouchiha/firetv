@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, get, push } from "firebase/database";
+import { getDatabase, ref, get, push, remove, child } from "firebase/database";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { notifyAll } from "./utils/notify.js";
 
@@ -65,14 +65,28 @@ export default async function handler(req, res) {
         const snapshot = await get(dbRef);
         
         let exists = false;
+        let oldStremioKeys = [];
         if (snapshot.exists()) {
             const apps = snapshot.val();
-            exists = Object.values(apps).some(app => app.name === appName || app.code === link);
+            Object.entries(apps).forEach(([key, app]) => {
+                if (app.name === appName || app.code === link) {
+                    exists = true;
+                } else if (app.name && app.name.toLowerCase().startsWith('stremio')) {
+                    // Vecchie versioni di Stremio da rimuovere
+                    oldStremioKeys.push(key);
+                }
+            });
         }
 
-        // 6. Se non esiste, aggiungila
+        // 6. Se non esiste, rimuovi le vecchie versioni e aggiungila
         if (!exists) {
             console.log(`Nuova versione confermata! Aggiungo ${appName} al database...`);
+
+            // Rimuovi le vecchie schede Stremio
+            for (const key of oldStremioKeys) {
+                await remove(child(dbRef, key));
+                console.log(`Rimossa vecchia scheda Stremio con chiave: ${key}`);
+            }
             
             const newApp = {
                 name: appName,
@@ -89,7 +103,7 @@ export default async function handler(req, res) {
             // Invia notifiche
             await notifyAll(appName, version, link, newApp.icon);
             
-            return res.status(200).json({ success: true, message: `Aggiunta nuova versione: ${version}` });
+            return res.status(200).json({ success: true, message: `Aggiunta nuova versione: ${version}`, removed: oldStremioKeys.length });
         } else {
             console.log("La versione è già presente nel database.");
             return res.status(200).json({ success: true, message: `Nessun aggiornamento. Versione attuale: ${version}` });
