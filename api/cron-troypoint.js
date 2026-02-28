@@ -18,6 +18,109 @@ const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
+function generateDesc(name, category) {
+    const lower = name.toLowerCase();
+    const ver = name.match(/(\d+[\d.]+)/)?.[0] || '';
+    // VPN
+    if (lower.includes('surfshark')) return 'VPN con crittografia avanzata — veloce e sicuro';
+    if (lower.includes('nordvpn')) return 'VPN premium con protezione avanzata';
+    if (lower.includes('privacydot')) return 'Indicatore visivo di attività VPN/rete';
+    if (lower.includes('shadow rocket')) return 'Client proxy per Fire TV';
+    if (lower.includes('super proxy')) return 'App proxy per navigazione sicura su Android TV';
+    if (lower.includes('vpn')) return 'App VPN per navigazione sicura e anonima';
+    // Media Center
+    if (lower.includes('troypoint') && lower.includes('fork')) return 'Fork di Kodi ottimizzato da TroyPoint' + (ver ? ' v'+ver : '');
+    if (lower.includes('kodi')) return 'Media center open source per streaming locale e online' + (ver ? ' v'+ver : '');
+    if (lower.includes('plex')) return 'Media server e player per contenuti locali e online';
+    if (lower.includes('jellyfin')) return 'Media server open source auto-ospitato';
+    if (lower.includes('emby')) return 'Media server per gestire e riprodurre contenuti media';
+    // Stremio
+    if (lower.includes('stremio') && lower.includes('mod')) return 'Versione modificata di Stremio con player VLC integrato';
+    if (lower.includes('stremio') && lower.includes('proxy')) return 'Proxy MPD per flussi Stremio';
+    if (lower.includes('strmr')) return 'Client streaming alternativo per Fire TV';
+    if (lower.includes('stremize')) return 'Client Stremio alternativo per Android TV';
+    if (lower.includes('stremio')) return 'Aggregatore streaming con add-on' + (ver ? ' v'+ver : '');
+    // YouTube
+    if (lower.includes('smarttube') && lower.includes('beta')) return 'YouTube ad-free per TV — versione beta con ultime funzionalità';
+    if (lower.includes('smarttube')) return 'YouTube ad-free open source per TV e Fire TV';
+    if (lower.includes('tizentube')) return 'YouTube ad-free — fork per dispositivi non Samsung';
+    if (lower.includes('revanced manager')) return 'Strumento per applicare patch ReVanced alle app Android';
+    if (lower.includes('revanced')) return 'YouTube con patch ad-free e funzionalità extra';
+    // Player IPTV
+    if (lower.includes('tivimate')) return 'Player IPTV avanzato per liste M3U' + (ver ? ' v'+ver : '');
+    if (lower.includes('xciptv')) return 'Player IPTV con interfaccia moderna' + (ver ? ' v'+ver : '');
+    if (lower.includes('smarters')) return 'Player IPTV compatibile Xtream Codes e M3U';
+    if (lower.includes('sparkle')) return 'Player IPTV leggero per Fire TV' + (ver ? ' v'+ver : '');
+    if (lower.includes('wave iptv')) return 'Player IPTV con EPG integrata' + (ver ? ' v'+ver : '');
+    if (lower.includes('nuvio')) return 'Player/aggregatore IPTV per Android TV';
+    if (lower.includes('wiseplay')) return 'Player multimediale con supporto IPTV';
+    if (lower.includes('nextv') || lower.includes('nex tv')) return 'Player IPTV per Fire TV e Android TV';
+    if (lower.includes('implayer')) return 'Player IPTV con supporto M3U e Xtream';
+    // Launcher
+    if (lower.includes('launcher manager')) return 'Gestione launcher multipli su Fire TV' + (ver ? ' v'+ver : '');
+    if (lower.includes('wolf launcher')) return 'Launcher personalizzabile per Android TV' + (ver ? ' v'+ver : '');
+    if (lower.includes('projectivy')) return 'Launcher avanzato con widget per Android TV' + (ver ? ' v'+ver : '');
+    if (lower.includes('sideload launcher')) return 'Launcher per avviare app sideloaded su Fire TV';
+    if (lower.includes('leanback launcher') || lower.includes('ltv')) return 'Launcher classico per TV' + (ver ? ' v'+ver : '');
+    if (lower.includes('premium tv launcher')) return 'Launcher premium per Android TV';
+    if (lower.includes('launcher')) return 'Launcher personalizzabile per Fire TV e Android TV';
+    // Xrom / Vimu
+    if (lower.includes('xrom lite')) return 'Versione leggera di Xrom per Fire TV';
+    if (lower.includes('xrom nuovo') || lower.includes('xrom new')) return 'Nuova versione di Xrom — launcher/custom ROM';
+    if (lower.includes('xrom')) return 'Custom ROM / launcher alternativo per Fire TV';
+    if (lower.includes('vimu installer')) return 'Installer per Vimu Media Player su Fire TV';
+    if (lower.includes('vimu')) return 'Media player avanzato per Fire TV';
+    // Store alternativi
+    if (lower.includes('aurora store')) return 'Client open source per Google Play Store' + (ver ? ' v'+ver : '');
+    if (lower.includes('aptoide')) return 'Store alternativo con milioni di APK' + (ver ? ' v'+ver : '');
+    if (lower.includes('unlinked')) return 'Store privato per APK personalizzati';
+    if (lower.includes('filesynced')) return 'Gestore di repository APK privati';
+    if (lower.includes('apktime')) return 'Store alternativo per Fire TV e Android TV';
+    if (lower.includes('apkpreem')) return 'Installer APK da repository online';
+    if (lower.includes('apkmirror installer')) return 'Installer APK dal repository APKMirror';
+    // Streaming/Film
+    if (lower.includes('syncler')) return 'Client Premiumize/RD per streaming' + (ver ? ' v'+ver : '');
+    if (lower.includes('cloudstream')) return 'App streaming con sorgenti multiple' + (ver ? ' v'+ver : '');
+    if (lower.includes('veezie')) return 'Player e aggregatore streaming per TV';
+    if (lower.includes('wuplay')) return 'Player streaming per Fire TV';
+    if (lower.includes('just') && lower.includes('player')) return 'Player video minimalista senza pubblicità';
+    if (lower.includes('mx player')) return 'Player video con supporto codec hardware';
+    if (lower.includes('tplayer') || lower.includes('bplayer')) return 'Player video premium per Android TV';
+    if (lower.includes('prime video')) return 'Prime Video su dispositivi non certificati Google';
+    if (lower.includes('netflix')) return 'Netflix su dispositivi non certificati Google';
+    if (lower.includes('paramount')) return 'App streaming Paramount+' + (name.includes('Bundle') ? ' con bundle Showtime' : '');
+    // Tools
+    if (lower.includes('mouse toggle')) return 'Abilita il cursore su Fire TV per app non ottimizzate';
+    if (lower.includes('adb appcontrol')) return 'Gestione app Android via ADB da PC';
+    if (lower.includes('easy fire tools')) return 'Strumenti ADB semplificati per Fire TV';
+    if (lower.includes('remote adb')) return 'Shell ADB da remoto per Android TV';
+    if (lower.includes('analiti') || lower.includes('speed test')) return 'Test velocità internet e analisi rete';
+    if (lower.includes('fast task killer')) return 'Chiude le app in background per liberare memoria';
+    if (lower.includes('appstarter')) return "Avvia app automaticamente al boot di Fire TV";
+    if (lower.includes('launch on boot')) return "Avvia automaticamente un'app al riavvio" + (ver ? ' v'+ver : '');
+    if (lower.includes('app cloner')) return 'Clona app per usare più account simultaneamente';
+    if (lower.includes('es file explorer')) return 'Gestore file avanzato per Android TV' + (ver ? ' v'+ver : '');
+    if (lower.includes('tv bro')) return 'Browser web leggero per TV';
+    if (lower.includes('set orientation')) return 'Forza orientamento schermo su Android';
+    if (lower.includes('virustotal')) return 'Scanner antivirus online per APK' + (ver ? ' v'+ver : '');
+    if (lower.includes('mecool') || lower.includes('remote pairing')) return 'App accoppiamento telecomando per box MECOOL';
+    if (lower.includes('android tv tools')) return 'Raccolta strumenti per Android TV';
+    if (lower.includes('lm settings')) return 'Impostazioni avanzate per Launcher Manager';
+    if (lower.includes('airscreen')) return 'Screen mirroring da iPhone/iPad/Mac/PC su TV';
+    if (lower.includes('scrcpy')) return 'Specchia e controlla Android da PC via ADB';
+    if (lower.includes('firetv toolbox') || lower.includes('fire tv toolbox')) return 'Raccolta strumenti avanzati per Fire TV';
+    if (lower.includes('windows adb')) return 'Driver ADB per Windows — necessari per debug USB';
+    if (lower.includes('gmscore') || lower.includes('microg')) return 'Sostituto open source dei Google Play Services';
+    // Adobe
+    if (lower.includes('photoshop')) return 'Editor fotografico Adobe per dispositivi mobili';
+    if (lower.includes('premiere rush')) return 'Editor video professionale Adobe';
+    if (lower.includes('lightroom')) return 'Editor foto e video professionale Adobe';
+    if (lower.includes('acrobat')) return 'Lettore e editor PDF Adobe';
+    // Fallback per categoria
+    const catDesc = { 'VPN': 'App VPN per navigazione sicura', 'Media Center': 'Media center per riproduzione locale e online', 'Launcher': 'Launcher per Fire TV', 'Film & Serie TV': 'App per film e serie TV in streaming', 'Player IPTV': 'Player IPTV per liste M3U e Xtream', 'Streaming': 'App streaming per Fire TV', 'Store Alternativi': 'Store alternativo per APK Android', 'Strumenti': 'Strumento di sistema per Fire TV e Android TV', 'Adobe': 'App Adobe per creatività e produttività', 'Windows': 'Strumento per Windows per sviluppo Android' };
+    return catDesc[category] || 'App per Fire TV e Android TV';
+}
+
 function categorizeApp(name, currentCat = '') {
     const lower = name.toLowerCase();
     
@@ -134,9 +237,9 @@ export default async function handler(req, res) {
                     updates[`apps/${foundKey}/timestamp`] = Date.now();
                     notifications.push({ name: scraped.name, version: "Aggiornata", link: scraped.code, icon: existingApp.icon });
                 }
-                // Cleanup desc if needed
-                if (existingApp.desc === "Imported from TroyPoint") {
-                    updates[`apps/${foundKey}/desc`] = "";
+                // Aggiungi/correggi desc se vuota o placeholder
+                if (!existingApp.desc || existingApp.desc === "Imported from TroyPoint") {
+                    updates[`apps/${foundKey}/desc`] = generateDesc(existingApp.name, existingApp.category);
                 }
             } else {
                 // New App
@@ -154,7 +257,7 @@ export default async function handler(req, res) {
                 updates[`apps/${newRef.key}`] = {
                     name: scraped.name,
                     code: scraped.code,
-                    desc: "",
+                    desc: generateDesc(scraped.name, newCat),
                     category: newCat,
                     icon: icon,
                     timestamp: Date.now()
