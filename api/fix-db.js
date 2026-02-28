@@ -65,17 +65,17 @@ export default async function handler(req, res) {
 
         } else if (mode === 'purge-firestickhacks') {
             // Rimuove tutte le voci provenienti dallo scraper FirestickHacks
-            // Identificate da: code che contiene firestickhacks, OR source=firestickhacks, OR category=FirestickHacks
+            // Identificate da: category="FireTV Hack" OR code contenente firestickhacks/pixeldrain/mediafire aggiunto in blocco
+            // Il modo sicuro: categoria "FireTV Hack" (impostata dallo scraper)
             const toDelete = [];
             for (const [key, appObj] of Object.entries(apps)) {
                 const code = (appObj.code || '').toLowerCase();
                 const source = (appObj.source || '').toLowerCase();
-                const category = (appObj.category || '').toLowerCase();
+                const category = (appObj.category || '');
                 const name = (appObj.name || '').toLowerCase();
                 if (
-                    code.includes('firestickhacks') ||
+                    category === 'FireTV Hack' ||
                     source.includes('firestickhacks') ||
-                    category.includes('firestickhacks') ||
                     name.includes('firestickhacks')
                 ) {
                     toDelete.push({ key, name: appObj.name });
